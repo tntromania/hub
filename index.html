@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alex Studio | Content Creation Hub 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-body: #000000;
+            --bg-sidebar: #0a0a0a;
+            --bg-card: #0f0f0f;
+            --bg-card-hover: #1a1a1a;
+            --border: #1f1f1f;
+            --primary: #6366f1;
+            --accent: #ec4899;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --sidebar-width: 280px;
+            --glow-primary: rgba(99, 102, 241, 0.15);
+            --glow-accent: rgba(236, 72, 153, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+
+        body {
+            background: radial-gradient(ellipse at top, #0f172a 0%, #000 50%);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated background gradient */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background:
+                    radial-gradient(circle at 20% 50%, var(--glow-primary) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 80%, var(--glow-accent) 0%, transparent 50%);
+            animation: rotate 20s linear infinite;
+            opacity: 0.3;
+            z-index: 0;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 20px;
+            z-index: 10;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 50px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 20px var(--glow-primary);
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .nav-item {
+            padding: 14px 18px;
+            border-radius: 14px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.15));
+            color: #fff;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            box-shadow: 0 4px 20px var(--glow-primary);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 60%;
+            background: linear-gradient(180deg, #6366f1, #a855f7);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .usage-box {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(168, 85, 247, 0.05));
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 24px;
+            margin-top: auto;
+            backdrop-filter: blur(10px);
+        }
+
+        .usage-title {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .plan-badge {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #000;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: 800;
+        }
+
+        .progress-item { margin-bottom: 16px; }
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+            color: #ccc;
+        }
+        .progress-track {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .fill-purple { background: linear-gradient(90deg, #6366f1, #8b5cf6); width: 77%; }
+        .fill-pink { background: linear-gradient(90deg, #ec4899, #f43f5e); width: 42%; }
+
+        .upgrade-btn {
+            width: 100%;
+            padding: 14px;
+            margin-top: 18px;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .upgrade-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.6);
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            flex: 1;
+            padding: 40px 50px;
+            overflow-y: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .main-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .main-content::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.3);
+            border-radius: 4px;
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        .welcome h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+
+        .welcome p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        .profile-pill {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(15, 15, 15, 0.8);
+            backdrop-filter: blur(20px);
+            padding: 10px 20px 10px 10px;
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .profile-pill:hover {
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 4px 20px var(--glow-primary);
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-weight: 800;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+
+        /* --- APPS GRID --- */
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .app-card {
+            background: rgba(15, 15, 15, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--glow-primary) 0%, var(--glow-accent) 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: -1;
+        }
+
+        .app-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6), 0 0 40px var(--glow-primary);
+        }
+
+        .app-card:hover::before {
+            opacity: 0.1;
+        }
+
+        .app-preview {
+            width: 100%;
+            height: 240px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .app-card:hover .app-preview img {
+            transform: scale(1.1);
+        }
+
+        /* Gradient overlays pentru apps fără poze */
+        .preview-voice { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); }
+        .preview-video { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .preview-audio { background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%); }
+
+        .app-preview i {
+            font-size: 5rem;
+            color: rgba(255,255,255,0.15);
+        }
+
+        .app-info {
+            padding: 24px;
+        }
+
+        .app-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .app-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .app-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .launch-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .app-card:hover .launch-btn {
+            gap: 14px;
+            color: #fff;
+        }
+
+        .badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 2;
+        }
+
+        .badge-pro {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.9), rgba(217, 119, 6, 0.9));
+            color: #fff;
+        }
+        .badge-hot {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.9), rgba(220, 38, 38, 0.9));
+            color: #fff;
+        }
+        .badge-new {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.9), rgba(5, 150, 105, 0.9));
+            color: #fff;
+        }
+
+        .app-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        @media (max-width: 1200px) {
+            .sidebar { display: none; }
+            .main-content { padding: 30px; }
+            .apps-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .apps-grid { grid-template-columns: 1fr; }
+            .welcome h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div>
+        <div class="logo">
+            <div class="logo-icon">✨</div>
+            <span>Alex Studio</span>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item active"><i class="fa-solid fa-grid-2"></i> Dashboard</li>
+            <li class="nav-item"><i class="fa-solid fa-layer-group"></i> All Tools</li>
+            <li class="nav-item"><i class="fa-solid fa-folder-open"></i> Projects</li>
+            <li class="nav-item"><i class="fa-solid fa-chart-pie"></i> Analytics</li>
+            <li class="nav-item"><i class="fa-solid fa-gear"></i> Settings</li>
+        </ul>
+    </div>
+
+    <div class="usage-box">
+        <div class="usage-title">
+            <span>Your Plan</span>
+            <span class="plan-badge">AGENCY PRO</span>
+        </div>
+
+        <div class="progress-item">
+            <div class="progress-label"><span>AI Credits</span> <span>15.4k / 20k</span></div>
+            <div class="progress-track"><div class="progress-fill fill-purple"></div></div>
+        </div>
+
+        <div class="progress-item">
+            <div class="progress-label"><span>Storage</span> <span>42GB / 100GB</span></div>
+            <div class="progress-track"><div class="progress-fill fill-pink"></div></div>
+        </div>
+
+        <button class="upgrade-btn">
+            <i class="fa-solid fa-bolt"></i>
+            Upgrade Plan
+        </button>
+    </div>
+</div>
+
+<div class="main-content">
+
+    <div class="header-section">
+        <div class="welcome">
+            <h1>Salut, Alex! 👋</h1>
+            <p>Ce creăm astăzi? Toate uneltele tale sunt gata de acțiune.</p>
+        </div>
+        <div class="profile-pill">
+            <div class="avatar">A</div>
+            <span style="font-size:0.95rem; font-weight:600;">Alexandru</span>
+            <i class="fa-solid fa-chevron-down" style="font-size:0.75rem; color:#666;"></i>
+        </div>
+    </div>
+
+    <!-- CORE TOOLS -->
+    <div class="section-title">
+        <i class="fa-solid fa-stars" style="color:#f59e0b;"></i>
+        Studio Tools
+    </div>
+    <div class="apps-grid">
+
+        <a href="apps/VoiceStudio/index.html" target="_blank" class="app-card">
+            <div class="badge badge-pro">PRO</div>
+            <div class="app-preview preview-voice">
+                <i class="fa-solid fa-microphone-lines"></i>
+            </div>
+            <div class="app-info">
+                <div class="app-title">Voice Pro Studio</div>
+                <div class="app-desc">Generează voci umane ultra-realiste cu control emoțional complet. Suportă 50+ limbi și accent-uri.</div>
+                <div class="app-footer">
+                    <div class="app-meta">
+                        <div class="meta-item"><i class="fa-solid fa-fire"></i> Popular</div>
+                        <div class="meta-item"><i class="fa-solid fa-clock"></i> 2 min</div>
+                    </div>
+                    <div class="launch-btn">Open <i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </div>
+        </a>
+
+        <a href="apps/TestVideoCut/index.html" target="_blank" class="app-card">
+            <div class="badge badge-hot">HOT</div>
+            <div class="app-preview preview-video">
+                <i class="fa-solid fa-video"></i>
+            </div>
+            <div class="app-info">
+                <div class="app-title">Video Jump Cutter</div>
+                <div class="app-desc">Efect viral - taie automat pauzele din video. Perfect pentru YouTube Shorts și TikTok.</div>
+                <div class="app-footer">
+                    <div class="app-meta">
+                        <div class="meta-item"><i class="fa-solid fa-wand-magic-sparkles"></i> AI-Powered</div>
+                        <div class="meta-item"><i class="fa-solid fa-clock"></i> 5 min</div>
+                    </div>
+                    <div class="launch-btn">Open <i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </div>
+        </a>
+
+        <a href="apps/AudioCut/index.html" target="_blank" class="app-card">
+            <div class="app-preview preview-audio">
+                <i class="fa-solid fa-scissors"></i>
+            </div>
+            <div class="app-info">
+                <div class="app-title">Audio Slicer Pro</div>
+                <div class="app-desc">Taie liniștea și respirațiile automat. Ideal pentru podcast-uri și audiobook-uri.</div>
+                <div class="app-footer">
+                    <div class="app-meta">
+                        <div class="meta-item"><i class="fa-solid fa-bolt"></i> Fast</div>
+                        <div class="meta-item"><i class="fa-solid fa-clock"></i> 1 min</div>
+                    </div>
+                    <div class="launch-btn">Open <i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </div>
+        </a>
+
+        <a href="apps/YoutubePro/index.html" target="_blank" class="app-card">
+            <div class="app-preview">
+                <img src="assets/youtube.jpg" alt="Universal Downloader">
+            </div>
+            <div class="app-info">
+                <div class="app-title">Universal Downloader</div>
+                <div class="app-desc">Descarcă de pe YouTube, TikTok, Instagram, Facebook. Cu transcript AI și traducere.</div>
+                <div class="app-footer">
+                    <div class="app-meta">
+                        <div class="meta-item"><i class="fa-solid fa-globe"></i> Multi-platform</div>
+                        <div class="meta-item"><i class="fa-solid fa-clock"></i> Instant</div>
+                    </div>
+                    <div class="launch-btn">Open <i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </div>
+        </a>
+
+    </div>
+
+    <!-- VIRAL CONTENT CREATORS -->
+    <div class="section-title">
+        <i class="fa-solid fa-chart-line" style="color:#ec4899;"></i>
+        Viral Content Factory
+    </div>
+    <div class="apps-grid">
+
+        <a href="apps/TextStory/index.html" target="_blank" class="app-card">
+            <div class="badge badge-new">NEW</div>
+            <div class="app-preview">
+                <img src="assets/text.jpg" alt="Text Story Creator">
+            </div>
+            <div class="app-info">
+                <div class="app-title">Text Story Creator</div>
+                <div class="app-desc">Creează conversații fake tip iMessage, WhatsApp, Reddit. Perfect pentru storytelling viral.</div>
+                <div class="app-footer">
+                    <div class="app-meta">
+                        <div class="meta-item"><i class="fa-solid fa-fire"></i> Trending</div>
+                        <div class="meta-item"><i class="fa-solid fa-clock"></i> 3 min</div>
+                    </div>
+                    <div class="launch-btn">Open <i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </div>
+        </a>
+
+        <a href="apps/VideoCommentary/index.html" target="_blank" class="app-card">
+            <div class="badge badge-new">NEW</div>
+            <div class="app-preview">
+                <img src="assets/comentariu.png" alt="Video Commentary">
+            </div>
+            <div class="app-info">
+                <div class="app-title">Video Commentary</div>
+                <div class="app-desc">Adaugă voiceover AI peste video-uri. Creează reacții și comentarii automat.</div>
+                <div class="app-footer">
+                    <div class="app-meta">
+                        <div class="meta-item"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Voice</div>
+                        <div class="meta-item"><i class="fa-solid fa-clock"></i> 4 min</div>
+                    </div>
+                    <div class="launch-btn">Open <i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </div>
+        </a>
+
+        <a href="apps/RedditStory/index.html" target="_blank" class="app-card">
+            <div class="badge badge-new">NEW</div>
+            <div class="app-preview">
+                <img src="assets/reddit.webp" alt="Reddit Story Generator">
+            </div>
+            <div class="app-info">
+                <div class="app-title">Reddit Story Generator</div>
+                <div class="app-desc">Transformă thread-uri Reddit în video-uri cu voce AI. Gameplay background automat.</div>
+                <div class="app-footer">
+                    <div class="app-meta">
+                        <div class="meta-item"><i class="fa-solid fa-robot"></i> Full AI</div>
+                        <div class="meta-item"><i class="fa-solid fa-clock"></i> 10 min</div>
+                    </div>
+                    <div class="launch-btn">Open <i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </div>
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>
