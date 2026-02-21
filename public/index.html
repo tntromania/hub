@@ -86,49 +86,98 @@
         .logout-btn:hover { color: #dc2626; transform: scale(1.1); }
 
         /* ==========================================================
-           🌟 FEATURED APP (YOUTUBE IN PRIM PLAN) 🌟
+           🌟 HERO CARD - DESIGN NOU 🌟
         ========================================================== */
+        .hero-link { display: block; text-decoration: none; margin-bottom: 50px; }
+        
         .featured-app {
-            background: linear-gradient(135deg, rgba(20, 20, 25, 0.9) 0%, rgba(30, 15, 20, 0.9) 100%);
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            /* Imagine de fundal subtila sau gradient complex */
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), 
+                        url('https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1000&auto=format&fit=crop'); 
+            background-size: cover;
+            background-position: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 30px;
-            padding: 40px;
+            padding: 50px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 50px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 40px rgba(239, 68, 68, 0.15);
-            transition: 0.4s;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            transition: all 0.4s ease;
         }
+
         .featured-app:hover {
-            border-color: rgba(239, 68, 68, 0.6);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 60px rgba(239, 68, 68, 0.25);
+            border-color: #ef4444;
             transform: translateY(-5px);
+            box-shadow: 0 30px 80px rgba(239, 68, 68, 0.2);
         }
-        .featured-content { flex: 1; max-width: 600px; z-index: 2; }
+
+        /* Overlay rosu la hover */
+        .featured-app::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(90deg, rgba(239, 68, 68, 0.1), transparent);
+            opacity: 0; transition: 0.4s;
+        }
+        .featured-app:hover::before { opacity: 1; }
+
+        .featured-content { flex: 1; max-width: 650px; z-index: 2; position: relative; }
+        
         .featured-badge {
-            display: inline-block; background: linear-gradient(135deg, #ef4444, #b91c1c);
-            color: #fff; padding: 6px 14px; border-radius: 8px; font-size: 0.75rem; font-weight: 800;
-            letter-spacing: 1px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+            display: inline-flex; align-items: center; gap: 6px;
+            background: #ef4444; color: white;
+            padding: 8px 16px; border-radius: 50px;
+            font-size: 0.8rem; font-weight: 800; letter-spacing: 0.5px;
+            margin-bottom: 24px;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
         }
-        .featured-title { font-size: 2.8rem; font-weight: 800; color: #fff; margin-bottom: 15px; line-height: 1.1; letter-spacing: -1px; }
-        .featured-desc { font-size: 1.1rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 30px; }
-        
-        .featured-meta { display: flex; gap: 20px; margin-bottom: 30px; }
-        .f-meta-item { display: flex; align-items: center; gap: 8px; color: #fff; font-weight: 600; background: rgba(255,255,255,0.05); padding: 8px 16px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); }
-        
-        .featured-btn {
-            display: inline-flex; align-items: center; gap: 10px; background: #fff; color: #000;
-            padding: 16px 32px; border-radius: 16px; font-size: 1.1rem; font-weight: 800;
-            transition: 0.3s; box-shadow: 0 10px 25px rgba(255,255,255,0.2);
+
+        .featured-title {
+            font-size: 3.5rem; font-weight: 800; color: #fff;
+            margin-bottom: 16px; line-height: 1.1;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .featured-btn:hover { background: #ef4444; color: #fff; transform: scale(1.05); box-shadow: 0 15px 35px rgba(239, 68, 68, 0.4); }
-        
-        .featured-visual { position: absolute; right: -50px; top: 50%; transform: translateY(-50%); opacity: 0.15; transition: 0.5s; pointer-events: none; }
-        .featured-visual i { font-size: 25rem; color: #ef4444; }
-        .featured-app:hover .featured-visual { opacity: 0.3; transform: translateY(-50%) scale(1.1); right: -20px; }
+
+        .featured-desc {
+            font-size: 1.15rem; color: #e2e8f0; line-height: 1.6;
+            margin-bottom: 32px; max-width: 90%;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .featured-stats {
+            display: flex; gap: 20px; margin-bottom: 32px;
+        }
+        .stat-item {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2);
+            padding: 8px 16px; border-radius: 12px;
+            font-weight: 600; font-size: 0.9rem; backdrop-filter: blur(5px);
+        }
+
+        .cta-button {
+            display: inline-flex; align-items: center; gap: 12px;
+            background: #fff; color: #000;
+            padding: 18px 40px; border-radius: 16px;
+            font-size: 1.2rem; font-weight: 800;
+            transition: 0.3s;
+            box-shadow: 0 0 30px rgba(255,255,255,0.1);
+        }
+        .featured-app:hover .cta-button {
+            background: #ef4444; color: #fff;
+            box-shadow: 0 0 40px rgba(239, 68, 68, 0.6);
+            transform: scale(1.05);
+        }
+
+        .hero-visual {
+            font-size: 18rem; color: #fff; opacity: 0.05;
+            position: absolute; right: -50px; bottom: -50px;
+            transition: 0.5s; pointer-events: none;
+        }
+        .featured-app:hover .hero-visual {
+            opacity: 0.2; color: #ef4444;
+            transform: scale(1.1) rotate(-10deg);
+        }
 
         /* --- APPS GRID --- */
         .section-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 30px; color: #fff; display: flex; align-items: center; gap: 12px; }
@@ -157,7 +206,7 @@
         .close-modal { position: absolute; top: 15px; right: 20px; background: none; border: none; color: #94a3b8; font-size: 1.5rem; cursor: pointer; transition: 0.2s; }
         .close-modal:hover { color: #fff; transform: scale(1.1); }
 
-        @media (max-width: 1200px) { .sidebar { display: none; } .main-content { padding: 30px; } .featured-visual { display: none; } }
+        @media (max-width: 1200px) { .sidebar { display: none; } .main-content { padding: 30px; } .hero-visual { display: none; } }
     </style>
 </head>
 <body>
@@ -167,7 +216,7 @@
         <button class="close-modal" onclick="closeLoginModal()"><i class="fa-solid fa-xmark"></i></button>
         <div class="logo-icon" style="margin: 0 auto 20px; width: 60px; height: 60px; font-size: 1.8rem;">✨</div>
         <h2 style="font-size: 1.8rem; margin-bottom: 10px; font-weight: 800; color: #fff;">Intră în cont</h2>
-        <p style="color: #94a3b8; margin-bottom: 30px; font-size: 0.95rem;">Trebuie să fii conectat pentru a accesa și a consuma creditele aplicațiilor.</p>
+        <p style="color: #94a3b8; margin-bottom: 30px; font-size: 0.95rem;">Trebuie să fii conectat pentru a vedea detaliile.</p>
         
         <div style="display: flex; justify-content: center;">
             <div id="g_id_onload"
@@ -205,7 +254,7 @@
     <div class="header-section">
         <div class="welcome">
             <h1>Welcome<span id="welcome-name"></span>! 👋</h1>
-            <p>What are we creating today? Choose your superpower.</p>
+            <p>Your viral tools are ready. Choose your weapon.</p>
         </div>
         
         <div class="auth-container">
@@ -220,27 +269,30 @@
         </div>
     </div>
 
-    <div class="featured-app">
-        <div class="featured-content">
-            <div class="featured-badge"><i class="fa-solid fa-fire"></i> CEL MAI POPULAR</div>
-            <h2 class="featured-title">YT Downloader &<br>AI Translator</h2>
-            <p class="featured-desc">Motorul suprem pentru creatorii de conținut. Descarcă instant orice videoclip de pe YouTube la calitate 1080p și extrage automat subtitrarea perfect tradusă în limba română folosind inteligența artificială.</p>
-            
-            <div class="featured-meta">
-                <div class="f-meta-item"><i class="fa-solid fa-bolt text-yellow-400"></i> Ultra Rapid</div>
-                <div class="f-meta-item"><i class="fa-solid fa-coins text-yellow-400"></i> 1 Credit / Video</div>
+    <a href="https://downloader.creatorsmart.ro/" class="hero-link">
+        <div class="featured-app">
+            <div class="featured-content">
+                <div class="featured-badge"><i class="fa-solid fa-crown"></i> VIRAL TOOL</div>
+                <h2 class="featured-title">YT Downloader &<br>AI Translator</h2>
+                <p class="featured-desc">Descarcă orice clip de pe YouTube la calitate maximă și obține subtitrări traduse automat în Română. Singurul tool de care ai nevoie.</p>
+                
+                <div class="featured-stats">
+                    <div class="stat-item"><i class="fa-solid fa-video text-red-500"></i> MP4 1080p</div>
+                    <div class="stat-item"><i class="fa-solid fa-language text-blue-400"></i> Auto-Traducere</div>
+                </div>
+                
+                <div class="cta-button">
+                    Lansează Acum <i class="fa-solid fa-rocket"></i>
+                </div>
             </div>
             
-            <a href="https://downloader.creatorsmart.ro/" class="app-card">
-    <div class="badge" style="background: linear-gradient(135deg, #ef4444, #dc2626);">HOT</div>
+            <div class="hero-visual">
+                <i class="fa-brands fa-youtube"></i>
+            </div>
+        </div>
     </a>
-        </div>
-        <div class="featured-visual">
-            <i class="fa-brands fa-youtube"></i>
-        </div>
-    </div>
 
-    <div class="section-title"><i class="fa-solid fa-stars" style="color:#f59e0b;"></i> Alte Unelte Studio</div>
+    <div class="section-title"><i class="fa-solid fa-layer-group"></i> Alte Unelte</div>
     <div class="apps-grid">
         
         <a href="https://audiocut.creatorsmart.ro" class="app-card">
@@ -248,11 +300,8 @@
             <div class="app-preview preview-audio"><i class="fa-solid fa-scissors"></i></div>
             <div class="app-info">
                 <div class="app-title">Audio Slicer Pro</div>
-                <div class="app-desc">Elimină automat tăcerile și respirațiile din înregistrări. Perfect pentru podcasturi și video lungi.</div>
+                <div class="app-desc">Elimină automat tăcerile din înregistrări.</div>
                 <div class="app-footer">
-                    <div class="app-meta">
-                        <div class="meta-item"><i class="fa-solid fa-bolt"></i> Instant</div>
-                    </div>
                     <div class="launch-btn">Open <i class="fa-solid fa-arrow-right"></i></div>
                 </div>
             </div>
@@ -263,11 +312,8 @@
             <div class="app-preview preview-voice"><i class="fa-solid fa-microphone-lines"></i></div>
             <div class="app-info">
                 <div class="app-title">Voice Pro Studio</div>
-                <div class="app-desc">Generează voci umane ultra-realiste cu control emoțional complet în peste 50 de limbi.</div>
+                <div class="app-desc">Generează voci umane ultra-realiste.</div>
                 <div class="app-footer">
-                    <div class="app-meta">
-                        <div class="meta-item"><i class="fa-solid fa-fire"></i> Popular</div>
-                    </div>
                     <div class="launch-btn">Open <i class="fa-solid fa-arrow-right"></i></div>
                 </div>
             </div>
@@ -278,11 +324,8 @@
             <div class="app-preview preview-video"><i class="fa-solid fa-video"></i></div>
             <div class="app-info">
                 <div class="app-title">Video Jump Cutter</div>
-                <div class="app-desc">Taie automat pauzele din video-urile tale. Efectul viral perfect pentru Shorts și TikTok.</div>
+                <div class="app-desc">Taie automat pauzele din video-urile tale.</div>
                 <div class="app-footer">
-                    <div class="app-meta">
-                        <div class="meta-item"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Powered</div>
-                    </div>
                     <div class="launch-btn">În curând <i class="fa-solid fa-lock"></i></div>
                 </div>
             </div>
@@ -299,7 +342,10 @@
 
     async function handleCredentialResponse(response) {
         try {
-            const res = await fetch('/api/auth/google', {
+            // ======================================================
+            // AICI AM REPARAT LINK-UL! ACUM TRIMITE LA DOWNLOADER
+            // ======================================================
+            const res = await fetch('https://downloader.creatorsmart.ro/api/auth/google', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ credential: response.credential })
@@ -310,7 +356,7 @@
                 closeLoginModal();
                 updateUIForLoggedUser(data.user);
             } else {
-                alert("Eroare la autentificare.");
+                alert("Eroare la autentificare: " + (data.error || "Necunoscută"));
             }
         } catch (e) { alert('A apărut o problemă de conexiune!'); }
     }
@@ -336,7 +382,8 @@
         const token = localStorage.getItem('viralio_token');
         if(token) {
             try {
-                const res = await fetch('/api/auth/me', { headers: { 'Authorization': `Bearer ${token}` } });
+                // SI AICI AM MODIFICAT SA VERIFICE PE DOWNLOADER
+                const res = await fetch('https://downloader.creatorsmart.ro/api/auth/me', { headers: { 'Authorization': `Bearer ${token}` } });
                 if(res.ok) {
                     const data = await res.json();
                     updateUIForLoggedUser(data.user);
