@@ -25,18 +25,16 @@
                         }
                     },
                     animation: {
-                        'float': 'float 6s ease-in-out infinite',
                         'slide-up': 'slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
                     },
                     keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-10px)' },
-                        },
                         slideUp: {
                             '0%': { opacity: 0, transform: 'translateY(30px)' },
                             '100%': { opacity: 1, transform: 'translateY(0)' },
                         }
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(99, 102, 241, 0.15)',
                     }
                 }
             }
@@ -52,24 +50,20 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
-        .bg-gradient-viralio {
-            background: linear-gradient(135deg, #4f46e5 0%, #ec4899 100%);
-        }
+        .bg-gradient-viralio { background: linear-gradient(135deg, #4f46e5 0%, #ec4899 100%); }
+        .bg-gradient-dark { background: linear-gradient(to bottom, #0f172a 0%, #1e293b 100%); }
 
         /* Scroll Reveal Utility */
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
-        /* Marquee Animation */
-        .marquee-container { overflow-x: hidden; display: flex; flex-direction: row; position: relative; width: 100%; }
-        .marquee { flex: 0 0 auto; min-width: 100%; z-index: 1; display: flex; flex-direction: row; align-items: center; animation: scroll 30s linear infinite; }
-        .marquee-container:hover .marquee { animation-play-state: paused; }
-        @keyframes scroll { 0% { transform: translateX(0%); } 100% { transform: translateX(-100%); } }
-
-        /* Progress Bar Animatie */
-        @keyframes fillProgress { 0% { height: 0%; } 100% { height: 100%; } }
-        .animate-progress { animation: fillProgress 5s linear infinite; }
+        /* Marquee Animation - Infinite Loop Fix */
+        .marquee-container { overflow-x: hidden; position: relative; width: 100%; }
+        .marquee-wrapper { display: flex; width: max-content; animation: scroll 45s linear infinite; }
+        .marquee-container:hover .marquee-wrapper { animation-play-state: paused; }
+        /* Important: duplication mechanism requires scrolling to -50% */
+        @keyframes scroll { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
+        .marquee-content { display: flex; flex-shrink: 0; }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
@@ -85,48 +79,62 @@
         .close-modal { position: absolute; top: 15px; right: 20px; background: none; border: none; color: #94a3b8; font-size: 1.5rem; cursor: pointer; transition: 0.2s; }
         .close-modal:hover { color: #0f172a; transform: scale(1.1); }
         
-        /* FAQ Accordion Hidden State */
+        /* FAQ Accordion */
         .faq-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-in-out; }
         .faq-content.open { max-height: 500px; }
         .faq-icon { transition: transform 0.4s ease; }
         .faq-btn.open .faq-icon { transform: rotate(180deg); color: #4f46e5; }
+
+        /* Logout Button Fix */
+        .logout-btn-wrapper {
+            margin-left: 0.5rem;
+            padding: 0.4rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            color: #94a3b8;
+            cursor: pointer;
+        }
+        .logout-btn-wrapper:hover { background-color: #fee2e2; color: #ef4444; }
     </style>
 </head>
 <body class="md:p-4">
 
-<div class="bg-white md:rounded-[1.5rem] min-h-screen shadow-xl overflow-hidden relative pb-10 border border-slate-100">
+<div class="bg-white md:rounded-[1.5rem] min-h-screen shadow-xl overflow-hidden relative pb-10 border border-slate-100/80">
     
     <div class="fixed inset-x-0 top-0 z-50 flex w-full items-baseline justify-center overflow-hidden px-2 py-4 md:sticky md:left-0 md:w-auto md:p-2 max-w-screen-2xl mx-auto">
-        <nav class="mb-6 w-full rounded-2xl border border-white/20 bg-white/70 backdrop-blur-xl md:mx-12 md:mt-3 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-            <div class="h-full w-full px-5 md:px-8 py-3 whitespace-nowrap">
+        <nav class="mb-6 w-full rounded-2xl border border-white/40 bg-white/80 backdrop-blur-xl md:mx-12 md:mt-3 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+            <div class="h-full w-full px-5 md:px-6 py-2.5 whitespace-nowrap">
                 <div class="flex w-full items-center justify-between">
                     <a class="flex w-fit cursor-pointer items-center font-black text-2xl tracking-tight text-slate-900" href="/">
-                        <div class="w-9 h-9 rounded-xl bg-gradient-viralio flex items-center justify-center text-white mr-2.5 shadow-lg shadow-indigo-500/30">
+                        <div class="w-9 h-9 rounded-xl bg-gradient-viralio flex items-center justify-center text-white mr-2.5 shadow-lg shadow-indigo-500/20">
                             <i class="fa-solid fa-bolt"></i>
                         </div>
                         Viralio
                     </a>
                     
                     <div class="hidden w-full items-center justify-center space-x-10 tracking-tight md:flex">
-                        <a class="font-semibold text-slate-500 transition-colors hover:text-viralio-600" href="#cum-functioneaza">Cum funcționează</a>
-                        <a class="font-semibold text-slate-500 transition-colors hover:text-viralio-600" href="#features">Unelte AI</a>
-                        <a class="font-semibold text-slate-500 transition-colors hover:text-viralio-600" href="#pricing">Prețuri</a>
+                        <a class="font-semibold text-slate-500 transition-colors hover:text-viralio-600 text-[0.95rem]" href="#cum-functioneaza">Cum funcționează</a>
+                        <a class="font-semibold text-slate-500 transition-colors hover:text-viralio-600 text-[0.95rem]" href="#features">Unelte AI</a>
+                        <a class="font-semibold text-slate-500 transition-colors hover:text-viralio-600 text-[0.95rem]" href="#pricing">Prețuri</a>
                     </div>
 
                     <div class="flex w-fit items-center justify-end space-x-3">
                         <div id="guest-nav" class="flex items-center space-x-3">
-                            <button onclick="openLoginModal()" class="font-semibold text-slate-500 transition-colors hover:text-slate-900 hidden md:block px-2">Intră în cont</button>
-                            <button onclick="openLoginModal()" class="cursor-pointer items-center justify-center px-5 py-2.5 bg-slate-900 text-white rounded-xl hover:bg-viralio-600 transition-all font-semibold flex shadow-md text-sm md:text-base">
+                            <button onclick="openLoginModal()" class="font-semibold text-slate-500 transition-colors hover:text-slate-900 hidden md:block px-2 text-[0.95rem]">Intră în cont</button>
+                            <button onclick="openLoginModal()" class="cursor-pointer items-center justify-center px-5 py-2.5 bg-slate-900 text-white rounded-xl hover:bg-viralio-600 transition-all font-semibold flex shadow-md text-sm">
                                 Începe gratuit <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
                             </button>
                         </div>
-                        <div id="user-nav" class="hidden items-center space-x-3 bg-slate-50 border border-slate-200 py-1.5 pl-1.5 pr-4 rounded-full">
+                        <div id="user-nav" class="hidden items-center bg-slate-50 border border-slate-200 py-1 pl-1.5 pr-1.5 rounded-full">
                             <img id="nav-avatar" src="" alt="Avatar" class="w-8 h-8 rounded-full border border-slate-200">
-                            <div class="flex flex-col leading-none">
+                            <div class="flex flex-col leading-none ml-2 mr-2">
                                 <span id="nav-name" class="text-xs font-bold text-slate-900 mb-0.5"></span>
                                 <span class="text-[0.65rem] font-bold text-viralio-600"><span id="nav-credits">0</span> Credite</span>
                             </div>
-                            <button onclick="logout()" class="ml-2 text-slate-400 hover:text-red-500 transition-colors"><i class="fa-solid fa-power-off"></i></button>
+                            <button onclick="logout()" class="logout-btn-wrapper"><i class="fa-solid fa-power-off text-sm"></i></button>
                         </div>
                     </div>
                 </div>
@@ -148,12 +156,12 @@
         </div>
     </div>
 
-    <div class="pt-16 md:pt-10 pb-10">
+    <div class="pt-16 md:pt-10 pb-16">
         <div class="relative flex flex-col items-center justify-center px-4 text-center">
             
             <div class="pointer-events-none absolute inset-0 overflow-hidden z-0">
-                <div class="absolute top-[5%] left-[20%] w-[300px] h-[300px] bg-indigo-400/20 blur-[100px] rounded-full mix-blend-multiply"></div>
-                <div class="absolute top-[10%] right-[20%] w-[400px] h-[400px] bg-pink-400/20 blur-[120px] rounded-full mix-blend-multiply"></div>
+                <div class="absolute top-[5%] left-[20%] w-[300px] h-[300px] bg-indigo-400/10 blur-[100px] rounded-full mix-blend-multiply"></div>
+                <div class="absolute top-[10%] right-[20%] w-[400px] h-[400px] bg-pink-400/10 blur-[120px] rounded-full mix-blend-multiply"></div>
             </div>
 
             <div class="relative z-10 w-full text-center max-w-5xl mx-auto">
@@ -176,7 +184,7 @@
                 </h1>
                 
                 <p class="mx-auto mb-10 max-w-[42rem] text-lg leading-relaxed font-medium text-slate-500 animate-slide-up" style="animation-delay: 0.3s; opacity: 0;">
-                    Suita AI supremă gândită pentru noua generație de creatori. Generează video-uri cinematice cu Veo 3, descarcă de pe YouTube și curăță watermark-urile instant.
+                    Suita AI supremă gândită pentru noua generație de creatori. Generează video-uri cinematice, descarcă de pe YouTube și curăță watermark-urile instant.
                 </p>
 
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up" style="animation-delay: 0.4s; opacity: 0;">
@@ -205,128 +213,166 @@
                             <span class="text-[0.7rem] text-slate-400 font-medium tracking-wider">app.viralio.ro</span>
                         </div>
                     </div>
-                    <div class="overflow-hidden rounded-[1.2rem] bg-black aspect-video relative">
-                        <video src="https://media.viewmax.io/static/Videos/landervid2.mp4" autoplay muted playsinline loop class="w-full h-full object-cover"></video>
+                    <div class="overflow-hidden rounded-[1.2rem] bg-slate-900 aspect-video relative">
+                        <video src="https://media.viewmax.io/static/Videos/landervid2.mp4" autoplay muted playsinline loop class="w-full h-full object-cover opacity-90"></video>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="w-full overflow-hidden mt-10 pt-10 pb-20 reveal">
-        <h2 class="text-center text-sm font-bold tracking-widest text-slate-400 uppercase mb-8">Exemple de videoclipuri ce domină algoritmul</h2>
+    <div class="w-full overflow-hidden py-16 bg-gradient-dark reveal text-white">
+        <h2 class="text-center text-sm font-bold tracking-widest text-slate-400 uppercase mb-10">Exemple de videoclipuri ce domină algoritmul</h2>
 
         <div class="marquee-container relative py-4">
-            <div class="absolute top-0 bottom-0 left-0 w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
-            <div class="absolute top-0 bottom-0 right-0 w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
+            <div class="absolute top-0 bottom-0 left-0 w-32 bg-gradient-to-r from-slate-900 to-transparent z-10 pointer-events-none"></div>
+            <div class="absolute top-0 bottom-0 right-0 w-32 bg-gradient-to-l from-slate-900 to-transparent z-10 pointer-events-none"></div>
             
-            <div class="marquee">
-                <div class="flex-shrink-0 mx-4 w-[240px] group cursor-pointer">
-                    <div class="mb-3 flex justify-center transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20 relative">
-                        <span class="bg-viralio-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg">1.2M Vizualizări</span>
-                    </div>
-                    <div class="relative bg-slate-900 rounded-[2rem] overflow-hidden aspect-[9/16] shadow-xl transition-transform duration-500 group-hover:scale-[1.02]">
-                        <video class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" loop autoplay muted playsinline><source src="https://media.viewmax.io/static/Videos/madewviewmax/static_Videos_optimized_Ashton_Hall_Pushing_Positivity.mp4" type="video/mp4"></video>
-                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-5 text-white">
-                            <span class="text-sm font-bold block mb-1">Motivație Zilnică</span>
-                            <span class="text-xs text-slate-300 flex items-center gap-1"><i class="fa-solid fa-wand-magic-sparkles text-viralio-accent"></i> Editat cu Viralio</span>
+            <div class="marquee-wrapper">
+                <div class="marquee-content">
+                    <a href="https://viewmax.io" target="_blank" class="flex-shrink-0 mx-4 w-[240px] group cursor-pointer">
+                        <div class="mb-3 flex justify-center transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20 relative">
+                            <span class="bg-viralio-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg">1.2M Vizualizări</span>
                         </div>
-                    </div>
-                </div>
-                <div class="flex-shrink-0 mx-4 w-[240px] group cursor-pointer">
-                    <div class="mb-3 flex justify-center transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20 relative">
-                        <span class="bg-viralio-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg">5.4M Vizualizări</span>
-                    </div>
-                    <div class="relative bg-slate-900 rounded-[2rem] overflow-hidden aspect-[9/16] shadow-xl transition-transform duration-500 group-hover:scale-[1.02]">
-                        <video class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" loop autoplay muted playsinline><source src="https://media.viewmax.io/static/Videos/madewviewmax/static_Videos_optimized_Primitive_Survival_Slam_Dunk.mp4" type="video/mp4"></video>
-                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-5 text-white">
-                            <span class="text-sm font-bold block mb-1">Curiozități & Fapte</span>
-                            <span class="text-xs text-slate-300 flex items-center gap-1"><i class="fa-solid fa-wand-magic-sparkles text-viralio-accent"></i> B-Roll generat de AI</span>
+                        <div class="relative bg-slate-800 rounded-[2rem] overflow-hidden aspect-[9/16] shadow-xl transition-transform duration-500 group-hover:scale-[1.02] border border-white/10">
+                            <video class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity" loop autoplay muted playsinline><source src="https://media.viewmax.io/static/Videos/madewviewmax/static_Videos_optimized_Ashton_Hall_Pushing_Positivity.mp4" type="video/mp4"></video>
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-5 text-white">
+                                <span class="text-sm font-bold block mb-1">Motivație Zilnică</span>
+                                <span class="text-xs text-slate-300 flex items-center gap-1"><i class="fa-solid fa-play text-viralio-accent"></i> Vezi sursa</span>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="flex-shrink-0 mx-4 w-[240px] group cursor-pointer">
-                    <div class="mb-3 flex justify-center transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20 relative">
-                        <span class="bg-viralio-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg">890K Vizualizări</span>
-                    </div>
-                    <div class="relative bg-slate-900 rounded-[2rem] overflow-hidden aspect-[9/16] shadow-xl transition-transform duration-500 group-hover:scale-[1.02]">
-                        <video class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" loop autoplay muted playsinline><source src="https://media.viewmax.io/static/Videos/madewviewmax/static_Videos_prof.mp4" type="video/mp4"></video>
-                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-5 text-white">
-                            <span class="text-sm font-bold block mb-1">Storytime Podcast</span>
-                            <span class="text-xs text-slate-300 flex items-center gap-1"><i class="fa-solid fa-wand-magic-sparkles text-viralio-accent"></i> Tăieri automate</span>
+                    </a>
+                    <a href="https://viewmax.io" target="_blank" class="flex-shrink-0 mx-4 w-[240px] group cursor-pointer">
+                        <div class="mb-3 flex justify-center transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20 relative">
+                            <span class="bg-viralio-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg">5.4M Vizualizări</span>
                         </div>
-                    </div>
-                </div>
-                <div class="flex-shrink-0 mx-4 w-[240px] group cursor-pointer">
-                    <div class="mb-3 flex justify-center transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20 relative">
-                        <span class="bg-viralio-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg">3.2M Vizualizări</span>
-                    </div>
-                    <div class="relative bg-slate-900 rounded-[2rem] overflow-hidden aspect-[9/16] shadow-xl transition-transform duration-500 group-hover:scale-[1.02]">
-                        <video class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" loop autoplay muted playsinline><source src="https://media.viewmax.io/static/Videos/madewviewmax/static_Videos_wood.mp4" type="video/mp4"></video>
-                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-5 text-white">
-                            <span class="text-sm font-bold block mb-1">Documentar Scurt</span>
-                            <span class="text-xs text-slate-300 flex items-center gap-1"><i class="fa-solid fa-wand-magic-sparkles text-viralio-accent"></i> Fără Watermark-uri</span>
+                        <div class="relative bg-slate-800 rounded-[2rem] overflow-hidden aspect-[9/16] shadow-xl transition-transform duration-500 group-hover:scale-[1.02] border border-white/10">
+                            <video class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity" loop autoplay muted playsinline><source src="https://media.viewmax.io/static/Videos/madewviewmax/static_Videos_optimized_Primitive_Survival_Slam_Dunk.mp4" type="video/mp4"></video>
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-5 text-white">
+                                <span class="text-sm font-bold block mb-1">Curiozități & Fapte</span>
+                                <span class="text-xs text-slate-300 flex items-center gap-1"><i class="fa-solid fa-play text-viralio-accent"></i> Vezi sursa</span>
+                            </div>
                         </div>
-                    </div>
+                    </a>
+                    <a href="https://viewmax.io" target="_blank" class="flex-shrink-0 mx-4 w-[240px] group cursor-pointer">
+                        <div class="mb-3 flex justify-center transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20 relative">
+                            <span class="bg-viralio-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg">890K Vizualizări</span>
+                        </div>
+                        <div class="relative bg-slate-800 rounded-[2rem] overflow-hidden aspect-[9/16] shadow-xl transition-transform duration-500 group-hover:scale-[1.02] border border-white/10">
+                            <video class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity" loop autoplay muted playsinline><source src="https://media.viewmax.io/static/Videos/madewviewmax/static_Videos_prof.mp4" type="video/mp4"></video>
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-5 text-white">
+                                <span class="text-sm font-bold block mb-1">Storytime Podcast</span>
+                                <span class="text-xs text-slate-300 flex items-center gap-1"><i class="fa-solid fa-play text-viralio-accent"></i> Vezi sursa</span>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://viewmax.io" target="_blank" class="flex-shrink-0 mx-4 w-[240px] group cursor-pointer">
+                        <div class="mb-3 flex justify-center transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20 relative">
+                            <span class="bg-viralio-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg">3.2M Vizualizări</span>
+                        </div>
+                        <div class="relative bg-slate-800 rounded-[2rem] overflow-hidden aspect-[9/16] shadow-xl transition-transform duration-500 group-hover:scale-[1.02] border border-white/10">
+                            <video class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity" loop autoplay muted playsinline><source src="https://media.viewmax.io/static/Videos/madewviewmax/static_Videos_wood.mp4" type="video/mp4"></video>
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-5 text-white">
+                                <span class="text-sm font-bold block mb-1">Documentar Scurt</span>
+                                <span class="text-xs text-slate-300 flex items-center gap-1"><i class="fa-solid fa-play text-viralio-accent"></i> Vezi sursa</span>
+                            </div>
+                        </div>
+                    </a>
                 </div>
-                
-                <div class="flex-shrink-0 mx-4 w-[240px] group cursor-pointer">
-                    <div class="mb-3 flex justify-center opacity-0 group-hover:opacity-100 transition-all relative z-20"><span class="bg-viralio-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg">1.2M Vizualizări</span></div>
-                    <div class="relative bg-slate-900 rounded-[2rem] overflow-hidden aspect-[9/16] shadow-xl group-hover:scale-[1.02] transition-transform">
-                        <video class="w-full h-full object-cover" loop autoplay muted playsinline><source src="https://media.viewmax.io/static/Videos/madewviewmax/static_Videos_optimized_Ashton_Hall_Pushing_Positivity.mp4" type="video/mp4"></video>
-                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-5 text-white"><span class="text-sm font-bold">Motivație Zilnică</span></div>
-                    </div>
-                </div>
-                <div class="flex-shrink-0 mx-4 w-[240px] group cursor-pointer">
-                    <div class="mb-3 flex justify-center opacity-0 group-hover:opacity-100 transition-all relative z-20"><span class="bg-viralio-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg">5.4M Vizualizări</span></div>
-                    <div class="relative bg-slate-900 rounded-[2rem] overflow-hidden aspect-[9/16] shadow-xl group-hover:scale-[1.02] transition-transform">
-                        <video class="w-full h-full object-cover" loop autoplay muted playsinline><source src="https://media.viewmax.io/static/Videos/madewviewmax/static_Videos_optimized_Primitive_Survival_Slam_Dunk.mp4" type="video/mp4"></video>
-                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-5 text-white"><span class="text-sm font-bold">Curiozități & Fapte</span></div>
-                    </div>
+
+                <div class="marquee-content">
+                    <a href="https://viewmax.io" target="_blank" class="flex-shrink-0 mx-4 w-[240px] group cursor-pointer">
+                        <div class="mb-3 flex justify-center transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20 relative">
+                            <span class="bg-viralio-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg">1.2M Vizualizări</span>
+                        </div>
+                        <div class="relative bg-slate-800 rounded-[2rem] overflow-hidden aspect-[9/16] shadow-xl transition-transform duration-500 group-hover:scale-[1.02] border border-white/10">
+                            <video class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity" loop autoplay muted playsinline><source src="https://media.viewmax.io/static/Videos/madewviewmax/static_Videos_optimized_Ashton_Hall_Pushing_Positivity.mp4" type="video/mp4"></video>
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-5 text-white">
+                                <span class="text-sm font-bold block mb-1">Motivație Zilnică</span>
+                                <span class="text-xs text-slate-300 flex items-center gap-1"><i class="fa-solid fa-play text-viralio-accent"></i> Vezi sursa</span>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://viewmax.io" target="_blank" class="flex-shrink-0 mx-4 w-[240px] group cursor-pointer">
+                        <div class="mb-3 flex justify-center transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20 relative">
+                            <span class="bg-viralio-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg">5.4M Vizualizări</span>
+                        </div>
+                        <div class="relative bg-slate-800 rounded-[2rem] overflow-hidden aspect-[9/16] shadow-xl transition-transform duration-500 group-hover:scale-[1.02] border border-white/10">
+                            <video class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity" loop autoplay muted playsinline><source src="https://media.viewmax.io/static/Videos/madewviewmax/static_Videos_optimized_Primitive_Survival_Slam_Dunk.mp4" type="video/mp4"></video>
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-5 text-white">
+                                <span class="text-sm font-bold block mb-1">Curiozități & Fapte</span>
+                                <span class="text-xs text-slate-300 flex items-center gap-1"><i class="fa-solid fa-play text-viralio-accent"></i> Vezi sursa</span>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://viewmax.io" target="_blank" class="flex-shrink-0 mx-4 w-[240px] group cursor-pointer">
+                        <div class="mb-3 flex justify-center transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20 relative">
+                            <span class="bg-viralio-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg">890K Vizualizări</span>
+                        </div>
+                        <div class="relative bg-slate-800 rounded-[2rem] overflow-hidden aspect-[9/16] shadow-xl transition-transform duration-500 group-hover:scale-[1.02] border border-white/10">
+                            <video class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity" loop autoplay muted playsinline><source src="https://media.viewmax.io/static/Videos/madewviewmax/static_Videos_prof.mp4" type="video/mp4"></video>
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-5 text-white">
+                                <span class="text-sm font-bold block mb-1">Storytime Podcast</span>
+                                <span class="text-xs text-slate-300 flex items-center gap-1"><i class="fa-solid fa-play text-viralio-accent"></i> Vezi sursa</span>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="https://viewmax.io" target="_blank" class="flex-shrink-0 mx-4 w-[240px] group cursor-pointer">
+                        <div class="mb-3 flex justify-center transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 z-20 relative">
+                            <span class="bg-viralio-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg">3.2M Vizualizări</span>
+                        </div>
+                        <div class="relative bg-slate-800 rounded-[2rem] overflow-hidden aspect-[9/16] shadow-xl transition-transform duration-500 group-hover:scale-[1.02] border border-white/10">
+                            <video class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity" loop autoplay muted playsinline><source src="https://media.viewmax.io/static/Videos/madewviewmax/static_Videos_wood.mp4" type="video/mp4"></video>
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-5 text-white">
+                                <span class="text-sm font-bold block mb-1">Documentar Scurt</span>
+                                <span class="text-xs text-slate-300 flex items-center gap-1"><i class="fa-solid fa-play text-viralio-accent"></i> Vezi sursa</span>
+                            </div>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="cum-functioneaza" class="py-20 px-6 bg-slate-50 border-y border-slate-100 reveal">
+    <div id="cum-functioneaza" class="py-24 px-6 bg-white border-b border-slate-100 reveal">
         <div class="max-w-6xl mx-auto">
             <div class="text-center mb-16">
-                <span class="text-viralio-600 font-bold tracking-wider text-sm uppercase mb-2 block">Simplu ca 1, 2, 3</span>
+                <span class="text-viralio-600 font-bold tracking-wider text-sm uppercase mb-3 block">Simplu ca 1, 2, 3</span>
                 <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900">Cum funcționează ecosistemul?</h2>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 relative">
-                <div class="hidden md:block absolute top-12 left-[15%] right-[15%] h-0.5 bg-gradient-to-r from-transparent via-indigo-200 to-transparent z-0"></div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+                <div class="hidden md:block absolute top-12 left-[15%] right-[15%] h-0.5 bg-gradient-to-r from-transparent via-indigo-100 to-transparent z-0"></div>
 
-                <div class="relative z-10 flex flex-col items-center text-center">
-                    <div class="w-24 h-24 rounded-full bg-white border-4 border-indigo-50 shadow-xl flex items-center justify-center text-3xl text-indigo-500 mb-6">
+                <div class="relative z-10 flex flex-col items-center text-center group">
+                    <div class="w-24 h-24 rounded-2xl bg-white border-2 border-indigo-50 shadow-xl shadow-indigo-100/50 flex items-center justify-center text-3xl text-indigo-500 mb-6 group-hover:scale-105 transition-transform">
                         <i class="fa-solid fa-link"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3">1. Introduci Datele</h3>
-                    <p class="text-slate-500 font-medium">Fie că e un link de YouTube, un text pentru scenariu sau un video care are nevoie de curățare.</p>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">1. Introduci Link-ul</h3>
+                    <p class="text-slate-500 font-medium leading-relaxed">Lipește un link de YouTube sau încarcă videoclipul tău care are nevoie de editare.</p>
                 </div>
 
-                <div class="relative z-10 flex flex-col items-center text-center">
-                    <div class="w-24 h-24 rounded-full bg-indigo-500 border-4 border-indigo-100 shadow-xl shadow-indigo-500/30 flex items-center justify-center text-3xl text-white mb-6 transform hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-microchip"></i>
+                <div class="relative z-10 flex flex-col items-center text-center group">
+                    <div class="w-24 h-24 rounded-2xl bg-gradient-viralio shadow-xl shadow-indigo-500/30 flex items-center justify-center text-3xl text-white mb-6 transform scale-110 z-20 group-hover:scale-115 transition-transform">
+                        <i class="fa-solid fa-wand-magic-sparkles animate-pulse"></i>
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 mb-3">2. AI-ul Procesează</h3>
-                    <p class="text-slate-500 font-medium">Serverele noastre folosesc modele de top (Veo 3, Nano Banana, GPT-4) pentru a executa magia în câteva secunde.</p>
+                    <p class="text-slate-500 font-medium leading-relaxed">Serverele noastre folosesc modele avansate pentru a executa magia în câteva secunde.</p>
                 </div>
 
-                <div class="relative z-10 flex flex-col items-center text-center">
-                    <div class="w-24 h-24 rounded-full bg-white border-4 border-indigo-50 shadow-xl flex items-center justify-center text-3xl text-pink-500 mb-6">
+                <div class="relative z-10 flex flex-col items-center text-center group">
+                    <div class="w-24 h-24 rounded-2xl bg-white border-2 border-indigo-50 shadow-xl shadow-indigo-100/50 flex items-center justify-center text-3xl text-pink-500 mb-6 group-hover:scale-105 transition-transform">
                         <i class="fa-solid fa-cloud-arrow-down"></i>
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 mb-3">3. Descarci & Postezi</h3>
-                    <p class="text-slate-500 font-medium">Obții fișierul final la claritate maximă, gata să fie postat și să atragă mii de vizualizări pe platforme.</p>
+                    <p class="text-slate-500 font-medium leading-relaxed">Obții fișierul final curat, gata să fie postat și să atragă vizualizări pe platforme.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="features" class="flex w-full flex-col items-center justify-center px-4 md:px-6 pt-24 pb-10 reveal">
-        <span class="bg-indigo-50 text-indigo-600 font-bold tracking-tight text-sm uppercase px-4 py-1.5 rounded-full mb-4 inline-block border border-indigo-100">Uneltele Creatorilor</span>
+    <div id="features" class="flex w-full flex-col items-center justify-center px-4 md:px-6 py-24 reveal bg-slate-50/50">
+        <span class="bg-indigo-50 text-indigo-600 font-bold tracking-tight text-sm uppercase px-4 py-1.5 rounded-full mb-4 inline-block border border-indigo-100/50">Uneltele Creatorilor</span>
         <h2 class="mb-4 w-full text-center text-[2.2rem] md:text-[3rem] leading-tight font-extrabold tracking-tight text-slate-900">
             Alege-ți superputerea.
         </h2>
@@ -336,280 +382,294 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl w-full">
             
-            <a class="group flex flex-col justify-between bg-white border border-slate-200 rounded-[2rem] p-8 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all lg:col-span-2 relative overflow-hidden" href="https://downloader.creatorsmart.ro/">
-                <div class="absolute top-0 right-0 w-64 h-64 bg-red-50 rounded-bl-[100%] z-0 transition-transform group-hover:scale-110"></div>
+            <a class="group flex flex-col justify-between bg-white border border-slate-200/80 rounded-[2rem] p-8 shadow-xl shadow-slate-200/40 hover:shadow-2xl hover:-translate-y-1 transition-all lg:col-span-2 relative overflow-hidden" href="https://downloader.creatorsmart.ro/">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-red-50/50 rounded-bl-[100%] z-0 transition-transform group-hover:scale-110"></div>
                 
                 <div class="relative z-10 flex flex-col md:flex-row gap-8 h-full">
                     <div class="flex-1 flex flex-col justify-center">
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="w-12 h-12 rounded-xl bg-red-100 text-red-500 flex items-center justify-center text-2xl"><i class="fa-brands fa-youtube"></i></div>
-                            <span class="bg-slate-900 text-white text-[0.7rem] font-bold px-3 py-1 rounded-md uppercase tracking-wider">Cea mai utilizată</span>
+                        <div class="flex items-center gap-3 mb-5">
+                            <div class="w-12 h-12 rounded-xl bg-red-100 text-red-500 flex items-center justify-center text-2xl shadow-sm"><i class="fa-brands fa-youtube"></i></div>
+                            <span class="bg-slate-900 text-white text-[0.7rem] font-bold px-3 py-1.5 rounded-md uppercase tracking-wider">Cea mai utilizată</span>
                         </div>
                         <h3 class="text-3xl font-extrabold text-slate-900 mb-4">YT Downloader & AI Translator</h3>
-                        <p class="text-slate-500 font-medium mb-6 text-lg">Descarcă orice clip de pe YouTube la calitate 1080p MP4. Extragem subtitrarea originală și o traducem perfect în limba română folosind inteligența artificială.</p>
+                        <p class="text-slate-500 font-medium mb-8 text-lg leading-relaxed">Descarcă orice clip de pe YouTube la calitate 1080p. Extragem subtitrarea originală și o traducem perfect în limba română folosind inteligența artificială.</p>
                         
-                        <ul class="space-y-2 mb-8">
-                            <li class="flex items-center text-slate-600 font-medium text-sm"><i class="fa-solid fa-check text-green-500 mr-2"></i> Fără limită de lungime a clipului</li>
-                            <li class="flex items-center text-slate-600 font-medium text-sm"><i class="fa-solid fa-check text-green-500 mr-2"></i> Traducere precisă cu context (Powered by GPT)</li>
-                        </ul>
-
-                        <div class="mt-auto flex items-center gap-4">
-                            <div class="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold group-hover:bg-viralio-600 transition-colors">Deschide Aplicația</div>
-                            <span class="font-bold text-yellow-500 flex items-center gap-1.5"><i class="fa-solid fa-coins"></i> 1 Credit / Procesare</span>
+                        <div class="mt-auto flex flex-wrap items-center gap-4">
+                            <div class="bg-slate-900 text-white px-6 py-3.5 rounded-xl font-bold group-hover:bg-viralio-600 transition-all shadow-md">Deschide Aplicația <i class="fa-solid fa-arrow-right ml-2"></i></div>
+                            <span class="font-bold text-amber-500 flex items-center gap-1.5 bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-100"><i class="fa-solid fa-coins"></i> 1 Credit</span>
                         </div>
                     </div>
                     
-                    <div class="w-full md:w-2/5 aspect-[4/3] bg-slate-900 rounded-2xl overflow-hidden relative shadow-lg">
+                    <div class="w-full md:w-2/5 aspect-[4/3] bg-slate-900 rounded-2xl overflow-hidden relative shadow-lg border border-slate-200/50">
                         <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
+                        <i class="fa-brands fa-youtube absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-6xl text-white drop-shadow-xl group-hover:scale-110 transition-transform"></i>
                     </div>
                 </div>
             </a>
 
-            <div class="group bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col cursor-pointer" onclick="openLoginModalIfGuest()">
-                <div class="w-full aspect-video bg-black rounded-xl overflow-hidden mb-6 relative">
-                    <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-slate-900 text-[0.65rem] font-bold px-2.5 py-1 rounded-md z-10 tracking-widest uppercase">Video Gen</span>
-                    <video src="https://media.viewmax.io/static/Tools/ai-videogen.mp4" muted autoplay playsinline loop class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"></video>
+            <div class="group bg-white border border-slate-200/80 rounded-[2rem] p-6 shadow-xl shadow-slate-200/40 hover:shadow-2xl hover:-translate-y-1 transition-all flex flex-col cursor-pointer relative overflow-hidden" onclick="openLoginModalIfGuest()">
+                <div class="absolute inset-0 border-2 border-transparent rounded-[2rem] bg-gradient-viralio opacity-0 group-hover:opacity-10 transition-opacity pointer-events-none" style="-webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude;"></div>
+                
+                <div class="w-full aspect-video bg-slate-900 rounded-xl overflow-hidden mb-6 relative shadow-inner">
+                    <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-slate-900 text-[0.65rem] font-bold px-2.5 py-1 rounded-md z-10 tracking-widest uppercase flex items-center gap-1"><i class="fa-solid fa-star text-viralio-accent"></i> PRO</span>
+                    <video src="https://media.viewmax.io/static/Tools/ai-videogen.mp4" muted autoplay playsinline loop class="w-full h-full object-cover opacity-60 group-hover:opacity-90 group-hover:scale-105 transition-all duration-500 grayscale group-hover:grayscale-0"></video>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                         <span class="text-white font-bold text-lg drop-shadow-md">Videoclipurile Tale Aici</span>
+                    </div>
                 </div>
-                <h3 class="text-xl font-bold text-slate-900 mb-2">B-Roll AI Director</h3>
-                <p class="text-slate-500 text-sm font-medium mb-4 flex-1">Scrie un text și generează instantaneu cadre video cinematice ultra-realiste pentru B-Roll-urile tale.</p>
+                <h3 class="text-xl font-bold text-slate-900 mb-2 flex items-center gap-2">Generator Video AI <span class="text-xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded uppercase">Pro</span></h3>
+                <p class="text-slate-500 text-sm font-medium mb-4 flex-1 leading-relaxed">Spațiu rezervat pentru viitoarea ta unealtă premium de generare video. Creează conținut unic.</p>
                 <div class="flex items-center justify-between border-t border-slate-100 pt-4 mt-auto">
-                    <span class="text-xs font-bold text-indigo-500 bg-indigo-50 px-2 py-1 rounded-md">VEO 3</span>
-                    <span class="font-bold text-yellow-500 text-sm flex items-center gap-1"><i class="fa-solid fa-coins"></i> 5 Credite</span>
+                    <span class="text-xs font-bold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-md">PLACEHOLDER</span>
+                    <span class="font-bold text-amber-500 text-sm flex items-center gap-1 bg-amber-50 px-2 py-0.5 rounded"><i class="fa-solid fa-coins"></i> 5 Credite</span>
                 </div>
             </div>
 
-            <div class="group bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col cursor-pointer" onclick="openLoginModalIfGuest()">
-                <div class="w-full aspect-video bg-black rounded-xl overflow-hidden mb-6 relative">
-                    <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-slate-900 text-[0.65rem] font-bold px-2.5 py-1 rounded-md z-10 tracking-widest uppercase">Image Gen</span>
-                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500">
+            <div class="group bg-white border border-slate-200/80 rounded-[2rem] p-6 shadow-xl shadow-slate-200/40 hover:shadow-2xl hover:-translate-y-1 transition-all flex flex-col cursor-pointer relative overflow-hidden" onclick="openLoginModalIfGuest()">
+                 <div class="absolute inset-0 border-2 border-transparent rounded-[2rem] bg-gradient-viralio opacity-0 group-hover:opacity-10 transition-opacity pointer-events-none" style="-webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude;"></div>
+
+                <div class="w-full aspect-video bg-slate-900 rounded-xl overflow-hidden mb-6 relative shadow-inner">
+                    <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-slate-900 text-[0.65rem] font-bold px-2.5 py-1 rounded-md z-10 tracking-widest uppercase flex items-center gap-1"><i class="fa-solid fa-bolt text-viralio-accent"></i> FAST</span>
+                    <img src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover opacity-60 group-hover:opacity-90 group-hover:scale-105 transition-all duration-500 grayscale group-hover:grayscale-0">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                         <span class="text-white font-bold text-lg drop-shadow-md">Imaginile Tale Aici</span>
+                    </div>
                 </div>
-                <h3 class="text-xl font-bold text-slate-900 mb-2">Viral Thumbnail AI</h3>
-                <p class="text-slate-500 text-sm font-medium mb-4 flex-1">Imagini cu un grad ridicat de realism și randare text perfectă. Coperțile tale de YouTube vor sparge norma.</p>
+                <h3 class="text-xl font-bold text-slate-900 mb-2 flex items-center gap-2">Generator Imagini Ultra-Realiste</h3>
+                <p class="text-slate-500 text-sm font-medium mb-4 flex-1 leading-relaxed">Spațiu rezervat pentru generatorul tău de imagini. Perfect pentru thumbnails și postări social media.</p>
                 <div class="flex items-center justify-between border-t border-slate-100 pt-4 mt-auto">
-                    <span class="text-xs font-bold text-purple-500 bg-purple-50 px-2 py-1 rounded-md">NANO BANANA</span>
-                    <span class="font-bold text-yellow-500 text-sm flex items-center gap-1"><i class="fa-solid fa-coins"></i> 2 Credite</span>
+                    <span class="text-xs font-bold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-md">PLACEHOLDER</span>
+                    <span class="font-bold text-amber-500 text-sm flex items-center gap-1 bg-amber-50 px-2 py-0.5 rounded"><i class="fa-solid fa-coins"></i> 2 Credite</span>
                 </div>
             </div>
 
-            <div class="group bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col cursor-pointer" onclick="openLoginModalIfGuest()">
-                <div class="w-full aspect-video bg-black rounded-xl overflow-hidden mb-6 relative">
+            <div class="group bg-white border border-slate-200/80 rounded-[2rem] p-6 shadow-xl shadow-slate-200/40 hover:shadow-2xl hover:-translate-y-1 transition-all flex flex-col cursor-pointer" onclick="openLoginModalIfGuest()">
+                <div class="w-full aspect-video bg-black rounded-xl overflow-hidden mb-6 relative shadow-md">
                     <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-slate-900 text-[0.65rem] font-bold px-2.5 py-1 rounded-md z-10 tracking-widest uppercase">Enhance</span>
                     <video src="https://media.viewmax.io/static/Tools/ai-upscaler.mp4" muted autoplay playsinline loop class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"></video>
                 </div>
                 <h3 class="text-xl font-bold text-slate-900 mb-2">AI Video Upscaler 4K</h3>
-                <p class="text-slate-500 text-sm font-medium mb-4 flex-1">Adu videoclipurile pixelate la viață. AI-ul reconstruiește detaliile și urcă rezoluția la un 4K impecabil.</p>
+                <p class="text-slate-500 text-sm font-medium mb-4 flex-1 leading-relaxed">Adu videoclipurile pixelate la viață. AI-ul reconstruiește detaliile și urcă rezoluția la un 4K impecabil.</p>
                 <div class="flex items-center justify-between border-t border-slate-100 pt-4 mt-auto">
-                    <span class="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded-md">PREMIUM</span>
-                    <span class="font-bold text-yellow-500 text-sm flex items-center gap-1"><i class="fa-solid fa-coins"></i> 3 Credite</span>
+                    <span class="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded-md">UTILITAR</span>
+                    <span class="font-bold text-amber-500 text-sm flex items-center gap-1"><i class="fa-solid fa-coins"></i> 3 Credite</span>
                 </div>
             </div>
 
-            <div class="group bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex flex-col cursor-pointer" onclick="openLoginModalIfGuest()">
-                <div class="w-full aspect-video bg-black rounded-xl overflow-hidden mb-6 relative">
+            <div class="group bg-white border border-slate-200/80 rounded-[2rem] p-6 shadow-xl shadow-slate-200/40 hover:shadow-2xl hover:-translate-y-1 transition-all flex flex-col cursor-pointer" onclick="openLoginModalIfGuest()">
+                <div class="w-full aspect-video bg-black rounded-xl overflow-hidden mb-6 relative shadow-md">
                     <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-slate-900 text-[0.65rem] font-bold px-2.5 py-1 rounded-md z-10 tracking-widest uppercase">Clean</span>
                     <video src="https://media.viewmax.io/static/Tools/caption-remover.mp4" muted autoplay playsinline loop class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"></video>
                 </div>
                 <h3 class="text-xl font-bold text-slate-900 mb-2">Caption & Watermark Eraser</h3>
-                <p class="text-slate-500 text-sm font-medium mb-4 flex-1">Șterge textele hardcodate și siglele de pe video cu tehnologia noastră avansată de Inpainting. Gata de repost.</p>
+                <p class="text-slate-500 text-sm font-medium mb-4 flex-1 leading-relaxed">Șterge textele hardcodate și siglele de pe video cu tehnologia noastră avansată de Inpainting. Gata de repost.</p>
                 <div class="flex items-center justify-between border-t border-slate-100 pt-4 mt-auto">
                     <span class="text-xs font-bold text-emerald-500 bg-emerald-50 px-2 py-1 rounded-md">INPAINTING</span>
-                    <span class="font-bold text-yellow-500 text-sm flex items-center gap-1"><i class="fa-solid fa-coins"></i> 2 Credite</span>
+                    <span class="font-bold text-amber-500 text-sm flex items-center gap-1"><i class="fa-solid fa-coins"></i> 2 Credite</span>
                 </div>
             </div>
 
         </div>
     </div>
 
-    <div class="py-20 px-6 bg-slate-900 text-white reveal">
-        <div class="max-w-6xl mx-auto text-center">
-            <h2 class="text-3xl md:text-4xl font-extrabold mb-12">O singură platformă. Posibilități infinite.</h2>
+    <div class="py-24 px-6 bg-slate-900 text-white reveal relative overflow-hidden">
+        <div class="pointer-events-none absolute inset-0 overflow-hidden z-0 opacity-30">
+            <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-600/30 blur-[150px] rounded-full"></div>
+            <div class="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-pink-600/20 blur-[150px] rounded-full"></div>
+        </div>
+
+        <div class="max-w-6xl mx-auto text-center relative z-10">
+            <h2 class="text-3xl md:text-4xl font-extrabold mb-16">O singură platformă. Posibilități infinite.</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="p-8 rounded-2xl bg-white/5 border border-white/10 text-left hover:bg-white/10 transition-colors">
-                    <div class="w-12 h-12 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xl mb-6">
+                <div class="p-10 rounded-[2rem] bg-slate-800/50 border border-white/10 text-left hover:bg-slate-800/80 transition-all hover:-translate-y-1 shadow-xl backdrop-blur-sm">
+                    <div class="w-14 h-14 rounded-2xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-2xl mb-6 shadow-inner">
                         <i class="fa-solid fa-video"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-3">Vloggeri & YouTuberi</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed">Nu mai pierde timp scriind subtitrări manual sau căutând cadre b-roll. Automatizează editarea plictisitoare și focusează-te pe creație.</p>
+                    <h3 class="text-xl font-bold mb-4">Vloggeri & YouTuberi</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed font-medium">Nu mai pierde timp scriind subtitrări manual. Automatizează procesele plictisitoare și focusează-te pe ce contează: creația.</p>
                 </div>
-                <div class="p-8 rounded-2xl bg-white/5 border border-white/10 text-left hover:bg-white/10 transition-colors">
-                    <div class="w-12 h-12 rounded-lg bg-pink-500/20 text-pink-400 flex items-center justify-center text-xl mb-6">
+                <div class="p-10 rounded-[2rem] bg-slate-800/50 border border-white/10 text-left hover:bg-slate-800/80 transition-all hover:-translate-y-1 shadow-xl backdrop-blur-sm">
+                    <div class="w-14 h-14 rounded-2xl bg-pink-500/20 text-pink-400 flex items-center justify-center text-2xl mb-6 shadow-inner">
                         <i class="fa-solid fa-briefcase"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-3">Agenții de Marketing</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed">Gestionează sute de videoclipuri pe săptămână. Descarcă, curăță watermark-urile și repostează rapid pentru clienții tăi cu costuri minime.</p>
+                    <h3 class="text-xl font-bold mb-4">Agenții de Marketing</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed font-medium">Gestionează volum mare de conținut. Descarcă, curăță watermark-urile și repostează rapid pentru clienții tăi.</p>
                 </div>
-                <div class="p-8 rounded-2xl bg-white/5 border border-white/10 text-left hover:bg-white/10 transition-colors">
-                    <div class="w-12 h-12 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center text-xl mb-6">
+                <div class="p-10 rounded-[2rem] bg-slate-800/50 border border-white/10 text-left hover:bg-slate-800/80 transition-all hover:-translate-y-1 shadow-xl backdrop-blur-sm">
+                    <div class="w-14 h-14 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl mb-6 shadow-inner">
                         <i class="fa-solid fa-mobile-screen"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-3">Creatorii de Shorts / TikTok</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed">Vrei să reciclezi un clip vechi? Elimină subtitrările vechi, urcă rezoluția la 4K și lansează un nou viral în doar 3 minute.</p>
+                    <h3 class="text-xl font-bold mb-4">Creatori Shorts / TikTok</h3>
+                    <p class="text-slate-300 text-sm leading-relaxed font-medium">Reciclează conținut vechi. Elimină subtitrările hardcodate, urcă rezoluția la 4K și lansează un nou viral în minute.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="pricing" class="flex flex-col items-center justify-center px-4 pt-24 pb-16 reveal">
-        <span class="bg-yellow-100 text-yellow-700 font-bold tracking-tight text-sm uppercase px-4 py-1.5 rounded-full mb-4 inline-block">Fără Abonamente</span>
+    <div id="pricing" class="flex flex-col items-center justify-center px-4 pt-24 pb-20 reveal bg-white">
+        <span class="bg-amber-100 text-amber-700 font-bold tracking-tight text-sm uppercase px-4 py-1.5 rounded-full mb-4 inline-block border border-amber-200">Fără Abonamente</span>
         <h2 class="mb-4 text-center text-[2.5rem] md:text-[3rem] font-extrabold text-slate-900 tracking-tight">Plătești doar când folosești.</h2>
-        <p class="mx-auto mb-16 max-w-[35rem] text-center text-lg font-medium text-slate-500">Creditele tale nu expiră niciodată. Alege pachetul care ți se potrivește și deblochează toată puterea Viralio.</p>
+        <p class="mx-auto mb-16 max-w-[35rem] text-center text-lg font-medium text-slate-500 leading-relaxed">Creditele tale nu expiră niciodată. Alege pachetul care ți se potrivește și deblochează toată puterea Viralio.</p>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl w-full">
-            <div class="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-sm hover:shadow-xl transition-all flex flex-col">
-                <h3 class="text-slate-500 font-bold uppercase tracking-widest text-sm mb-4">Pachet Starter</h3>
-                <div class="text-5xl font-black text-slate-900 mb-2">50 <span class="text-lg text-slate-400 font-bold">Credite</span></div>
+            <div class="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-lg shadow-slate-200/50 hover:shadow-xl transition-all flex flex-col relative overflow-hidden hover:-translate-y-1">
+                <h3 class="text-slate-500 font-bold uppercase tracking-widest text-sm mb-6">Pachet Starter</h3>
+                <div class="text-5xl font-black text-slate-900 mb-3">50 <span class="text-lg text-slate-400 font-bold">Credite</span></div>
                 <div class="text-xl font-bold text-slate-400 mb-8">$5.00</div>
                 
-                <ul class="space-y-4 mb-10 mt-2">
-                    <li class="flex items-start text-slate-600 font-medium text-sm"><i class="fa-solid fa-check text-green-500 mt-1 mr-3"></i> Acces la toate uneltele AI</li>
-                    <li class="flex items-start text-slate-600 font-medium text-sm"><i class="fa-solid fa-check text-green-500 mt-1 mr-3"></i> Creditele nu expiră</li>
-                    <li class="flex items-start text-slate-600 font-medium text-sm"><i class="fa-solid fa-check text-green-500 mt-1 mr-3"></i> Suport prin Email</li>
+                <ul class="space-y-4 mb-12 mt-2">
+                    <li class="flex items-center text-slate-700 font-medium text-sm"><i class="fa-solid fa-check-circle text-viralio-500 mr-3 text-lg"></i> Acces la toate uneltele AI</li>
+                    <li class="flex items-center text-slate-700 font-medium text-sm"><i class="fa-solid fa-check-circle text-viralio-500 mr-3 text-lg"></i> Creditele nu expiră</li>
+                    <li class="flex items-center text-slate-700 font-medium text-sm"><i class="fa-solid fa-check-circle text-viralio-500 mr-3 text-lg"></i> Suport standard</li>
                 </ul>
 
-                <button onclick="openLoginModalIfGuest()" class="mt-auto w-full py-4 rounded-xl border-2 border-slate-200 text-slate-700 font-bold hover:bg-slate-50 hover:border-slate-300 transition-colors">Alege Starter</button>
+                <button onclick="openLoginModalIfGuest()" class="mt-auto w-full py-4 rounded-xl border-2 border-slate-200 text-slate-700 font-bold hover:bg-slate-50 hover:border-slate-300 transition-all">Alege Starter</button>
             </div>
 
-            <div class="bg-white border-2 border-viralio-500 rounded-[2rem] p-8 shadow-2xl relative transform md:-translate-y-6 flex flex-col">
-                <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gradient-viralio text-white text-xs font-bold px-5 py-1.5 rounded-full uppercase tracking-widest shadow-md">Cel mai popular</div>
-                <h3 class="text-viralio-600 font-bold uppercase tracking-widest text-sm mb-4">Pachet Creator</h3>
-                <div class="text-5xl font-black text-slate-900 mb-2">150 <span class="text-lg text-slate-400 font-bold">Credite</span></div>
-                <div class="text-xl font-bold text-slate-400 mb-8">$12.00 <span class="text-sm text-green-500 bg-green-50 px-2 py-0.5 rounded ml-2">Economisești 20%</span></div>
+            <div class="bg-white border-2 border-viralio-500 rounded-[2rem] p-8 shadow-2xl shadow-indigo-500/20 relative transform md:-translate-y-6 flex flex-col z-10">
+                <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gradient-viralio text-white text-xs font-bold px-6 py-2 rounded-full uppercase tracking-widest shadow-lg">Cel mai popular</div>
+                <h3 class="text-viralio-600 font-bold uppercase tracking-widest text-sm mb-6">Pachet Creator</h3>
+                <div class="text-5xl font-black text-slate-900 mb-3">150 <span class="text-lg text-slate-400 font-bold">Credite</span></div>
+                <div class="text-xl font-bold text-slate-400 mb-8">$12.00 <span class="text-sm text-green-600 bg-green-100 px-2.5 py-0.5 rounded-md font-bold ml-2">Save 20%</span></div>
                 
-                <ul class="space-y-4 mb-10 mt-2">
-                    <li class="flex items-start text-slate-600 font-medium text-sm"><i class="fa-solid fa-check text-green-500 mt-1 mr-3"></i> Acces la toate uneltele AI</li>
-                    <li class="flex items-start text-slate-600 font-medium text-sm"><i class="fa-solid fa-check text-green-500 mt-1 mr-3"></i> Creditele nu expiră</li>
-                    <li class="flex items-start text-slate-600 font-medium text-sm"><i class="fa-solid fa-check text-green-500 mt-1 mr-3"></i> Procesare prioritară pe server</li>
-                    <li class="flex items-start text-slate-600 font-medium text-sm"><i class="fa-solid fa-check text-green-500 mt-1 mr-3"></i> Istoric descărcări salvat 30 zile</li>
+                <ul class="space-y-4 mb-12 mt-2">
+                    <li class="flex items-center text-slate-700 font-medium text-sm"><i class="fa-solid fa-check-circle text-viralio-500 mr-3 text-lg"></i> Tot ce e în Starter</li>
+                    <li class="flex items-center text-slate-700 font-medium text-sm"><i class="fa-solid fa-check-circle text-viralio-500 mr-3 text-lg"></i> Procesare prioritară</li>
+                    <li class="flex items-center text-slate-700 font-medium text-sm"><i class="fa-solid fa-check-circle text-viralio-500 mr-3 text-lg"></i> Istoric salvat 30 zile</li>
                 </ul>
 
-                <button onclick="openLoginModalIfGuest()" class="mt-auto w-full py-4 rounded-xl bg-viralio-600 text-white font-bold hover:bg-viralio-900 transition-colors shadow-lg shadow-indigo-500/25">Alege Creator</button>
+                <button onclick="openLoginModalIfGuest()" class="mt-auto w-full py-4 rounded-xl bg-gradient-viralio text-white font-bold hover:shadow-lg hover:shadow-indigo-500/30 transition-all hover:scale-[1.02]">Pachet Popular</button>
             </div>
 
-            <div class="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-sm hover:shadow-xl transition-all flex flex-col">
-                <h3 class="text-slate-500 font-bold uppercase tracking-widest text-sm mb-4">Pachet Agency</h3>
-                <div class="text-5xl font-black text-slate-900 mb-2">500 <span class="text-lg text-slate-400 font-bold">Credite</span></div>
-                <div class="text-xl font-bold text-slate-400 mb-8">$30.00 <span class="text-sm text-green-500 bg-green-50 px-2 py-0.5 rounded ml-2">-40%</span></div>
+            <div class="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-lg shadow-slate-200/50 hover:shadow-xl transition-all flex flex-col relative overflow-hidden hover:-translate-y-1">
+                <h3 class="text-slate-500 font-bold uppercase tracking-widest text-sm mb-6">Pachet Agency</h3>
+                <div class="text-5xl font-black text-slate-900 mb-3">500 <span class="text-lg text-slate-400 font-bold">Credite</span></div>
+                <div class="text-xl font-bold text-slate-400 mb-8">$30.00 <span class="text-sm text-green-600 bg-green-100 px-2.5 py-0.5 rounded-md font-bold ml-2">Save 40%</span></div>
                 
-                <ul class="space-y-4 mb-10 mt-2">
-                    <li class="flex items-start text-slate-600 font-medium text-sm"><i class="fa-solid fa-check text-green-500 mt-1 mr-3"></i> Cost per procesare minim</li>
-                    <li class="flex items-start text-slate-600 font-medium text-sm"><i class="fa-solid fa-check text-green-500 mt-1 mr-3"></i> Dedicat volumului mare de content</li>
-                    <li class="flex items-start text-slate-600 font-medium text-sm"><i class="fa-solid fa-check text-green-500 mt-1 mr-3"></i> API Access (În curând)</li>
+                <ul class="space-y-4 mb-12 mt-2">
+                    <li class="flex items-center text-slate-700 font-medium text-sm"><i class="fa-solid fa-check-circle text-viralio-500 mr-3 text-lg"></i> Cel mai bun cost/credit</li>
+                    <li class="flex items-center text-slate-700 font-medium text-sm"><i class="fa-solid fa-check-circle text-viralio-500 mr-3 text-lg"></i> Pentru volum mare</li>
+                    <li class="flex items-center text-slate-700 font-medium text-sm"><i class="fa-solid fa-check-circle text-viralio-500 mr-3 text-lg"></i> Suport Prioritar</li>
                 </ul>
 
-                <button onclick="openLoginModalIfGuest()" class="mt-auto w-full py-4 rounded-xl border-2 border-slate-200 text-slate-700 font-bold hover:bg-slate-50 hover:border-slate-300 transition-colors">Alege Agency</button>
+                <button onclick="openLoginModalIfGuest()" class="mt-auto w-full py-4 rounded-xl border-2 border-slate-200 text-slate-700 font-bold hover:bg-slate-50 hover:border-slate-300 transition-all">Alege Agency</button>
             </div>
         </div>
     </div>
 
-    <div id="faq" class="mt-10 pb-24 reveal">
+    <div id="faq" class="py-20 reveal bg-slate-50/50 border-t border-slate-100">
         <section class="mx-auto w-full max-w-3xl px-4">
-            <div class="mb-10 flex flex-col items-center">
-                <span class="bg-slate-100 text-slate-600 font-bold tracking-tight text-sm uppercase px-4 py-1.5 rounded-full mb-4 inline-block">Întrebări Frecvente</span>
+            <div class="mb-12 flex flex-col items-center">
+                <span class="bg-slate-100 text-slate-600 font-bold tracking-tight text-sm uppercase px-4 py-1.5 rounded-full mb-4 inline-block border border-slate-200">Întrebări Frecvente</span>
                 <h2 class="mb-4 text-center text-[2.5rem] font-extrabold text-slate-900 tracking-tight">Tot ce trebuie să știi</h2>
             </div>
 
             <div class="flex flex-col gap-4">
-                <div class="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+                <div class="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm hover:shadow-md transition-all">
                     <button class="faq-btn flex w-full cursor-pointer items-center justify-between px-6 py-6 text-lg font-bold text-slate-900 text-left hover:bg-slate-50 transition-colors" onclick="toggleFaq(this)">
                         Primesc credite gratuite la înregistrare?
                         <i class="fa-solid fa-chevron-down faq-icon text-slate-400"></i>
                     </button>
-                    <div class="faq-content px-6 text-slate-600 font-medium leading-relaxed bg-slate-50/50">
-                        <div class="pb-6 pt-2">Da! Imediat cum te conectezi cu contul tău de Google, primești automat 3 credite gratuite pentru a testa puterea platformei Viralio, fără să fie nevoie să introduci vreun card bancar.</div>
+                    <div class="faq-content px-6 text-slate-600 font-medium leading-relaxed bg-slate-50/50 border-t border-slate-100">
+                        <div class="pb-6 pt-4">Da! Imediat cum te conectezi cu contul tău de Google, primești automat 3 credite gratuite pentru a testa puterea platformei Viralio, fără să fie nevoie să introduci vreun card bancar.</div>
                     </div>
                 </div>
 
-                <div class="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+                <div class="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm hover:shadow-md transition-all">
                     <button class="faq-btn flex w-full cursor-pointer items-center justify-between px-6 py-6 text-lg font-bold text-slate-900 text-left hover:bg-slate-50 transition-colors" onclick="toggleFaq(this)">
                         Creditele expiră în timp?
                         <i class="fa-solid fa-chevron-down faq-icon text-slate-400"></i>
                     </button>
-                    <div class="faq-content px-6 text-slate-600 font-medium leading-relaxed bg-slate-50/50">
-                        <div class="pb-6 pt-2">Nu. Am urât întotdeauna abonamentele lunare care te taxează deși nu folosești produsul. Aici, creditele cumpărate rămân în contul tău pentru totdeauna. Plătești exact cât procesezi.</div>
+                    <div class="faq-content px-6 text-slate-600 font-medium leading-relaxed bg-slate-50/50 border-t border-slate-100">
+                        <div class="pb-6 pt-4">Nu. Am urât întotdeauna abonamentele lunare care te taxează deși nu folosești produsul. Aici, creditele cumpărate rămân în contul tău pentru totdeauna. Plătești exact cât procesezi.</div>
                     </div>
                 </div>
 
-                <div class="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+                <div class="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm hover:shadow-md transition-all">
                     <button class="faq-btn flex w-full cursor-pointer items-center justify-between px-6 py-6 text-lg font-bold text-slate-900 text-left hover:bg-slate-50 transition-colors" onclick="toggleFaq(this)">
                         Pot folosi materialele generate în scop comercial?
                         <i class="fa-solid fa-chevron-down faq-icon text-slate-400"></i>
                     </button>
-                    <div class="faq-content px-6 text-slate-600 font-medium leading-relaxed bg-slate-50/50">
-                        <div class="pb-6 pt-2">Absolut. Toate videoclipurile B-Roll generate de AI, traducerile și imaginile sunt 100% royalty-free și le poți folosi pentru monetizare pe YouTube, TikTok sau pentru clienții agenției tale.</div>
+                    <div class="faq-content px-6 text-slate-600 font-medium leading-relaxed bg-slate-50/50 border-t border-slate-100">
+                        <div class="pb-6 pt-4">Absolut. Toate videoclipurile generate, traducerile și imaginile sunt 100% royalty-free și le poți folosi pentru monetizare pe YouTube, TikTok sau pentru clienții agenției tale fără griji.</div>
                     </div>
                 </div>
             </div>
         </section>
     </div>
 
-    <div class="flex justify-center px-4 pt-10 pb-16 reveal">
+    <div class="flex justify-center px-4 pt-10 pb-16 reveal bg-white">
         <div class="relative flex flex-col items-center justify-center overflow-hidden rounded-[2.5rem] w-full max-w-6xl p-12 md:p-24 text-center bg-slate-900 shadow-2xl">
-            <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=1200&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-10 filter grayscale">
+            <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=1200&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-10 filter grayscale mix-blend-overlay">
             
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent"></div>
             
             <div class="relative z-10">
-                <div class="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur border border-white/20 flex items-center justify-center text-3xl text-white mx-auto mb-6"><i class="fa-solid fa-rocket"></i></div>
-                <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">Gata să devii viral?</h2>
-                <p class="text-lg text-slate-300 font-medium mb-10 max-w-2xl mx-auto">Începe acum cu 3 credite gratuite din partea casei. Fără card de credit. Fără obligații.</p>
-                <a href="https://downloader.creatorsmart.ro/" class="inline-flex items-center justify-center bg-white text-slate-900 px-8 py-4 rounded-xl font-bold text-lg hover:bg-slate-100 transition-transform hover:-translate-y-1 shadow-[0_0_30px_rgba(255,255,255,0.15)]">
-                    Accesează Suita AI <i class="fa-solid fa-arrow-right ml-2"></i>
+                <div class="w-20 h-20 rounded-3xl bg-gradient-viralio shadow-lg shadow-indigo-500/30 flex items-center justify-center text-4xl text-white mx-auto mb-8 transform rotate-12 hover:rotate-0 transition-all">
+                    <i class="fa-solid fa-rocket"></i>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight leading-tight">Gata să devii viral?</h2>
+                <p class="text-lg text-slate-300 font-medium mb-12 max-w-2xl mx-auto leading-relaxed">Alătură-te noii generații de creatori. Începe acum cu 3 credite gratuite din partea casei. Fără card de credit.</p>
+                <a href="https://downloader.creatorsmart.ro/" class="inline-flex items-center justify-center bg-white text-slate-900 px-10 py-4 rounded-xl font-bold text-lg hover:bg-slate-50 transition-all hover:-translate-y-1 shadow-xl shadow-white/10 group">
+                    Accesează Suita AI <i class="fa-solid fa-arrow-right ml-3 group-hover:translate-x-1 transition-transform"></i>
                 </a>
             </div>
         </div>
     </div>
 
-    <footer class="w-full bg-white border-t border-slate-200 pt-16 pb-8 px-6">
-        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between gap-12 mb-16">
+    <footer class="w-full bg-white border-t border-slate-200 pt-20 pb-10 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between gap-16 mb-20">
             
             <div class="lg:w-1/3">
                 <a class="flex w-fit cursor-pointer items-center font-black text-2xl tracking-tight text-slate-900 mb-6" href="/">
-                    <div class="w-8 h-8 rounded-lg bg-gradient-viralio flex items-center justify-center text-white mr-2.5">
-                        <i class="fa-solid fa-bolt text-sm"></i>
+                    <div class="w-9 h-9 rounded-xl bg-gradient-viralio flex items-center justify-center text-white mr-2.5 shadow-md">
+                        <i class="fa-solid fa-bolt text-lg"></i>
                     </div>
                     Viralio
                 </a>
-                <p class="text-slate-500 font-medium text-sm leading-relaxed mb-6">Suita completă de inteligență artificială creată special pentru vloggeri, editori și marketeri. Simplificăm producția video.</p>
+                <p class="text-slate-500 font-medium text-sm leading-relaxed mb-8 max-w-sm">Suita completă de inteligență artificială creată special pentru vloggeri, editori și marketeri. Simplificăm producția video pentru ca tu să te focusezi pe creștere.</p>
                 
-                <h4 class="text-slate-900 font-bold mb-3 text-sm">Abonează-te la Noutăți</h4>
-                <div class="flex gap-2">
-                    <input type="email" placeholder="Adresa ta de email..." class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-viralio-500 focus:ring-1 focus:ring-viralio-500 transition-all">
-                    <button class="bg-slate-900 text-white px-4 py-2.5 rounded-lg font-bold text-sm hover:bg-viralio-600 transition-colors">Join</button>
+                <h4 class="text-slate-900 font-bold mb-4 text-sm uppercase tracking-wider">Abonează-te la Noutăți</h4>
+                <div class="flex gap-3 max-w-sm">
+                    <input type="email" placeholder="Adresa ta de email..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-viralio-500 focus:ring-2 focus:ring-viralio-500/20 transition-all font-medium text-slate-700">
+                    <button class="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-viralio-600 transition-all shadow-md hover:shadow-lg">Join</button>
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-8 lg:w-2/3 lg:justify-items-end">
-                <div class="flex flex-col gap-3">
-                    <h4 class="text-slate-900 font-bold mb-2">Unelte</h4>
-                    <a href="https://downloader.creatorsmart.ro/" class="text-slate-500 hover:text-viralio-600 font-medium text-sm transition-colors">YouTube Downloader</a>
-                    <a href="#" class="text-slate-500 hover:text-viralio-600 font-medium text-sm transition-colors">B-Roll Generator</a>
-                    <a href="#" class="text-slate-500 hover:text-viralio-600 font-medium text-sm transition-colors">Thumbnail AI</a>
-                    <a href="#" class="text-slate-500 hover:text-viralio-600 font-medium text-sm transition-colors">Audio Slicer Pro</a>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-10 lg:w-2/3 lg:justify-items-end">
+                <div class="flex flex-col gap-4">
+                    <h4 class="text-slate-900 font-bold mb-2 text-sm uppercase tracking-wider">Unelte Populare</h4>
+                    <a href="https://downloader.creatorsmart.ro/" class="text-slate-500 hover:text-viralio-600 font-semibold text-[0.95rem] transition-colors flex items-center gap-2"><i class="fa-brands fa-youtube text-red-500"></i> YouTube Downloader</a>
+                    <a href="#" class="text-slate-400 font-medium text-[0.95rem] cursor-not-allowed flex items-center gap-2">Generator Video AI <span class="text-[0.6rem] bg-slate-100 px-1.5 rounded text-slate-500">SOON</span></a>
+                    <a href="#" class="text-slate-400 font-medium text-[0.95rem] cursor-not-allowed flex items-center gap-2">Generator Imagini AI <span class="text-[0.6rem] bg-slate-100 px-1.5 rounded text-slate-500">SOON</span></a>
+                    <a href="#" class="text-slate-500 hover:text-viralio-600 font-semibold text-[0.95rem] transition-colors flex items-center gap-2">Watermark Remover</a>
                 </div>
-                <div class="flex flex-col gap-3">
-                    <h4 class="text-slate-900 font-bold mb-2">Platformă</h4>
-                    <a href="#pricing" class="text-slate-500 hover:text-viralio-600 font-medium text-sm transition-colors">Prețuri</a>
-                    <a href="#cum-functioneaza" class="text-slate-500 hover:text-viralio-600 font-medium text-sm transition-colors">Cum funcționează</a>
-                    <a href="#faq" class="text-slate-500 hover:text-viralio-600 font-medium text-sm transition-colors">FAQ</a>
+                <div class="flex flex-col gap-4">
+                    <h4 class="text-slate-900 font-bold mb-2 text-sm uppercase tracking-wider">Platformă</h4>
+                    <a href="#pricing" class="text-slate-500 hover:text-viralio-600 font-semibold text-[0.95rem] transition-colors">Prețuri & Credite</a>
+                    <a href="#cum-functioneaza" class="text-slate-500 hover:text-viralio-600 font-semibold text-[0.95rem] transition-colors">Cum funcționează</a>
+                    <a href="#faq" class="text-slate-500 hover:text-viralio-600 font-semibold text-[0.95rem] transition-colors">Întrebări Frecvente</a>
                 </div>
-                <div class="flex flex-col gap-3">
-                    <h4 class="text-slate-900 font-bold mb-2">Companie</h4>
-                    <a href="#" class="text-slate-500 hover:text-viralio-600 font-medium text-sm transition-colors">Contact Support</a>
-                    <a href="#" class="text-slate-500 hover:text-viralio-600 font-medium text-sm transition-colors">Termeni de utilizare</a>
-                    <a href="#" class="text-slate-500 hover:text-viralio-600 font-medium text-sm transition-colors">Politica de confidențialitate</a>
+                <div class="flex flex-col gap-4">
+                    <h4 class="text-slate-900 font-bold mb-2 text-sm uppercase tracking-wider">Legal & Suport</h4>
+                    <a href="#" class="text-slate-500 hover:text-viralio-600 font-semibold text-[0.95rem] transition-colors">Contact Support</a>
+                    <a href="#" class="text-slate-500 hover:text-viralio-600 font-semibold text-[0.95rem] transition-colors">Termeni de utilizare</a>
+                    <a href="#" class="text-slate-500 hover:text-viralio-600 font-semibold text-[0.95rem] transition-colors">Politica de confidențialitate</a>
                 </div>
             </div>
         </div>
         
-        <div class="max-w-7xl mx-auto border-t border-slate-100 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="text-sm font-medium text-slate-400">
-                © 2026 Viralio. Toate drepturile rezervate. Gândit în România.
+        <div class="max-w-7xl mx-auto border-t border-slate-100 pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="text-sm font-bold text-slate-400">
+                © 2026 Viralio. Gândit și dezvoltat în România <i class="fa-solid fa-heart text-red-500 mx-1"></i>
             </div>
-            <div class="flex gap-4 text-slate-400">
-                <a href="#" class="hover:text-slate-900 transition-colors"><i class="fa-brands fa-youtube text-lg"></i></a>
-                <a href="#" class="hover:text-slate-900 transition-colors"><i class="fa-brands fa-tiktok text-lg"></i></a>
-                <a href="#" class="hover:text-slate-900 transition-colors"><i class="fa-brands fa-instagram text-lg"></i></a>
+            <div class="flex gap-5 text-slate-400">
+                <a href="#" class="hover:text-slate-900 transition-colors hover:scale-110 transform"><i class="fa-brands fa-youtube text-xl"></i></a>
+                <a href="#" class="hover:text-slate-900 transition-colors hover:scale-110 transform"><i class="fa-brands fa-tiktok text-xl"></i></a>
+                <a href="#" class="hover:text-slate-900 transition-colors hover:scale-110 transform"><i class="fa-brands fa-instagram text-xl"></i></a>
+                <a href="#" class="hover:text-slate-900 transition-colors hover:scale-110 transform"><i class="fa-brands fa-x-twitter text-xl"></i></a>
             </div>
         </div>
     </footer>
@@ -623,14 +683,15 @@
         for (var i = 0; i < reveals.length; i++) {
             var windowHeight = window.innerHeight;
             var elementTop = reveals[i].getBoundingClientRect().top;
-            var elementVisible = 100; // Cati pixeli trebuie sa fie vizibili inainte sa apara
+            var elementVisible = 120;
             if (elementTop < windowHeight - elementVisible) {
                 reveals[i].classList.add("active");
             }
         }
     }
     window.addEventListener("scroll", reveal);
-    reveal(); // Trigger la incarcare
+    // Trigger initial pentru elementele deja vizibile
+    setTimeout(reveal, 100);
 
     // === FAQ ACCORDION LOGIC ===
     function toggleFaq(btn) {
@@ -658,35 +719,45 @@
 
     async function handleCredentialResponse(response) {
         try {
+            // NOTA: Inlocuieste URL-ul cu endpoint-ul tau real daca e diferit
             const res = await fetch('https://downloader.creatorsmart.ro/api/auth/google', {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ credential: response.credential })
             });
             const data = await res.json();
             if(data.token) { setToken(data.token); closeLoginModal(); updateUIForLoggedUser(data.user); }
-            else { alert("Eroare la autentificare."); }
-        } catch (e) { alert('Eroare de conexiune la server.'); }
+            else { alert("Eroare la autentificare. Încearcă din nou."); }
+        } catch (e) { 
+            console.error(e);
+            alert('Eroare de conexiune la server.'); 
+        }
     }
 
     function updateUIForLoggedUser(user) {
         document.getElementById('guest-nav').classList.add('hidden');
-        document.getElementById('user-nav').classList.remove('hidden');
-        document.getElementById('user-nav').classList.add('flex');
+        const userNav = document.getElementById('user-nav');
+        userNav.classList.remove('hidden');
+        // Folosim flex pentru a alinia corect elementele interne
+        userNav.style.display = 'flex'; 
         
-        document.getElementById('nav-name').innerText = user.name.split(' ')[0]; // Afiseaza doar prenumele
+        document.getElementById('nav-name').innerText = user.name.split(' ')[0];
         document.getElementById('nav-avatar').src = user.picture;
         document.getElementById('nav-credits').innerText = user.credits;
     }
 
-    function logout() { removeToken(); location.reload(); }
+    function logout() { 
+        removeToken(); 
+        location.reload(); 
+    }
 
+    // Verificare sesiune la incarcare
     window.onload = async () => {
         const token = getToken();
         if(token) {
             try {
                 const res = await fetch('https://downloader.creatorsmart.ro/api/auth/me', { headers: { 'Authorization': `Bearer ${token}` } });
                 if(res.ok) { const data = await res.json(); updateUIForLoggedUser(data.user); }
-                else { removeToken(); }
+                else { removeToken(); } // Token invalid
             } catch (e) { console.error("Eroare validare token."); }
         }
     };
