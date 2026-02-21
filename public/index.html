@@ -3,154 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator Hub | Viralio Premium</title>
+    <title>Viralio | The AI Content Suite</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     
     <style>
         :root {
-            --bg-body: #030712; --bg-sidebar: #0a0a0a; --border: rgba(255, 255, 255, 0.08);
+            --bg-body: #030712; --border: rgba(255, 255, 255, 0.08);
             --primary: #6366f1; --accent: #ef4444; --text-main: #ffffff; --text-muted: #94a3b8;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
-        body { background-color: var(--bg-body); color: var(--text-main); height: 100vh; display: flex; overflow: hidden; position: relative; }
+        body { background-color: var(--bg-body); color: var(--text-main); overflow-x: hidden; position: relative; min-height: 100vh; }
         
-        /* Fundal Animated Glows */
-        body::before { content: ''; position: absolute; top: -20%; left: -10%; width: 50vw; height: 50vh; background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%); z-index: 0; pointer-events: none; filter: blur(80px); }
-        body::after { content: ''; position: absolute; bottom: -20%; right: -10%; width: 50vw; height: 50vh; background: radial-gradient(circle, rgba(239, 68, 68, 0.1) 0%, transparent 70%); z-index: 0; pointer-events: none; filter: blur(80px); }
+        /* Ambient Glows */
+        body::before { content: ''; position: absolute; top: -10%; left: -10%; width: 60vw; height: 60vh; background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 60%); z-index: -1; pointer-events: none; filter: blur(100px); }
+        body::after { content: ''; position: absolute; bottom: 10%; right: -10%; width: 50vw; height: 50vh; background: radial-gradient(circle, rgba(239, 68, 68, 0.12) 0%, transparent 60%); z-index: -1; pointer-events: none; filter: blur(100px); }
         
         a { text-decoration: none; color: inherit; }
 
-        /* --- SIDEBAR --- */
-        .sidebar { width: 280px; background: rgba(10, 10, 10, 0.6); backdrop-filter: blur(20px); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 30px 20px; z-index: 10; justify-content: space-between; }
-        .logo { font-size: 1.5rem; font-weight: 800; margin-bottom: 50px; display: flex; align-items: center; gap: 12px; }
-        .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, #6366f1, #ec4899); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4); }
-        .nav-menu { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-        .nav-item { padding: 14px 18px; border-radius: 14px; cursor: pointer; color: var(--text-muted); font-size: 0.95rem; font-weight: 500; display: flex; align-items: center; gap: 14px; transition: 0.3s; }
-        .nav-item:hover { background: rgba(255,255,255,0.05); color: #fff; transform: translateX(5px); }
-        .nav-item.active { background: rgba(99, 102, 241, 0.15); color: #fff; border: 1px solid rgba(99, 102, 241, 0.3); }
+        /* ==========================================================
+           🌟 TOP NAVIGATION (GLASS PILL)
+        ========================================================== */
+        .top-nav {
+            position: fixed; top: 24px; left: 50%; transform: translateX(-50%);
+            width: 95%; max-width: 1400px; background: rgba(10, 10, 10, 0.6);
+            backdrop-filter: blur(24px); border: 1px solid var(--border);
+            border-radius: 100px; display: flex; justify-content: space-between;
+            align-items: center; padding: 12px 24px; z-index: 100;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        .logo { font-size: 1.5rem; font-weight: 900; display: flex; align-items: center; gap: 10px; letter-spacing: -0.5px; }
+        .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, #ef4444, #6366f1); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); }
         
-        .usage-box { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 20px; padding: 24px; margin-top: auto; }
-        .usage-title { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 18px; font-weight: 700; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center;}
-        .plan-badge { background: rgba(245, 158, 11, 0.2); color: #fbbf24; padding: 4px 10px; border-radius: 8px; font-size: 0.65rem; font-weight: 800; border: 1px solid rgba(245, 158, 11, 0.3); }
-        .progress-label { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 8px; font-weight: 700; color: #fff;}
+        .nav-links { display: flex; gap: 30px; font-weight: 600; font-size: 0.95rem; color: var(--text-muted); }
+        .nav-links a:hover { color: #fff; transition: 0.3s; }
         
-        /* --- MAIN CONTENT --- */
-        .main-content { flex: 1; padding: 40px 60px; overflow-y: auto; position: relative; z-index: 1; }
-        .main-content::-webkit-scrollbar { width: 8px; }
-        .main-content::-webkit-scrollbar-track { background: transparent; }
-        .main-content::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        .auth-container { display: flex; align-items: center; gap: 15px; }
+        .login-trigger-btn { background: #fff; color: #000; padding: 10px 24px; border-radius: 50px; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; font-size: 0.95rem; }
+        .login-trigger-btn:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(255,255,255,0.2); }
         
-        .header-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-        .welcome h1 { font-size: 2.8rem; font-weight: 800; margin-bottom: 8px; letter-spacing: -1px; }
-        .welcome p { color: var(--text-muted); font-size: 1.1rem; }
-        
-        .auth-container { display: flex; align-items: center; }
-        .login-trigger-btn { background: #fff; color: #000; padding: 12px 28px; border-radius: 50px; border: none; font-weight: 700; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; font-size: 0.95rem; box-shadow: 0 4px 15px rgba(255,255,255,0.1);}
-        .login-trigger-btn:hover { transform: scale(1.05); box-shadow: 0 10px 30px rgba(255,255,255,0.3); }
-        .profile-pill { display: none; align-items: center; gap: 12px; background: rgba(255,255,255,0.05); padding: 8px 16px 8px 8px; border: 1px solid var(--border); border-radius: 50px; backdrop-filter: blur(10px); }
+        .profile-pill { display: none; align-items: center; gap: 12px; background: rgba(255,255,255,0.05); padding: 6px 16px 6px 6px; border: 1px solid var(--border); border-radius: 50px; }
         .profile-pill.active { display: flex; }
-        .avatar { width: 42px; height: 42px; border-radius: 50%; overflow: hidden; border: 2px solid rgba(255,255,255,0.2); }
+        .avatar { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; border: 2px solid rgba(255,255,255,0.2); }
         .avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .logout-btn { background: none; border: none; color: #ef4444; cursor: pointer; padding: 5px; margin-left: 5px; font-size: 1.1rem; transition: 0.2s; }
+        .logout-btn { background: none; border: none; color: #ef4444; cursor: pointer; padding: 5px; font-size: 1.1rem; transition: 0.2s; }
         .logout-btn:hover { color: #dc2626; transform: scale(1.1); }
 
         /* ==========================================================
-           🔥 MARQUEE (BANDA ANIMATA)
+           🌟 MAIN WRAPPER & HERO
         ========================================================== */
-        .marquee-container { width: 100%; overflow: hidden; background: rgba(255,255,255,0.02); border-y: 1px solid var(--border); padding: 15px 0; margin-bottom: 50px; display: flex; align-items: center; position: relative; }
-        /* Fade edges */
+        .main-wrapper { max-width: 1400px; margin: 0 auto; padding: 160px 24px 60px; }
+        
+        .hero-section { text-align: center; margin-bottom: 60px; }
+        .hero-badge { display: inline-flex; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2); color: #818cf8; padding: 8px 16px; border-radius: 50px; font-weight: 800; font-size: 0.8rem; letter-spacing: 1px; margin-bottom: 20px; }
+        .hero-title { font-size: 4.5rem; font-weight: 900; line-height: 1.1; margin-bottom: 20px; letter-spacing: -2px; }
+        .hero-title span { background: linear-gradient(to right, #6366f1, #ef4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-desc { font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin: 0 auto; line-height: 1.6; }
+
+        /* 🔥 MARQUEE 🔥 */
+        .marquee-container { width: 100%; overflow: hidden; background: rgba(255,255,255,0.02); border-y: 1px solid var(--border); padding: 15px 0; margin-bottom: 80px; position: relative; }
         .marquee-container::before, .marquee-container::after { content: ''; position: absolute; top: 0; width: 150px; height: 100%; z-index: 2; pointer-events: none; }
         .marquee-container::before { left: 0; background: linear-gradient(to right, var(--bg-body), transparent); }
         .marquee-container::after { right: 0; background: linear-gradient(to left, var(--bg-body), transparent); }
-        
         .marquee-content { display: flex; gap: 4rem; animation: scrollMarquee 30s linear infinite; white-space: nowrap; align-items: center; }
-        .marquee-item { font-size: 0.95rem; font-weight: 600; color: var(--text-muted); display: flex; align-items: center; gap: 10px; }
+        .marquee-item { font-size: 1rem; font-weight: 600; color: var(--text-muted); display: flex; align-items: center; gap: 10px; }
         .marquee-item i { color: var(--primary); }
         @keyframes scrollMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
         /* ==========================================================
-           🌟 HERO YOUTUBE (VEDETA)
+           🌟 FEATURED APP (YOUTUBE) - ULTRA WIDE
         ========================================================== */
-        .hero-link { display: block; margin-bottom: 60px; }
-        .featured-app {
-            background: linear-gradient(135deg, rgba(20,5,5,0.8) 0%, rgba(10,0,0,0.9) 100%);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: 32px; padding: 50px 60px;
-            display: flex; align-items: center; justify-content: space-between;
-            position: relative; overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 80px rgba(239, 68, 68, 0.05);
-            transition: 0.4s ease;
-        }
-        .featured-app::before { content: ''; position: absolute; top: -50%; right: -10%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(239, 68, 68, 0.2) 0%, transparent 60%); border-radius: 50%; pointer-events: none; transition: 0.6s; }
-        .featured-app:hover { border-color: rgba(239, 68, 68, 0.6); transform: translateY(-5px); box-shadow: 0 30px 60px rgba(0,0,0,0.6), 0 0 50px rgba(239, 68, 68, 0.15); }
-        .featured-app:hover::before { transform: scale(1.2); opacity: 1; }
-
-        .featured-content { flex: 1; max-width: 600px; z-index: 2; position: relative; }
-        .featured-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 18px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; letter-spacing: 1px; margin-bottom: 24px; }
-        .featured-title { font-size: 3.5rem; font-weight: 800; color: #fff; margin-bottom: 16px; line-height: 1.1; letter-spacing: -1px; text-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-        .featured-desc { font-size: 1.15rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 35px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
-        
-        .featured-stats { display: flex; gap: 15px; margin-bottom: 35px; }
-        .stat-item { display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 14px; font-weight: 600; font-size: 0.9rem; color: #e2e8f0; backdrop-filter: blur(5px); }
-        .cta-button { display: inline-flex; align-items: center; gap: 12px; background: #ef4444; color: #fff; padding: 16px 36px; border-radius: 16px; font-size: 1.1rem; font-weight: 800; transition: 0.3s; box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4); }
-        .featured-app:hover .cta-button { background: #dc2626; transform: scale(1.05); box-shadow: 0 15px 40px rgba(239, 68, 68, 0.6); }
-
-        .hero-visual { font-size: 16rem; color: rgba(239, 68, 68, 0.1); position: absolute; right: 20px; bottom: -40px; transition: 0.5s; pointer-events: none; }
-        .featured-app:hover .hero-visual { color: rgba(239, 68, 68, 0.2); transform: scale(1.1) rotate(-5deg); }
+        .hero-link { display: block; margin-bottom: 80px; }
+        .featured-app { background: linear-gradient(135deg, rgba(20,5,5,0.8) 0%, rgba(10,0,0,0.9) 100%); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 40px; padding: 60px 80px; display: flex; align-items: center; justify-content: space-between; position: relative; overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 0 80px rgba(239, 68, 68, 0.05); transition: 0.4s ease; }
+        .featured-app::before { content: ''; position: absolute; top: -50%; right: -10%; width: 800px; height: 800px; background: radial-gradient(circle, rgba(239, 68, 68, 0.15) 0%, transparent 60%); border-radius: 50%; pointer-events: none; transition: 0.6s; }
+        .featured-app:hover { border-color: rgba(239, 68, 68, 0.6); transform: translateY(-5px); box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 60px rgba(239, 68, 68, 0.2); }
+        .featured-app:hover::before { transform: scale(1.1); opacity: 1; }
+        .featured-content { flex: 1; max-width: 650px; z-index: 2; position: relative; }
+        .featured-title { font-size: 4rem; font-weight: 900; color: #fff; margin-bottom: 20px; line-height: 1; letter-spacing: -1.5px; }
+        .featured-desc { font-size: 1.2rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 40px; }
+        .featured-stats { display: flex; gap: 15px; margin-bottom: 40px; }
+        .stat-item { display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); padding: 12px 24px; border-radius: 16px; font-weight: 700; font-size: 1rem; color: #e2e8f0; backdrop-filter: blur(5px); }
+        .cta-button { display: inline-flex; align-items: center; gap: 12px; background: #ef4444; color: #fff; padding: 18px 40px; border-radius: 20px; font-size: 1.2rem; font-weight: 800; transition: 0.3s; box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4); }
+        .featured-app:hover .cta-button { background: #dc2626; transform: scale(1.05); }
+        .hero-visual { font-size: 20rem; color: rgba(239, 68, 68, 0.1); position: absolute; right: 40px; bottom: -50px; transition: 0.5s; pointer-events: none; }
+        .featured-app:hover .hero-visual { color: rgba(239, 68, 68, 0.2); transform: scale(1.05) rotate(-5deg); }
 
         /* ==========================================================
-           🌟 APPS GRID (VIEWMAX STYLE CU VIDEO BACKGROUND)
+           🌟 APPS GRID (MAI MARI, 16:9 PREVIEW)
         ========================================================== */
-        .section-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 30px; display: flex; align-items: center; gap: 12px; letter-spacing: -0.5px; }
-        .apps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 30px; margin-bottom: 80px; }
+        .section-title { font-size: 2rem; font-weight: 900; margin-bottom: 40px; display: flex; align-items: center; gap: 12px; letter-spacing: -1px; }
+        /* Grid marit */
+        .apps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 40px; margin-bottom: 80px; }
         
-        .app-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 24px; overflow: hidden; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; display: flex; flex-direction: column; cursor: pointer; }
-        .app-card:hover { border-color: rgba(99, 102, 241, 0.4); transform: translateY(-10px); box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 30px rgba(99, 102, 241, 0.1); background: rgba(255,255,255,0.04); }
+        .app-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 30px; overflow: hidden; transition: 0.4s; position: relative; display: flex; flex-direction: column; cursor: pointer; }
+        .app-card:hover { border-color: rgba(99, 102, 241, 0.4); transform: translateY(-10px); box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 40px rgba(99, 102, 241, 0.1); background: rgba(255,255,255,0.04); }
         
-        /* Recipientul pentru Video/Imagine (Stil Viewmax) */
+        /* Preview Video marit (16:9) */
         .app-preview { width: 100%; aspect-ratio: 16/9; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #000; border-bottom: 1px solid var(--border); }
-        
-        /* Video-ul din preview */
-        .app-preview video, .app-preview img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.5; transition: 0.5s ease; filter: grayscale(50%); }
-        .app-card:hover .app-preview video, .app-card:hover .app-preview img { opacity: 0.9; transform: scale(1.05); filter: grayscale(0%); }
-        
-        /* Overlay Gradient peste video ca sa se vada iconita */
-        .app-preview::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(3,7,18,1) 0%, rgba(3,7,18,0.2) 100%); transition: 0.4s; }
-        .app-card:hover .app-preview::after { opacity: 0.5; }
-
-        /* Iconita centrala */
-        .app-preview i { font-size: 3.5rem; color: #fff; z-index: 2; transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); text-shadow: 0 10px 20px rgba(0,0,0,0.8); }
+        .app-preview video, .app-preview img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.5; transition: 0.5s ease; filter: grayscale(40%); }
+        .app-card:hover .app-preview video, .app-card:hover .app-preview img { opacity: 1; transform: scale(1.03); filter: grayscale(0%); }
+        .app-preview::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(3,7,18,1) 0%, rgba(3,7,18,0.1) 100%); transition: 0.4s; }
+        .app-card:hover .app-preview::after { opacity: 0.3; }
+        .app-preview i { font-size: 4rem; color: #fff; z-index: 2; transition: 0.4s; text-shadow: 0 10px 20px rgba(0,0,0,0.8); }
         .app-card:hover .app-preview i { transform: scale(1.2) translateY(-5px); }
 
-        .app-info { padding: 24px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; z-index: 2; }
-        .app-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 10px; color: #fff; letter-spacing: -0.5px;}
-        .app-desc { font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; }
+        .app-info { padding: 30px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; z-index: 2; }
+        .app-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 12px; color: #fff; letter-spacing: -0.5px;}
+        .app-desc { font-size: 1rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; }
+        .tech-badge { font-size: 0.75rem; font-weight: 800; color: var(--primary); background: rgba(99, 102, 241, 0.1); padding: 4px 10px; border-radius: 6px; margin-top: 10px; display: inline-block;}
         
-        .app-meta-box { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .credit-cost { font-size: 0.85rem; font-weight: 800; color: #fbbf24; display: flex; align-items: center; gap: 6px; background: rgba(251, 191, 36, 0.1); padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(251, 191, 36, 0.2);}
+        .app-meta-box { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .credit-cost { font-size: 0.9rem; font-weight: 800; color: #fbbf24; display: flex; align-items: center; gap: 6px; background: rgba(251, 191, 36, 0.1); padding: 8px 14px; border-radius: 10px; border: 1px solid rgba(251, 191, 36, 0.2);}
         
-        .launch-btn { font-weight: 800; font-size: 0.95rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px; transition: 0.3s; }
+        .launch-btn { font-weight: 800; font-size: 1rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px; transition: 0.3s; }
         .app-card:hover .launch-btn { gap: 14px; color: var(--primary); }
-        
-        .badge { position: absolute; top: 16px; right: 16px; padding: 6px 14px; border-radius: 10px; font-size: 0.7rem; font-weight: 800; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid rgba(255,255,255,0.2); z-index: 3; backdrop-filter: blur(5px); }
+        .badge { position: absolute; top: 20px; right: 20px; padding: 6px 16px; border-radius: 10px; font-size: 0.75rem; font-weight: 900; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid rgba(255,255,255,0.2); z-index: 3; backdrop-filter: blur(5px); }
 
         /* ==========================================================
            🌟 PRICING (TOP UP)
         ========================================================== */
-        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-bottom: 60px; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 60px; }
         .pricing-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 30px; padding: 40px 30px; text-align: center; transition: 0.4s; position: relative; overflow: hidden; }
         .pricing-card:hover { border-color: rgba(99, 102, 241, 0.5); transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); background: rgba(255,255,255,0.04); }
         .pricing-card.popular { border-color: var(--primary); background: rgba(99, 102, 241, 0.05); }
-        .pricing-card.popular::before { content: 'BEST VALUE'; position: absolute; top: 15px; right: -35px; background: var(--primary); color: #fff; font-size: 0.7rem; font-weight: 800; padding: 6px 40px; transform: rotate(45deg); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        
-        .p-credits { font-size: 3rem; font-weight: 900; color: #fff; margin-bottom: 5px; line-height: 1; letter-spacing: -1px;}
-        .p-name { color: var(--primary); font-size: 1.1rem; font-weight: 800; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; }
-        .p-price { font-size: 1.8rem; font-weight: 800; color: var(--text-muted); margin-bottom: 30px; }
-        
-        .buy-btn { width: 100%; padding: 16px; border-radius: 16px; font-weight: 800; cursor: pointer; transition: 0.3s; font-size: 1rem; }
+        .p-credits { font-size: 3.5rem; font-weight: 900; color: #fff; margin-bottom: 5px; line-height: 1; letter-spacing: -2px;}
+        .p-name { color: var(--primary); font-size: 1.2rem; font-weight: 800; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px; }
+        .p-price { font-size: 2rem; font-weight: 800; color: var(--text-muted); margin-bottom: 30px; }
+        .buy-btn { width: 100%; padding: 18px; border-radius: 20px; font-weight: 800; cursor: pointer; transition: 0.3s; font-size: 1.1rem; }
         .buy-btn-outline { background: transparent; border: 2px solid rgba(255,255,255,0.1); color: #fff; }
         .buy-btn-outline:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3);}
         .buy-btn-solid { background: var(--primary); border: none; color: #fff; box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4); }
@@ -164,17 +145,39 @@
         .close-modal { position: absolute; top: 20px; right: 25px; background: none; border: none; color: #94a3b8; font-size: 1.5rem; cursor: pointer; transition: 0.2s; }
         .close-modal:hover { color: #fff; transform: scale(1.2); }
         
-        @media (max-width: 1200px) { .sidebar { display: none; } .main-content { padding: 30px; } .hero-visual { display: none; } .featured-app{ padding: 40px 30px;} }
+        @media (max-width: 768px) { .nav-links { display: none; } .hero-title { font-size: 3rem; } .featured-app { padding: 40px 20px; } .hero-visual { display: none; } }
     </style>
 </head>
 <body>
+
+<nav class="top-nav">
+    <div class="logo">
+        <div class="logo-icon">✨</div>
+        Viralio
+    </div>
+    <div class="nav-links">
+        <a href="#tools">Unelte AI</a>
+        <a href="#pricing">Top-Up Credite</a>
+    </div>
+    <div class="auth-container">
+        <button id="login-btn" class="login-trigger-btn" onclick="openLoginModal()">Login</button>
+        <div id="profile-pill" class="profile-pill">
+            <div class="avatar"><img id="user-avatar" src="" alt="Avatar"></div>
+            <div class="flex flex-col" style="display:flex; flex-direction:column; line-height: 1.2;">
+                <span id="user-name" style="font-size:0.9rem; font-weight:800;"></span>
+                <span style="font-size:0.8rem; color:#4ade80; font-weight:800;"><span id="top-credits">0</span> Credite</span>
+            </div>
+            <button onclick="logout()" class="logout-btn"><i class="fa-solid fa-power-off"></i></button>
+        </div>
+    </div>
+</nav>
 
 <div id="login-modal">
     <div class="modal-content">
         <button class="close-modal" onclick="closeLoginModal()"><i class="fa-solid fa-xmark"></i></button>
         <div class="logo-icon" style="margin: 0 auto 25px; width: 70px; height: 70px; font-size: 2rem;">✨</div>
-        <h2 style="font-size: 2rem; margin-bottom: 10px; font-weight: 800; color: #fff; letter-spacing: -1px;">Intră în cont</h2>
-        <p style="color: #94a3b8; margin-bottom: 35px; font-size: 1.05rem; line-height: 1.5;">Conectează-te pentru a accesa uneltele AI și a-ți folosi creditele.</p>
+        <h2 style="font-size: 2rem; margin-bottom: 10px; font-weight: 900; color: #fff; letter-spacing: -1px;">Intră în cont</h2>
+        <p style="color: #94a3b8; margin-bottom: 35px; font-size: 1.05rem;">Conectează-te pentru a accesa uneltele AI și a folosi creditele.</p>
         <div style="display: flex; justify-content: center;">
             <div id="g_id_onload" data-client_id="743541351685-br4h5r61n3ai28bbhm9blt34944rju8p.apps.googleusercontent.com" data-context="signin" data-ux_mode="popup" data-callback="handleCredentialResponse" data-auto_prompt="false"></div>
             <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="filled_black" data-text="signin_with" data-size="large"></div>
@@ -182,38 +185,12 @@
     </div>
 </div>
 
-<div class="sidebar">
-    <div>
-        <div class="logo"><div class="logo-icon">✨</div><span>Viralio Hub</span></div>
-        <ul class="nav-menu">
-            <li class="nav-item active"><i class="fa-solid fa-grid-2"></i> Dashboard</li>
-            <li class="nav-item"><i class="fa-solid fa-wand-magic-sparkles"></i> Toate Uneltele</li>
-            <li class="nav-item"><i class="fa-solid fa-wallet"></i> Top Up Credite</li>
-        </ul>
-    </div>
-    <div class="usage-box">
-        <div class="usage-title"><span>Status Cont</span> <span class="plan-badge">ACTIV</span></div>
-        <div class="progress-label"><span>Credite AI</span> <span id="sidebar-credits">? / ∞</span></div>
-    </div>
-</div>
-
-<div class="main-content">
-    <div class="header-section">
-        <div class="welcome">
-            <h1>Welcome<span id="welcome-name"></span>! 👋</h1>
-            <p>The Easiest Way to Make Viral Videos.</p>
-        </div>
-        <div class="auth-container">
-            <button id="login-btn" class="login-trigger-btn" onclick="openLoginModal()">Conectează-te <i class="fa-solid fa-arrow-right"></i></button>
-            <div id="profile-pill" class="profile-pill">
-                <div class="avatar"><img id="user-avatar" src="" alt="Avatar"></div>
-                <div class="flex flex-col" style="display:flex; flex-direction:column; line-height: 1.2;">
-                    <span id="user-name" style="font-size:0.95rem; font-weight:700;"></span>
-                    <span style="font-size:0.8rem; color:#4ade80; font-weight:800;"><span id="top-credits">0</span> Credite</span>
-                </div>
-                <button onclick="logout()" class="logout-btn"><i class="fa-solid fa-power-off"></i></button>
-            </div>
-        </div>
+<main class="main-wrapper">
+    
+    <div class="hero-section">
+        <div class="hero-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> THE ULTIMATE CREATOR HUB</div>
+        <h1 class="hero-title">The Easiest Way to<br><span>Make Viral Content.</span></h1>
+        <p class="hero-desc">Platforma supremă care îți pune la dispoziție cele mai puternice modele AI (Veo 3, Nano Banana) pentru a-ți crește canalul instant.</p>
     </div>
 
     <div class="marquee-container">
@@ -223,16 +200,12 @@
             <div class="marquee-item"><i class="fa-solid fa-language"></i> Traduceri în 50+ Limbi</div>
             <div class="marquee-item"><i class="fa-solid fa-bolt"></i> Servere Dedicate Ultra-Rapide</div>
             <div class="marquee-item"><i class="fa-solid fa-star"></i> Ecosistemul #1 pentru Viralitate</div>
-            
             <div class="marquee-item"><i class="fa-solid fa-check-circle"></i> Peste 10.000 de Creatori Activi</div>
             <div class="marquee-item"><i class="fa-solid fa-video"></i> 5.000.000+ Videoclipuri Procesate</div>
-            <div class="marquee-item"><i class="fa-solid fa-language"></i> Traduceri în 50+ Limbi</div>
-            <div class="marquee-item"><i class="fa-solid fa-bolt"></i> Servere Dedicate Ultra-Rapide</div>
-            <div class="marquee-item"><i class="fa-solid fa-star"></i> Ecosistemul #1 pentru Viralitate</div>
         </div>
     </div>
 
-    <a href="https://downloader.creatorsmart.ro/" class="hero-link">
+    <a href="https://downloader.creatorsmart.ro/" class="hero-link" id="tools">
         <div class="featured-app">
             <div class="featured-content">
                 <div class="featured-badge"><i class="fa-solid fa-fire text-white"></i> CEA MAI FOLOSITĂ</div>
@@ -253,34 +226,64 @@
     <div class="apps-grid">
         
         <a href="#" class="app-card" onclick="openLoginModalIfGuest()">
+            <div class="badge" style="color: #fbbf24; border-color: #fbbf24;">CINEMA AI</div>
+            <div class="app-preview">
+                <video autoplay loop muted playsinline src="https://media.viewmax.io/static/Tools/ai-videogen.mp4"></video>
+                <i class="fa-solid fa-film" style="color: #fbbf24;"></i>
+            </div>
+            <div class="app-info">
+                <div>
+                    <div class="app-title">B-Roll AI Director</div>
+                    <p class="app-desc">Generează video-uri cinematice de înaltă fidelitate direct din text. B-Roll-urile perfecte pentru retenție video.</p>
+                    <div class="tech-badge"><i class="fa-solid fa-microchip"></i> Powered by Google Veo 3</div>
+                </div>
+                <div style="margin-top: 25px;">
+                    <div class="app-meta-box">
+                        <span class="credit-cost"><i class="fa-solid fa-coins"></i> 5 Credite</span>
+                    </div>
+                    <div class="launch-btn">Deschide Tool <i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </div>
+        </a>
+
+        <a href="#" class="app-card" onclick="openLoginModalIfGuest()">
+            <div class="badge" style="color: #c084fc; border-color: #c084fc;">VISION</div>
+            <div class="app-preview">
+                <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1000&auto=format&fit=crop" alt="Thumbnail">
+                <i class="fa-solid fa-image" style="color: #c084fc;"></i>
+            </div>
+            <div class="app-info">
+                <div>
+                    <div class="app-title">Viral Thumbnail AI</div>
+                    <p class="app-desc">Generează imagini ultra-realiste și text-rendering perfect direct pe poză pentru coperți de YouTube garantate să facă click.</p>
+                    <div class="tech-badge"><i class="fa-solid fa-microchip"></i> Powered by Nano Banana</div>
+                </div>
+                <div style="margin-top: 25px;">
+                    <div class="app-meta-box">
+                        <span class="credit-cost"><i class="fa-solid fa-coins"></i> 2 Credite</span>
+                    </div>
+                    <div class="launch-btn">Deschide Tool <i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </div>
+        </a>
+
+        <a href="#" class="app-card" onclick="openLoginModalIfGuest()">
             <div class="badge" style="color: #60a5fa; border-color: #60a5fa;">PREMIUM</div>
             <div class="app-preview">
                 <video autoplay loop muted playsinline src="https://media.viewmax.io/static/Tools/ai-upscaler.mp4"></video>
                 <i class="fa-solid fa-wand-magic-sparkles" style="color: #60a5fa;"></i>
             </div>
             <div class="app-info">
-                <div class="app-title">AI Video Upscaler 4K</div>
-                <div class="app-desc">Transformă clipurile de calitate slabă în capodopere 4K. Inteligența artificială reconstruiește detaliile pierdute.</div>
-                <div class="app-meta-box">
-                    <span class="credit-cost"><i class="fa-solid fa-coins"></i> 3 Credite</span>
+                <div>
+                    <div class="app-title">AI Video Upscaler 4K</div>
+                    <p class="app-desc">Transformă clipurile de calitate slabă în capodopere 4K. Inteligența artificială reconstruiește detaliile pierdute.</p>
                 </div>
-                <div class="launch-btn">Deschide <i class="fa-solid fa-arrow-right"></i></div>
-            </div>
-        </a>
-
-        <a href="#" class="app-card" onclick="openLoginModalIfGuest()">
-            <div class="badge" style="color: #10b981; border-color: #10b981;">NOU</div>
-            <div class="app-preview">
-                <video autoplay loop muted playsinline src="https://media.viewmax.io/static/Tools/watermarkMobile.mp4"></video>
-                <i class="fa-solid fa-droplet-slash" style="color: #10b981;"></i>
-            </div>
-            <div class="app-info">
-                <div class="app-title">Watermark Remover</div>
-                <div class="app-desc">Curăță automat TikTok-urile și clipurile de logo-uri și watermark-uri enervante cu tehnologia noastră de inpainting.</div>
-                <div class="app-meta-box">
-                    <span class="credit-cost"><i class="fa-solid fa-coins"></i> 2 Credite</span>
+                <div style="margin-top: 25px;">
+                    <div class="app-meta-box">
+                        <span class="credit-cost"><i class="fa-solid fa-coins"></i> 3 Credite</span>
+                    </div>
+                    <div class="launch-btn">Deschide Tool <i class="fa-solid fa-arrow-right"></i></div>
                 </div>
-                <div class="launch-btn">Deschide <i class="fa-solid fa-arrow-right"></i></div>
             </div>
         </a>
 
@@ -291,44 +294,36 @@
                 <i class="fa-solid fa-comment-slash" style="color: #f43f5e;"></i>
             </div>
             <div class="app-info">
-                <div class="app-title">Caption Remover AI</div>
-                <div class="app-desc">Șterge textele și subtitrările hardcodate de pe videoclipurile tale pentru a le putea reedita și reposta.</div>
-                <div class="app-meta-box">
-                    <span class="credit-cost"><i class="fa-solid fa-coins"></i> 2 Credite</span>
+                <div>
+                    <div class="app-title">Caption Remover AI</div>
+                    <p class="app-desc">Șterge textele și subtitrările hardcodate de pe videoclipurile tale pentru a le putea reedita și reposta curat.</p>
                 </div>
-                <div class="launch-btn">Deschide <i class="fa-solid fa-arrow-right"></i></div>
+                <div style="margin-top: 25px;">
+                    <div class="app-meta-box">
+                        <span class="credit-cost"><i class="fa-solid fa-coins"></i> 2 Credite</span>
+                    </div>
+                    <div class="launch-btn">Deschide Tool <i class="fa-solid fa-arrow-right"></i></div>
+                </div>
             </div>
         </a>
 
         <a href="#" class="app-card" onclick="openLoginModalIfGuest()">
-            <div class="badge" style="color: #fbbf24; border-color: #fbbf24;">CINEMA AI</div>
+            <div class="badge" style="color: #10b981; border-color: #10b981;">NOU</div>
             <div class="app-preview">
-                <video autoplay loop muted playsinline src="https://media.viewmax.io/static/Tools/ai-videogen.mp4"></video>
-                <i class="fa-solid fa-film" style="color: #fbbf24;"></i>
+                <video autoplay loop muted playsinline src="https://media.viewmax.io/static/Tools/watermarkMobile.mp4"></video>
+                <i class="fa-solid fa-droplet-slash" style="color: #10b981;"></i>
             </div>
             <div class="app-info">
-                <div class="app-title">B-Roll AI Director</div>
-                <div class="app-desc">Generează video-uri cinematice de înaltă fidelitate din text. B-Roll-urile perfecte pentru retenție.</div>
-                <div class="app-meta-box">
-                    <span class="credit-cost"><i class="fa-solid fa-coins"></i> 5 Credite</span>
+                <div>
+                    <div class="app-title">Watermark Remover</div>
+                    <p class="app-desc">Curăță automat TikTok-urile și clipurile de logo-uri și watermark-uri enervante cu tehnologia noastră AI de inpainting.</p>
                 </div>
-                <div class="launch-btn">Deschide <i class="fa-solid fa-arrow-right"></i></div>
-            </div>
-        </a>
-
-        <a href="#" class="app-card" onclick="openLoginModalIfGuest()">
-            <div class="badge" style="color: #c084fc; border-color: #c084fc;">VISION</div>
-            <div class="app-preview">
-                <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1000&auto=format&fit=crop" alt="Thumbnail bg">
-                <i class="fa-solid fa-image" style="color: #c084fc;"></i>
-            </div>
-            <div class="app-info">
-                <div class="app-title">Viral Thumbnail AI</div>
-                <div class="app-desc">Generează imagini ultra-realiste și randare text perfectă pentru coperți de YouTube garantate să facă click.</div>
-                <div class="app-meta-box">
-                    <span class="credit-cost"><i class="fa-solid fa-coins"></i> 1 Credit</span>
+                <div style="margin-top: 25px;">
+                    <div class="app-meta-box">
+                        <span class="credit-cost"><i class="fa-solid fa-coins"></i> 2 Credite</span>
+                    </div>
+                    <div class="launch-btn">Deschide Tool <i class="fa-solid fa-arrow-right"></i></div>
                 </div>
-                <div class="launch-btn">Deschide <i class="fa-solid fa-arrow-right"></i></div>
             </div>
         </a>
 
@@ -339,18 +334,22 @@
                 <i class="fa-solid fa-scissors" style="color: #ec4899;"></i>
             </div>
             <div class="app-info">
-                <div class="app-title">Audio Slicer Pro</div>
-                <div class="app-desc">Elimină automat tăcerile din înregistrări. Perfect pentru podcasturi și clipuri dinamice.</div>
-                <div class="app-meta-box">
-                    <span class="credit-cost"><i class="fa-solid fa-coins"></i> 1 Credit</span>
+                <div>
+                    <div class="app-title">Audio Slicer Pro</div>
+                    <p class="app-desc">Elimină automat tăcerile din înregistrări audio. Perfect pentru podcasturi și clipuri foarte dinamice.</p>
                 </div>
-                <div class="launch-btn">Deschide <i class="fa-solid fa-arrow-right"></i></div>
+                <div style="margin-top: 25px;">
+                    <div class="app-meta-box">
+                        <span class="credit-cost"><i class="fa-solid fa-coins"></i> 1 Credit</span>
+                    </div>
+                    <div class="launch-btn">Deschide Tool <i class="fa-solid fa-arrow-right"></i></div>
+                </div>
             </div>
         </a>
 
     </div>
 
-    <div class="section-title"><i class="fa-solid fa-coins" style="color:#fbbf24;"></i> Alimentează Contul (Top-Up)</div>
+    <div class="section-title" id="pricing"><i class="fa-solid fa-coins" style="color:#fbbf24;"></i> Alimentează Contul (Top-Up)</div>
     <div class="pricing-grid">
         <div class="pricing-card">
             <div class="p-name" style="color: #94a3b8;">Starter</div>
@@ -371,13 +370,13 @@
             <button class="buy-btn buy-btn-outline" onclick="openLoginModalIfGuest()">Alege Agency</button>
         </div>
     </div>
-</div>
+</main>
 
 <script>
     const loginModal = document.getElementById('login-modal');
     function openLoginModal() { loginModal.classList.add('show'); }
     function closeLoginModal() { loginModal.classList.remove('show'); }
-    function openLoginModalIfGuest() { if (!getToken()) openLoginModal(); else alert('Urmează plata cu Stripe!'); }
+    function openLoginModalIfGuest() { if (!getToken()) openLoginModal(); else alert('Integrarea Stripe urmeaza!'); }
 
     function setToken(token) { document.cookie = "viralio_token=" + token + "; domain=.creatorsmart.ro; path=/; max-age=604800; Secure; SameSite=Lax"; }
     function getToken() { const match = document.cookie.match(/(?:^|; )viralio_token=([^;]*)/); return match ? match[1] : null; }
@@ -392,17 +391,15 @@
             const data = await res.json();
             if(data.token) { setToken(data.token); closeLoginModal(); updateUIForLoggedUser(data.user); }
             else { alert("Eroare la autentificare."); }
-        } catch (e) { alert('A apărut o problemă de conexiune!'); }
+        } catch (e) { alert('Eroare de conexiune la server.'); }
     }
 
     function updateUIForLoggedUser(user) {
         document.getElementById('login-btn').style.display = 'none';
         document.getElementById('profile-pill').classList.add('active');
-        document.getElementById('welcome-name').innerText = `, ${user.name.split(' ')[0]}`;
-        document.getElementById('user-name').innerText = user.name;
+        document.getElementById('user-name').innerText = user.name.split(' ')[0];
         document.getElementById('user-avatar').src = user.picture;
         document.getElementById('top-credits').innerText = user.credits;
-        document.getElementById('sidebar-credits').innerText = `${user.credits} / ∞`;
     }
 
     function logout() { removeToken(); location.reload(); }
