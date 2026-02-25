@@ -1017,25 +1017,29 @@ async function handleCredentialResponse(response) {
         currentUserEmail = user.email; 
     }
 
-    // === ADAUGĂ ASTA: Funcția de plată Stripe ===
+// === Funcția de plată Stripe REPARATĂ ===
     function buyPackage(plan) {
-        // Daca nu e logat, il punem sa se logheze prima data
-        if (!getToken() || !currentUserEmail) {
+        // Daca NU este logat (nu are token), abia atunci deschidem modalul
+        if (!getToken()) {
             openLoginModal();
             return;
         }
 
-        // AICI PUI LINK-URILE REALE GENERATE IN STRIPE (Payment Links)
         const stripeLinks = {
             starter: "https://buy.stripe.com/dRm00k1hTdQS6fxfbO1Nu00",
             creator: "https://buy.stripe.com/6oU4gA8KlbIKdHZ1kY1Nu01",
             agency:  "https://buy.stripe.com/6oU28s3q1bIKdHZ4xa1Nu02"
         };
 
-        // Construim link-ul cu emailul gata completat pentru Stripe
-        const finalUrl = stripeLinks[plan] + "?prefilled_email=" + encodeURIComponent(currentUserEmail);
+        let finalUrl = stripeLinks[plan];
+
+        // Dacă avem emailul (userul s-a logat chiar acum), completăm automat pe Stripe.
+        // Dacă nu îl avem (a dat refresh la pagină), îl lăsăm să scrie el manual pe Stripe, dar NU îl mai blocăm.
+        if (currentUserEmail) {
+            finalUrl += "?prefilled_email=" + encodeURIComponent(currentUserEmail);
+        }
         
-        // Trimitem clientul la plata
+        // Trimitem clientul glonț la plată
         window.location.href = finalUrl;
     }
 
