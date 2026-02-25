@@ -445,168 +445,225 @@
     </div>
 </div>
 
-<div id="features" class="flex w-full flex-col items-center justify-center px-4 md:px-8 py-32 reveal bg-slate-50 relative overflow-hidden">
-    <div class="absolute top-64 left-1/2 -translate-x-1/2 md:-translate-x-full w-[600px] h-[600px] bg-red-500/5 blur-[120px] rounded-full pointer-events-none mix-blend-multiply"></div>
+<div id="features" class="flex w-full flex-col items-center justify-center px-4 md:px-6 py-24 reveal bg-slate-50 relative overflow-hidden">
+    <div class="absolute top-40 left-1/2 -translate-x-1/2 md:-translate-x-full w-[500px] h-[500px] bg-red-500/10 blur-[100px] rounded-full pointer-events-none mix-blend-multiply"></div>
     
-    <span class="relative z-10 bg-indigo-50 text-indigo-600 font-bold tracking-widest text-xs uppercase px-4 py-2 rounded-full mb-6 border border-indigo-100/50">Ecosistemul Complet</span>
+    <span class="relative z-10 bg-indigo-50 text-indigo-600 font-bold tracking-widest text-[0.65rem] uppercase px-4 py-1.5 rounded-full mb-4 border border-indigo-100/50">Ecosistemul Complet</span>
     
-    <h2 class="relative z-10 mb-6 w-full text-center text-[2.5rem] md:text-[3.5rem] leading-[1.1] font-black tracking-tight text-slate-900">
+    <h2 class="relative z-10 mb-4 w-full text-center text-3xl md:text-[3rem] leading-[1.1] font-black tracking-tight text-slate-900">
         Alege-ți arma.
     </h2>
-    <p class="relative z-10 mx-auto mb-20 max-w-2xl text-center text-lg md:text-xl font-medium text-slate-500">
-        Toate uneltele din Viralio consumă credite dintr-un singur portofel universal. Gândește modular.
+    <p class="relative z-10 mx-auto mb-16 max-w-xl text-center text-sm md:text-base font-medium text-slate-500">
+        Un singur portofel de credite. Toate uneltele incluse. Gândește modular.
     </p>
 
     <style>
-        @keyframes scanX { 0% { left: 0%; } 100% { left: 100%; } }
-        .animate-scan-x { animation: scanX 2.5s linear infinite; }
+        @keyframes eqBite {
+            0%, 100% { height: 25%; }
+            50% { height: 100%; }
+        }
+        .eq-bar { animation: eqBite 1s ease-in-out infinite; transform-origin: bottom; }
     </style>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl w-full relative z-10">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-7xl w-full relative z-10">
         
-        <a href="https://downloader.creatorsmart.ro/" class="group relative flex flex-col bg-slate-900 border border-red-500/40 rounded-[2rem] overflow-hidden hover:-translate-y-2 transition-all duration-500 shadow-[0_15px_40px_rgba(220,38,38,0.2)] hover:shadow-[0_20px_60px_rgba(220,38,38,0.4)]">
+        <a href="https://downloader.creatorsmart.ro/" class="group relative flex flex-col bg-slate-900 border border-red-500/40 rounded-3xl overflow-hidden hover:-translate-y-1.5 transition-all duration-500 shadow-md hover:shadow-[0_15px_40px_rgba(220,38,38,0.3)]">
             <div class="absolute inset-0 bg-gradient-to-br from-red-500/10 to-transparent pointer-events-none"></div>
-            <div class="p-6 pb-4 flex flex-col flex-1 relative z-20">
-                <h3 class="text-[1.25rem] font-black text-white mb-1 tracking-tight">YT Downloader <span class="text-red-400">&</span> Translator</h3>
-                <p class="text-slate-400 text-sm font-medium leading-relaxed mb-4 line-clamp-2">Descarcă clipuri 1080p. Extrage subtitrarea și o traduce impecabil în română.</p>
+            
+            <div class="p-5 pb-4 flex flex-col flex-1 relative z-20">
+                <h3 class="text-[1.15rem] font-black text-white mb-1 tracking-tight">YT Downloader <span class="text-red-400">&</span> Translator</h3>
+                <p class="text-[0.8rem] text-slate-400 font-medium leading-relaxed mb-4 line-clamp-2">Descarcă 1080p instant. Extrage subtitrarea și o traduce impecabil în limba română.</p>
                 <div class="flex items-center justify-between mt-auto">
-                    <span class="text-[0.65rem] font-bold text-red-400 bg-red-400/10 border border-red-400/20 px-3 py-1 rounded-md uppercase tracking-widest">Aplicația Nr. 1</span>
-                    <span class="font-black text-amber-400 text-sm flex items-center gap-1.5"><i class="fa-solid fa-coins"></i> 1 Credit</span>
+                    <span class="text-[0.6rem] font-bold text-red-400 bg-red-400/10 border border-red-400/20 px-2.5 py-1 rounded-md uppercase tracking-widest">Aplicația Nr. 1</span>
+                    <span class="font-black text-amber-400 text-xs flex items-center gap-1.5"><i class="fa-solid fa-coins"></i> 1 Credit</span>
                 </div>
             </div>
             
-            <div class="relative w-full aspect-video border-t border-white/5 overflow-hidden z-10 bg-black">
-                <video src="/ai-videogen.mp4" autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-80 group-hover:opacity-100"></video>
+            <div class="relative w-full h-[220px] border-t border-red-500/20 overflow-hidden z-10 bg-[#050505] flex flex-col p-4 font-mono">
+                <div class="w-full bg-white/5 border border-white/10 rounded-lg p-2.5 flex items-center gap-2 mb-3 shadow-inner">
+                    <i class="fa-brands fa-youtube text-red-500 text-sm"></i>
+                    <span id="yt-url" class="text-slate-300 text-[0.7rem] truncate"></span>
+                    <span id="yt-cursor" class="w-1.5 h-3 bg-red-500 animate-pulse"></span>
+                </div>
+                <div id="yt-status" class="flex-1 flex flex-col justify-center items-center gap-3"></div>
             </div>
         </a>
 
-        <a href="generate.html" class="group relative flex flex-col bg-white border border-slate-200/80 rounded-[2rem] overflow-hidden hover:-translate-y-2 transition-all duration-500 shadow-sm hover:shadow-xl">
-            <div class="p-6 pb-4 flex flex-col flex-1 relative z-20">
-                <h3 class="text-[1.25rem] font-black text-slate-900 mb-1 tracking-tight">Generator Media <span class="text-indigo-500">(Pro)</span></h3>
-                <p class="text-slate-500 text-sm font-medium leading-relaxed mb-4 line-clamp-2">Video cinematic & imagini ultra-realiste generate la secundă cu Veo 3.1.</p>
+        <a href="generate.html" class="group relative flex flex-col bg-white border border-slate-200/80 rounded-3xl overflow-hidden hover:-translate-y-1.5 transition-all duration-500 shadow-sm hover:shadow-xl">
+            <div class="p-5 pb-4 flex flex-col flex-1 relative z-20">
+                <h3 class="text-[1.15rem] font-black text-slate-900 mb-1 tracking-tight">Generator Media <span class="text-indigo-500">(Pro)</span></h3>
+                <p class="text-[0.8rem] text-slate-500 font-medium leading-relaxed mb-4 line-clamp-2">Videoclipuri cinematice și imagini ultra-realiste generate la secundă cu AI.</p>
                 <div class="flex items-center justify-between mt-auto">
-                    <span class="text-[0.65rem] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-3 py-1 rounded-md uppercase tracking-widest">VEO / NANO</span>
-                    <span class="font-black text-amber-500 text-sm flex items-center gap-1.5"><i class="fa-solid fa-coins"></i> Dinamic</span>
+                    <span class="text-[0.6rem] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2.5 py-1 rounded-md uppercase tracking-widest">VEO / NANO</span>
+                    <span class="font-black text-amber-500 text-xs flex items-center gap-1.5"><i class="fa-solid fa-coins"></i> Dinamic</span>
                 </div>
             </div>
             
-            <div class="relative w-full aspect-video border-t border-slate-100 overflow-hidden z-10 bg-black">
-                <video src="/ai-videogen.mp4" autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100"></video>
+            <div class="relative w-full h-[220px] border-t border-slate-100 overflow-hidden z-10 bg-black flex justify-center items-center">
+                <video src="/ai-videogen.mp4" autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-30 blur-xl group-hover:opacity-50 transition-opacity duration-500"></video>
+                <video src="/ai-videogen.mp4" autoplay loop muted playsinline class="relative h-full w-auto object-contain group-hover:scale-105 transition-transform duration-500 shadow-2xl"></video>
             </div>
         </a>
 
-        <a href="https://audiocut.creatorsmart.ro/" class="group relative flex flex-col bg-white border border-slate-200/80 rounded-[2rem] overflow-hidden hover:-translate-y-2 transition-all duration-500 shadow-sm hover:shadow-xl">
-            <div class="p-6 pb-4 flex flex-col flex-1 relative z-20">
-                <h3 class="text-[1.25rem] font-black text-slate-900 mb-1 tracking-tight">Audio Slicer <span class="text-emerald-500">AI</span></h3>
-                <p class="text-slate-500 text-sm font-medium leading-relaxed mb-4 line-clamp-2">Taie automat pauzele din podcasturi. Sunet fluid și retenție maximă.</p>
+        <a href="https://audiocut.creatorsmart.ro/" class="group relative flex flex-col bg-white border border-slate-200/80 rounded-3xl overflow-hidden hover:-translate-y-1.5 transition-all duration-500 shadow-sm hover:shadow-xl">
+            <div class="p-5 pb-4 flex flex-col flex-1 relative z-20">
+                <h3 class="text-[1.15rem] font-black text-slate-900 mb-1 tracking-tight">Audio Slicer <span class="text-emerald-500">AI</span></h3>
+                <p class="text-[0.8rem] text-slate-500 font-medium leading-relaxed mb-4 line-clamp-2">Taie automat pauzele moarte din podcasturi. Retenție maximă pe orice platformă.</p>
                 <div class="flex items-center justify-between mt-auto">
-                    <span class="text-[0.65rem] font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-md uppercase tracking-widest">Audio AI</span>
-                    <span class="font-black text-amber-500 text-sm flex items-center gap-1.5"><i class="fa-solid fa-coins"></i> 1 Credit</span>
+                    <span class="text-[0.6rem] font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2.5 py-1 rounded-md uppercase tracking-widest">Audio AI</span>
+                    <span class="font-black text-amber-500 text-xs flex items-center gap-1.5"><i class="fa-solid fa-coins"></i> 1 Credit</span>
                 </div>
             </div>
             
-            <div class="relative w-full aspect-video border-t border-slate-100 overflow-hidden z-10 bg-[#09090b] flex flex-col justify-center px-6">
-                <div class="flex justify-between items-center mb-1">
-                    <span class="text-[0.55rem] text-red-400 font-bold uppercase tracking-widest">Brut (40s)</span>
+            <div class="relative w-full h-[220px] border-t border-slate-100 overflow-hidden z-10 bg-[#09090b] flex flex-col justify-center px-8 gap-5">
+                <div>
+                    <span class="text-[0.55rem] text-red-400 font-bold uppercase tracking-widest mb-1 block"><i class="fa-solid fa-microphone-lines-slash mr-1"></i> Original (Pauze)</span>
+                    <div class="flex items-end justify-between gap-1 h-12 opacity-80">
+                        <div class="w-full bg-slate-500 rounded-t-sm eq-bar" style="animation-delay: 0.1s;"></div>
+                        <div class="w-full bg-slate-500 rounded-t-sm eq-bar" style="animation-delay: 0.3s;"></div>
+                        <div class="w-full bg-red-500/80 rounded-t-sm h-[15%]"></div> <div class="w-full bg-slate-500 rounded-t-sm eq-bar" style="animation-delay: 0.5s;"></div>
+                        <div class="w-full bg-slate-500 rounded-t-sm eq-bar" style="animation-delay: 0.2s;"></div>
+                        <div class="w-full bg-red-500/80 rounded-t-sm h-[15%]"></div> <div class="w-full bg-slate-500 rounded-t-sm eq-bar" style="animation-delay: 0.6s;"></div>
+                    </div>
                 </div>
-                <div class="flex items-end gap-[2px] h-10 mb-4 opacity-50 group-hover:opacity-30 transition-opacity">
-                    <div class="flex-1 bg-slate-400 h-[60%] rounded-t-sm"></div>
-                    <div class="flex-1 bg-slate-400 h-[90%] rounded-t-sm"></div>
-                    <div class="flex-1 bg-slate-400 h-[40%] rounded-t-sm"></div>
-                    <div class="flex-1 bg-red-500 h-[15%] rounded-t-sm"></div>
-                    <div class="flex-1 bg-red-500 h-[10%] rounded-t-sm"></div>
-                    <div class="flex-1 bg-slate-400 h-[70%] rounded-t-sm"></div>
-                    <div class="flex-1 bg-slate-400 h-[100%] rounded-t-sm"></div>
-                    <div class="flex-1 bg-red-500 h-[15%] rounded-t-sm"></div>
-                    <div class="flex-1 bg-slate-400 h-[50%] rounded-t-sm"></div>
-                    <div class="flex-1 bg-slate-400 h-[80%] rounded-t-sm"></div>
-                    <div class="flex-1 bg-slate-400 h-[60%] rounded-t-sm"></div>
-                    <div class="flex-1 bg-red-500 h-[10%] rounded-t-sm"></div>
-                    <div class="flex-1 bg-red-500 h-[15%] rounded-t-sm"></div>
-                    <div class="flex-1 bg-slate-400 h-[90%] rounded-t-sm"></div>
-                </div>
-                <div class="flex justify-between items-center mb-1">
-                    <span class="text-[0.55rem] text-emerald-400 font-bold uppercase tracking-widest">AI Cut (30s)</span>
-                </div>
-                <div class="flex items-end gap-[3px] h-10 relative">
-                    <div class="flex-1 bg-emerald-500 h-[60%] rounded-t-sm shadow-[0_0_5px_#10b981]"></div>
-                    <div class="flex-1 bg-emerald-500 h-[90%] rounded-t-sm shadow-[0_0_5px_#10b981]"></div>
-                    <div class="flex-1 bg-emerald-500 h-[40%] rounded-t-sm shadow-[0_0_5px_#10b981]"></div>
-                    <div class="flex-1 bg-emerald-500 h-[70%] rounded-t-sm shadow-[0_0_5px_#10b981]"></div>
-                    <div class="flex-1 bg-emerald-500 h-[100%] rounded-t-sm shadow-[0_0_5px_#10b981]"></div>
-                    <div class="flex-1 bg-emerald-500 h-[50%] rounded-t-sm shadow-[0_0_5px_#10b981]"></div>
-                    <div class="flex-1 bg-emerald-500 h-[80%] rounded-t-sm shadow-[0_0_5px_#10b981]"></div>
-                    <div class="flex-1 bg-emerald-500 h-[60%] rounded-t-sm shadow-[0_0_5px_#10b981]"></div>
-                    <div class="flex-1 bg-emerald-500 h-[90%] rounded-t-sm shadow-[0_0_5px_#10b981]"></div>
-                    <div class="flex-1 bg-emerald-500 h-[50%] rounded-t-sm shadow-[0_0_5px_#10b981]"></div>
-                    <div class="flex-1 bg-emerald-500 h-[70%] rounded-t-sm shadow-[0_0_5px_#10b981]"></div>
-                    <div class="absolute top-[-60px] bottom-0 w-0.5 bg-white shadow-[0_0_10px_#fff] z-20 animate-scan-x"></div>
+                <div>
+                    <span class="text-[0.55rem] text-emerald-400 font-bold uppercase tracking-widest mb-1 block"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Curățat AI</span>
+                    <div class="flex items-end justify-between gap-1.5 h-12">
+                        <div class="w-full bg-emerald-500 rounded-t-sm shadow-[0_0_8px_#10b981] eq-bar" style="animation-delay: 0.2s;"></div>
+                        <div class="w-full bg-emerald-500 rounded-t-sm shadow-[0_0_8px_#10b981] eq-bar" style="animation-delay: 0.4s;"></div>
+                        <div class="w-full bg-emerald-500 rounded-t-sm shadow-[0_0_8px_#10b981] eq-bar" style="animation-delay: 0.1s;"></div>
+                        <div class="w-full bg-emerald-500 rounded-t-sm shadow-[0_0_8px_#10b981] eq-bar" style="animation-delay: 0.6s;"></div>
+                        <div class="w-full bg-emerald-500 rounded-t-sm shadow-[0_0_8px_#10b981] eq-bar" style="animation-delay: 0.3s;"></div>
+                    </div>
                 </div>
             </div>
         </a>
 
-        <a onclick="openLoginModalIfGuest()" href="https://captions.creatorsmart.ro/" class="group relative flex flex-col bg-white border border-slate-200/80 rounded-[2rem] overflow-hidden hover:-translate-y-2 transition-all duration-500 shadow-sm hover:shadow-xl cursor-pointer">
-            <div class="p-6 pb-4 flex flex-col flex-1 relative z-20">
-                <h3 class="text-[1.25rem] font-black text-slate-900 mb-1 tracking-tight">Caption <span class="text-pink-500">Eraser</span></h3>
-                <p class="text-slate-500 text-sm font-medium leading-relaxed mb-4 line-clamp-2">Șterge subtitrările lipite direct pe video. Cadre curate, gata de repostare.</p>
+        <a onclick="openLoginModalIfGuest()" href="https://captions.creatorsmart.ro/" class="group relative flex flex-col bg-white border border-slate-200/80 rounded-3xl overflow-hidden hover:-translate-y-1.5 transition-all duration-500 shadow-sm hover:shadow-xl cursor-pointer">
+            <div class="p-5 pb-4 flex flex-col flex-1 relative z-20">
+                <h3 class="text-[1.15rem] font-black text-slate-900 mb-1 tracking-tight">Caption <span class="text-pink-500">Eraser</span></h3>
+                <p class="text-[0.8rem] text-slate-500 font-medium leading-relaxed mb-4 line-clamp-2">Șterge subtitrările lipite direct pe video. Cadre curate, gata de repostare.</p>
                 <div class="flex items-center justify-between mt-auto">
-                    <span class="text-[0.65rem] font-bold text-pink-600 bg-pink-50 border border-pink-100 px-3 py-1 rounded-md uppercase tracking-widest">Inpainting</span>
-                    <span class="font-black text-amber-500 text-sm flex items-center gap-1.5"><i class="fa-solid fa-coins"></i> 2 Credite</span>
+                    <span class="text-[0.6rem] font-bold text-pink-600 bg-pink-50 border border-pink-100 px-2.5 py-1 rounded-md uppercase tracking-widest">Inpainting</span>
+                    <span class="font-black text-amber-500 text-xs flex items-center gap-1.5"><i class="fa-solid fa-coins"></i> 2 Credite</span>
                 </div>
             </div>
             
-            <div class="relative w-full aspect-video border-t border-slate-100 overflow-hidden z-10 bg-black">
-                <video src="/caption-remover.mp4" autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100"></video>
+            <div class="relative w-full h-[220px] border-t border-slate-100 overflow-hidden z-10 bg-black flex justify-center items-center">
+                <video src="/caption-remover.mp4" autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-30 blur-xl group-hover:opacity-50 transition-opacity duration-500"></video>
+                <video src="/caption-remover.mp4" autoplay loop muted playsinline class="relative h-full w-auto object-contain group-hover:scale-105 transition-transform duration-500 shadow-2xl"></video>
             </div>
         </a>
 
-        <a onclick="openLoginModalIfGuest()" href="https://watermark.creatorsmart.ro/" class="group relative flex flex-col bg-white border border-slate-200/80 rounded-[2rem] overflow-hidden hover:-translate-y-2 transition-all duration-500 shadow-sm hover:shadow-xl cursor-pointer">
-            <div class="p-6 pb-4 flex flex-col flex-1 relative z-20">
-                <h3 class="text-[1.25rem] font-black text-slate-900 mb-1 tracking-tight">No <span class="text-cyan-500">Watermark</span></h3>
-                <p class="text-slate-500 text-sm font-medium leading-relaxed mb-4 line-clamp-2">Descarcă de pe TikTok/IG fără logo-uri sau semne de apă. Calitate 100%.</p>
+        <a onclick="openLoginModalIfGuest()" href="https://watermark.creatorsmart.ro/" class="group relative flex flex-col bg-white border border-slate-200/80 rounded-3xl overflow-hidden hover:-translate-y-1.5 transition-all duration-500 shadow-sm hover:shadow-xl cursor-pointer">
+            <div class="p-5 pb-4 flex flex-col flex-1 relative z-20">
+                <h3 class="text-[1.15rem] font-black text-slate-900 mb-1 tracking-tight">No <span class="text-cyan-500">Watermark</span></h3>
+                <p class="text-[0.8rem] text-slate-500 font-medium leading-relaxed mb-4 line-clamp-2">Descarcă de pe TikTok/IG fără logo-uri sau semne de apă. Calitate originală.</p>
                 <div class="flex items-center justify-between mt-auto">
-                    <span class="text-[0.65rem] font-bold text-cyan-600 bg-cyan-50 border border-cyan-100 px-3 py-1 rounded-md uppercase tracking-widest">YTDLP CORE</span>
-                    <span class="font-black text-amber-500 text-sm flex items-center gap-1.5"><i class="fa-solid fa-coins"></i> 2 Credite</span>
+                    <span class="text-[0.6rem] font-bold text-cyan-600 bg-cyan-50 border border-cyan-100 px-2.5 py-1 rounded-md uppercase tracking-widest">YTDLP CORE</span>
+                    <span class="font-black text-amber-500 text-xs flex items-center gap-1.5"><i class="fa-solid fa-coins"></i> 2 Credite</span>
                 </div>
             </div>
             
-            <div class="relative w-full aspect-video border-t border-slate-100 overflow-hidden z-10 bg-black">
-                <video src="/watermarkMobile.mp4" autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100"></video>
+            <div class="relative w-full h-[220px] border-t border-slate-100 overflow-hidden z-10 bg-black flex justify-center items-center">
+                <video src="/wood.mp4" autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-30 blur-xl group-hover:opacity-50 transition-opacity duration-500"></video>
+                <video src="/wood.mp4" autoplay loop muted playsinline class="relative h-full w-auto object-contain group-hover:scale-105 transition-transform duration-500 shadow-2xl"></video>
             </div>
         </a>
 
-        <a onclick="openLoginModalIfGuest()" href="#" class="group relative flex flex-col bg-white border border-slate-200/80 rounded-[2rem] overflow-hidden hover:-translate-y-2 transition-all duration-500 shadow-sm hover:shadow-xl cursor-pointer">
-            <div class="p-6 pb-4 flex flex-col flex-1 relative z-20">
-                <h3 class="text-[1.25rem] font-black text-slate-900 mb-1 tracking-tight">Video Scaler <span class="text-slate-500">4K</span></h3>
-                <p class="text-slate-500 text-sm font-medium leading-relaxed mb-4 line-clamp-2">Mărește rezoluția și claritatea. AI-ul reface detaliile pixel cu pixel.</p>
+        <a onclick="openLoginModalIfGuest()" href="#" class="group relative flex flex-col bg-white border border-slate-200/80 rounded-3xl overflow-hidden hover:-translate-y-1.5 transition-all duration-500 shadow-sm hover:shadow-xl cursor-pointer">
+            <div class="p-5 pb-4 flex flex-col flex-1 relative z-20">
+                <h3 class="text-[1.15rem] font-black text-slate-900 mb-1 tracking-tight">Video Scaler <span class="text-slate-500">4K</span></h3>
+                <p class="text-[0.8rem] text-slate-500 font-medium leading-relaxed mb-4 line-clamp-2">Mărește claritatea clipurilor pixelate. AI-ul reface detaliile ochiului uman.</p>
                 <div class="flex items-center justify-between mt-auto">
-                    <span class="text-[0.65rem] font-bold text-slate-600 bg-slate-100 border border-slate-200 px-3 py-1 rounded-md uppercase tracking-widest">Premium AI</span>
-                    <span class="font-black text-amber-500 text-sm flex items-center gap-1.5"><i class="fa-solid fa-coins"></i> 3 Credite</span>
+                    <span class="text-[0.6rem] font-bold text-slate-600 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-md uppercase tracking-widest">Premium AI</span>
+                    <span class="font-black text-amber-500 text-xs flex items-center gap-1.5"><i class="fa-solid fa-coins"></i> 3 Credite</span>
                 </div>
             </div>
             
-            <div class="relative w-full aspect-video border-t border-slate-100 overflow-hidden z-10 bg-black">
-                <video src="/ai-upscaler.mp4" autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100"></video>
+            <div class="relative w-full h-[220px] border-t border-slate-100 overflow-hidden z-10 bg-black flex justify-center items-center">
+                <video src="/ai-upscaler.mp4" autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-30 blur-xl group-hover:opacity-50 transition-opacity duration-500"></video>
+                <video src="/ai-upscaler.mp4" autoplay loop muted playsinline class="relative h-full w-auto object-contain group-hover:scale-105 transition-transform duration-500 shadow-2xl"></video>
             </div>
         </a>
 
-        <div class="group relative flex flex-col bg-slate-50 border border-slate-200/80 border-dashed rounded-[2rem] overflow-hidden opacity-70 cursor-not-allowed">
-            <div class="p-6 pb-4 flex flex-col flex-1 relative z-20 filter grayscale">
-                <h3 class="text-[1.25rem] font-black text-slate-500 mb-1 tracking-tight">Voice Studio</h3>
-                <p class="text-slate-400 text-sm font-medium leading-relaxed mb-4 line-clamp-2">Modele de voce umană ultra-realiste. Intonație perfectă și clonare AI.</p>
+        <div class="group relative flex flex-col bg-slate-50 border border-slate-200/80 border-dashed rounded-3xl overflow-hidden opacity-70 cursor-not-allowed">
+            <div class="p-5 pb-4 flex flex-col flex-1 relative z-20 filter grayscale">
+                <h3 class="text-[1.15rem] font-black text-slate-500 mb-1 tracking-tight">Voice Studio</h3>
+                <p class="text-[0.8rem] text-slate-400 font-medium leading-relaxed mb-4 line-clamp-2">Modele de voce umană ultra-realiste. Intonație perfectă și clonare AI.</p>
                 <div class="flex items-center justify-between mt-auto">
-                    <span class="text-[0.65rem] font-bold text-slate-400 bg-white border border-slate-200 px-3 py-1 rounded-md uppercase tracking-widest">Maintenance</span>
-                    <span class="font-bold text-slate-400 text-sm flex items-center gap-1.5"><i class="fa-solid fa-clock"></i> Curând</span>
+                    <span class="text-[0.6rem] font-bold text-slate-400 bg-white border border-slate-200 px-2.5 py-1 rounded-md uppercase tracking-widest">Maintenance</span>
+                    <span class="font-bold text-slate-400 text-xs flex items-center gap-1.5"><i class="fa-solid fa-clock"></i> Curând</span>
                 </div>
             </div>
             
-            <div class="relative w-full aspect-video border-t border-slate-200 overflow-hidden z-10 filter grayscale bg-black">
-                <video src="/ai-voiceover.mp4" autoplay loop muted playsinline class="w-full h-full object-cover opacity-30"></video>
+            <div class="relative w-full h-[220px] border-t border-slate-200 overflow-hidden z-10 filter grayscale bg-black flex justify-center items-center">
+                <video src="/ai-voiceover.mp4" autoplay loop muted playsinline class="relative h-full w-auto object-contain opacity-30"></video>
             </div>
         </div>
 
     </div>
 </div>
+
+<script>
+    function initYTAnim() {
+        const urlStr = "youtube.com/watch?v=viral";
+        const urlEl = document.getElementById('yt-url');
+        const cursorEl = document.getElementById('yt-cursor');
+        const statusEl = document.getElementById('yt-status');
+        
+        if(!urlEl || !statusEl) return;
+
+        let charIndex = 0;
+        
+        function type() {
+            urlEl.textContent = '';
+            statusEl.innerHTML = '';
+            cursorEl.style.display = 'inline-block';
+            charIndex = 0;
+            
+            const typing = setInterval(() => {
+                urlEl.textContent += urlStr[charIndex];
+                charIndex++;
+                if(charIndex >= urlStr.length) {
+                    clearInterval(typing);
+                    setTimeout(process, 600);
+                }
+            }, 60);
+        }
+        
+        function process() {
+            cursorEl.style.display = 'none';
+            statusEl.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin text-3xl text-red-500"></i><span class="text-[0.6rem] text-red-400 font-bold tracking-widest uppercase mt-2">Extragere AI...</span>`;
+            setTimeout(showResult, 2000);
+        }
+        
+        function showResult() {
+            statusEl.innerHTML = `
+                <div class="w-full grid grid-cols-2 gap-2 h-full pb-1">
+                    <div class="bg-red-500/10 border border-red-500/20 rounded-xl flex flex-col items-center justify-center p-2">
+                        <i class="fa-solid fa-download text-2xl text-red-400 mb-2"></i>
+                        <span class="text-white font-bold text-[0.6rem] uppercase tracking-wider">MP4 Video</span>
+                        <span class="text-slate-400 text-[0.55rem]">1080p HD</span>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 rounded-xl p-2.5 flex flex-col overflow-hidden relative">
+                        <span class="text-emerald-400 font-bold text-[0.55rem] uppercase tracking-widest flex items-center gap-1.5 mb-1.5"><i class="fa-solid fa-file-lines"></i> Script / Subs</span>
+                        <p class="text-[0.5rem] text-slate-400 leading-relaxed text-left">"Salutare! Astăzi vă prezint secretul pentru a deveni viral..."</p>
+                        <div class="absolute bottom-0 inset-x-0 h-6 bg-gradient-to-t from-[#0d0d0d] to-transparent"></div>
+                    </div>
+                </div>
+            `;
+            setTimeout(type, 4000); // Loop forever
+        }
+        
+        type();
+    }
+    
+    // Pornim animatia cand pagina s-a incarcat
+    document.addEventListener("DOMContentLoaded", () => {
+        setTimeout(initYTAnim, 500);
+    });
+</script>
 
 <div id="pricing" class="flex flex-col items-center justify-center px-4 pt-24 pb-24 reveal bg-white">
     <span class="bg-amber-100 text-amber-700 font-bold tracking-widest text-xs uppercase px-5 py-2 rounded-full mb-6 border border-amber-200">Fără Abonamente. Fără obligații.</span>
