@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
     <title>Viralio – Hub-ul AI Suprem pentru Content Creatori</title>
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
     <meta name="description" content="Suita AI pentru content creatori. Editează, curăță și tradu videoclipuri de 10x mai rapid folosind inteligența artificială. Primești 5 credite gratuit!">
     
     <meta property="og:type" content="website">
@@ -68,6 +69,10 @@
 .marquee-wrapper:hover { animation-play-state: paused; }
 
 @keyframes scrollX { 
+.mask-edges {
+    -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+}
     0% { transform: translateX(0); } 
     100% { transform: translateX(-50%); } 
 }
@@ -260,7 +265,7 @@
         <h2 class="text-xs md:text-sm font-black tracking-[0.2em] text-slate-400 uppercase">Rețeta Viralității. Demonstrată.</h2>
     </div>
 
-    <div class="marquee-container">
+    <div class="marquee-container mask-edges">
         <div class="marquee-wrapper">
             <div class="flex gap-4 md:gap-6 pr-4 md:pr-6 flex-shrink-0">
                 <a href="#" class="w-[220px] md:w-[280px] group cursor-pointer block relative transition-all duration-500 hover:scale-[1.03] mt-5">
@@ -665,8 +670,10 @@
             <button class="pointer-events-none mt-auto w-full py-4 rounded-xl border-2 border-slate-200 text-slate-700 font-bold text-base group-hover:bg-slate-50 transition-all">Cumpără Starter</button>
         </div>
 
-        <div class="relative transform md:-translate-y-6 flex flex-col z-10 rounded-[2.1rem] p-[2px] bg-gradient-to-b from-indigo-500 to-pink-500 shadow-[0_20px_50px_rgba(99,102,241,0.3)] hover:shadow-[0_30px_60px_rgba(99,102,241,0.4)] transition-all duration-300 hover:-translate-y-8">
-            <div onclick="buyPackage('creator')" class="cursor-pointer group bg-slate-900 rounded-[2rem] p-8 md:p-10 flex flex-col h-full relative overflow-hidden">
+<div class="relative transform md:-translate-y-6 flex flex-col z-10 rounded-[2.1rem] overflow-hidden shadow-[0_20px_50px_rgba(99,102,241,0.3)] hover:shadow-[0_30px_60px_rgba(99,102,241,0.4)] transition-all duration-300 hover:-translate-y-8 p-[2px]">
+            <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 animate-[spin_4s_linear_infinite] w-[200%] h-[200%] top-[-50%] left-[-50%] z-0"></div>
+            
+            <div onclick="buyPackage('creator')" class="cursor-pointer group bg-slate-900 rounded-[2rem] p-8 md:p-10 flex flex-col h-full relative overflow-hidden z-10">
                 <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent pointer-events-none"></div>
                 <div class="absolute top-0 left-1/2 transform -translate-x-1/2 bg-gradient-viralio text-white text-[0.65rem] md:text-xs font-bold px-6 py-1.5 rounded-b-xl uppercase tracking-widest shadow-lg whitespace-nowrap z-20">Recomandat</div>
                 
@@ -822,48 +829,49 @@
     </div>
 </div>
 
-<footer class="w-full bg-white border-t border-slate-200 pt-16 md:pt-24 pb-8 md:pb-12 px-6 relative">
-    <div class="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent"></div>
+<footer class="w-full bg-[#09090b] text-white border-t border-slate-800 pt-16 md:pt-24 pb-8 md:pb-12 px-6 relative overflow-hidden">
+    <div class="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent"></div>
+    <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none"></div>
     
-    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between gap-12 lg:gap-16 mb-16 md:mb-24">
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between gap-12 lg:gap-16 mb-16 md:mb-24 relative z-10">
         <div class="lg:w-1/3">
-            <a class="flex w-fit cursor-pointer items-center font-black text-2xl md:text-3xl tracking-tight text-slate-900 mb-6" href="/">
-                <div class="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-gradient-viralio flex items-center justify-center text-white mr-3 shadow-md">
+            <a class="flex w-fit cursor-pointer items-center font-black text-2xl md:text-3xl tracking-tight text-white mb-6 group" href="/">
+                <div class="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-gradient-viralio flex items-center justify-center text-white mr-3 shadow-[0_0_15px_rgba(99,102,241,0.5)] group-hover:scale-105 transition-all">
                     <i class="fa-solid fa-bolt text-lg md:text-xl"></i>
                 </div>
                 Viralio
             </a>
-            <p class="text-slate-500 font-medium text-sm md:text-base leading-relaxed mb-8 max-w-sm">Infrastructura de inteligență artificială creată special pentru liderii din digital media.</p>
-<h4 class="text-slate-900 font-bold mb-4 text-xs md:text-sm uppercase tracking-wider">Abonare Noutăți</h4>
-<div class="flex flex-nowrap gap-2 w-full max-w-sm bg-slate-50 p-1 rounded-2xl border border-slate-200 focus-within:border-viralio-500 transition-colors shadow-sm">
-    <input type="email" placeholder="Email..." class="w-full bg-transparent px-4 py-2 text-sm focus:outline-none font-medium text-slate-700">
-    <button class="bg-slate-900 text-white px-5 py-2 rounded-xl font-bold text-sm hover:bg-viralio-600 transition-all whitespace-nowrap flex-shrink-0">Join</button>
-</div>
+            <p class="text-slate-400 font-medium text-sm md:text-base leading-relaxed mb-8 max-w-sm">Infrastructura de inteligență artificială creată special pentru liderii din digital media.</p>
+            <h4 class="text-slate-300 font-bold mb-4 text-xs md:text-sm uppercase tracking-wider">Abonare Noutăți</h4>
+            <div class="flex flex-nowrap gap-2 w-full max-w-sm bg-white/5 p-1 rounded-2xl border border-white/10 focus-within:border-viralio-500 transition-colors shadow-sm">
+                <input type="email" placeholder="Email..." class="w-full bg-transparent px-4 py-2 text-sm focus:outline-none font-medium text-slate-300 placeholder-slate-500">
+                <button class="bg-white text-slate-900 px-5 py-2 rounded-xl font-bold text-sm hover:bg-slate-200 transition-all whitespace-nowrap flex-shrink-0">Join</button>
+            </div>
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-3 gap-8 lg:gap-10 lg:w-2/3 lg:justify-items-end">
             <div class="flex flex-col gap-4">
-                <h4 class="text-slate-900 font-black mb-2 text-xs uppercase tracking-widest">Ecosistem</h4>
-                <a href="https://downloader.viralio.ro/" onclick="handleProtectedAction(event, this.href)" class="text-slate-500 hover:text-viralio-600 font-bold text-sm transition-colors"><i class="fa-brands fa-youtube text-red-500 mr-2"></i>YT Downloader</a>
-                <a href="https://captions.viralio.ro/" onclick="handleProtectedAction(event, this.href)" class="text-slate-500 hover:text-viralio-600 font-bold text-sm transition-colors">Caption Eraser</a>
-                <a href="https://audiocut.viralio.ro/" onclick="handleProtectedAction(event, this.href)" class="text-slate-500 hover:text-viralio-600 font-bold text-sm transition-colors">Audio Slicer AI</a>
+                <h4 class="text-white font-black mb-2 text-xs uppercase tracking-widest">Ecosistem</h4>
+                <a href="https://downloader.viralio.ro/" onclick="handleProtectedAction(event, this.href)" class="text-slate-400 hover:text-white font-medium text-sm transition-colors"><i class="fa-brands fa-youtube text-red-500 mr-2"></i>YT Downloader</a>
+                <a href="https://captions.viralio.ro/" onclick="handleProtectedAction(event, this.href)" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Caption Eraser</a>
+                <a href="https://audiocut.viralio.ro/" onclick="handleProtectedAction(event, this.href)" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Audio Slicer AI</a>
             </div>
             <div class="flex flex-col gap-4">
-                <h4 class="text-slate-900 font-black mb-2 text-xs uppercase tracking-widest">Companie</h4>
-                <a href="#pricing" class="text-slate-500 hover:text-viralio-600 font-bold text-sm transition-colors">Credite & Prețuri</a>
-                <a href="#cum-functioneaza" class="text-slate-500 hover:text-viralio-600 font-bold text-sm transition-colors">Cum funcționează</a>
+                <h4 class="text-white font-black mb-2 text-xs uppercase tracking-widest">Companie</h4>
+                <a href="#pricing" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Credite & Prețuri</a>
+                <a href="#cum-functioneaza" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Cum funcționează</a>
             </div>
             <div class="flex flex-col gap-4 col-span-2 md:col-span-1">
-                <h4 class="text-slate-900 font-black mb-2 text-xs uppercase tracking-widest">Legal</h4>
-                <a href="#" onclick="handleProtectedAction(event)" class="text-slate-500 hover:text-viralio-600 font-bold text-sm transition-colors">Contact Suport</a>
-                <a href="#" onclick="handleProtectedAction(event)" class="text-slate-500 hover:text-viralio-600 font-bold text-sm transition-colors">Termeni de utilizare</a>
+                <h4 class="text-white font-black mb-2 text-xs uppercase tracking-widest">Legal</h4>
+                <a href="#" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Contact Suport</a>
+                <a href="#" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Termeni de utilizare</a>
             </div>
         </div>
     </div>
     
-    <div class="max-w-7xl mx-auto border-t border-slate-100 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-        <div class="text-xs md:text-sm font-bold text-slate-400">
-            © 2026 Viralio Global. Dezvoltat în România <i class="fa-solid fa-heart text-red-500 mx-1"></i>
+    <div class="max-w-7xl mx-auto border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left relative z-10">
+        <div class="text-xs md:text-sm font-medium text-slate-500">
+            © 2026 Viralio Global. Dezvoltat în România <i class="fa-solid fa-heart text-red-500/80 mx-1"></i>
         </div>
     </div>
 </footer>
@@ -990,7 +998,7 @@ async function handleCredentialResponse(response) {
                 // Aratam fereastra de Hype
                 const waitlist = document.getElementById('waitlist-modal');
                 waitlist.style.display = 'flex';
-                setTimeout(() => waitlist.classList.add('show'), 10);
+                setTimeout(() => waitlist.classList.add('show'), 11);
                 return;
             }
 
