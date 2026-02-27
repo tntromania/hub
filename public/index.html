@@ -621,58 +621,61 @@
         <div class="flex flex-col lg:flex-row gap-12 lg:gap-16 items-center">
             
             <div class="flex-1 w-full space-y-3" id="feature-list">
-                <div class="workflow-item active cursor-pointer p-5 md:p-6 border border-transparent rounded-2xl" onclick="switchFeature(0)">
-                    <div class="flex items-start gap-4 md:gap-6">
-                        <div class="relative h-[60px] md:h-[80px] w-1.5 rounded-full bg-slate-100 overflow-hidden shrink-0 mt-1.5 md:mt-2">
-                            <div class="progress-fill absolute top-0 w-full bg-viralio-500 rounded-full" style="--animation-duration:5000ms"></div>
+                <div class="workflow-item pop-up-enabled active cursor-pointer p-4 md:p-5 border border-transparent rounded-2xl" onclick="switchFeature(0)">
+                    <div class="flex items-start gap-4 md:gap-5">
+                        <div class="relative h-[50px] md:h-[60px] w-1.5 rounded-full bg-slate-100 overflow-hidden shrink-0 mt-1.5">
+                            <div class="progress-fill absolute top-0 w-full bg-viralio-500 rounded-full" style="--animation-duration:5000ms; transform-origin: top;"></div>
                         </div>
                         <div>
-                            <h3 class="text-xl md:text-2xl font-black text-slate-900 mb-1.5 md:mb-2 transition-colors">Extragere Neurală & Traducere</h3>
-                            <p class="text-sm md:text-base text-slate-500 font-medium leading-relaxed">Algoritmul descarcă video-ul, izolează subtitrarea originală și aplică o traducere nativă impecabilă.</p>
+                            <h3 class="text-lg md:text-xl font-black text-slate-900 mb-1 transition-colors">Extragere Neurală & Traducere</h3>
+                            <p class="text-[0.8rem] md:text-sm text-slate-500 font-medium leading-relaxed">Algoritmul descarcă video-ul, izolează subtitrarea originală și aplică o traducere nativă impecabilă.</p>
                         </div>
                     </div>
                 </div>
-                <div class="workflow-item cursor-pointer p-5 md:p-6 border border-transparent rounded-2xl" onclick="switchFeature(1)">
-                    <div class="flex items-start gap-4 md:gap-6">
-                        <div class="relative h-[60px] md:h-[80px] w-1.5 rounded-full bg-slate-100 overflow-hidden shrink-0 mt-1.5 md:mt-2">
-                            <div class="progress-fill absolute top-0 w-full bg-viralio-500 rounded-full" style="--animation-duration:5000ms"></div>
+
+                <div class="workflow-item pop-up-enabled cursor-pointer p-4 md:p-5 border border-transparent rounded-2xl" onclick="switchFeature(1)">
+                    <div class="flex items-start gap-4 md:gap-5">
+                        <div class="relative h-[50px] md:h-[60px] w-1.5 rounded-full bg-slate-100 overflow-hidden shrink-0 mt-1.5">
+                            <div class="progress-fill absolute top-0 w-full bg-viralio-500 rounded-full" style="--animation-duration:5000ms; transform-origin: top;"></div>
                         </div>
                         <div>
-                            <h3 class="text-xl md:text-2xl font-black text-slate-900 mb-1.5 md:mb-2 transition-colors">Masterizare Audio AI</h3>
-                            <p class="text-sm md:text-base text-slate-500 font-medium leading-relaxed">Taie automat spațiile moarte din videoclip și aplică voiceover-uri naturale peste textul tău.</p>
+                            <h3 class="text-lg md:text-xl font-black text-slate-900 mb-1 transition-colors">Masterizare Audio AI</h3>
+                            <p class="text-[0.8rem] md:text-sm text-slate-500 font-medium leading-relaxed">Taie automat spațiile moarte din videoclip și aplică voiceover-uri naturale peste textul tău.</p>
                         </div>
                     </div>
                 </div>
-                <div class="workflow-item cursor-pointer p-5 md:p-6 border border-transparent rounded-2xl" onclick="switchFeature(2)">
-                    <div class="flex items-start gap-4 md:gap-6">
-                        <div class="relative h-[60px] md:h-[80px] w-1.5 rounded-full bg-slate-100 overflow-hidden shrink-0 mt-1.5 md:mt-2">
-                            <div class="progress-fill absolute top-0 w-full bg-viralio-500 rounded-full" style="--animation-duration:5000ms"></div>
+
+                <div class="workflow-item pop-up-enabled cursor-pointer p-4 md:p-5 border border-transparent rounded-2xl" onclick="switchFeature(2)">
+                    <div class="flex items-start gap-4 md:gap-5">
+                        <div class="relative h-[50px] md:h-[60px] w-1.5 rounded-full bg-slate-100 overflow-hidden shrink-0 mt-1.5">
+                            <div class="progress-fill absolute top-0 w-full bg-viralio-500 rounded-full" style="--animation-duration:5000ms; transform-origin: top;"></div>
                         </div>
                         <div>
-                            <h3 class="text-xl md:text-2xl font-black text-slate-900 mb-1.5 md:mb-2 transition-colors">Inpainting Watermarks</h3>
-                            <p class="text-sm md:text-base text-slate-500 font-medium leading-relaxed">Șterge perfect logo-urile sau textele lipite. AI-ul reconstruiește pixelii din fundal fără efort.</p>
+                            <h3 class="text-lg md:text-xl font-black text-slate-900 mb-1 transition-colors">Inpainting Watermarks</h3>
+                            <p class="text-[0.8rem] md:text-sm text-slate-500 font-medium leading-relaxed">Șterge perfect logo-urile sau textele lipite. AI-ul reconstruiește pixelii din fundal fără efort.</p>
                         </div>
                     </div>
                 </div>
-                <div class="workflow-item cursor-pointer p-5 md:p-6 border border-transparent rounded-2xl" onclick="switchFeature(3)">
-                    <div class="flex items-start gap-4 md:gap-6">
-                        <div class="relative h-[60px] md:h-[80px] w-1.5 rounded-full bg-slate-100 overflow-hidden shrink-0 mt-1.5 md:mt-2">
-                            <div class="progress-fill absolute top-0 w-full bg-viralio-500 rounded-full" style="--animation-duration:5000ms"></div>
+
+                <div class="workflow-item cursor-pointer p-4 md:p-5 border border-transparent rounded-2xl" onclick="switchFeature(3)">
+                    <div class="flex items-start gap-4 md:gap-5">
+                        <div class="relative h-[50px] md:h-[60px] w-1.5 rounded-full bg-slate-100 overflow-hidden shrink-0 mt-1.5">
+                            <div class="progress-fill absolute top-0 w-full bg-viralio-500 rounded-full" style="--animation-duration:5000ms; transform-origin: top;"></div>
                         </div>
                         <div>
-                            <h3 class="text-xl md:text-2xl font-black text-slate-900 mb-1.5 md:mb-2 transition-colors">Cinema Video Generation</h3>
-                            <p class="text-sm md:text-base text-slate-500 font-medium leading-relaxed">Transformă prompturile în clipuri cinematice 4K, perfecte pentru a acoperi cadrele lipsă.</p>
+                            <h3 class="text-lg md:text-xl font-black text-slate-900 mb-1 transition-colors">Cinema Video Generation</h3>
+                            <p class="text-[0.8rem] md:text-sm text-slate-500 font-medium leading-relaxed">Transformă prompturile în clipuri cinematice 4K, perfecte pentru a acoperi cadrele lipsă.</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="flex-1 w-full relative flex justify-center mt-6 lg:mt-0">
-                <div class="relative w-full max-w-[280px] md:max-w-[320px] aspect-[9/16] rounded-[2.5rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.15)] border-[6px] border-slate-50 bg-slate-900">
-                    <video id="feature-video" src="/script-generator.mp4" autoplay loop muted playsinline class="w-full h-full object-cover video-fade"></video>
+                <div class="relative w-full max-w-sm md:max-w-md aspect-video rounded-3xl overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.12)] border-[1px] border-slate-200 bg-black flex items-center justify-center">
+                    <video id="feature-video" aria-hidden="true" src="/script-generator.mp4" autoplay loop muted playsinline class="w-full h-full object-contain video-fade"></video>
                 </div>
-                <div class="absolute -bottom-4 -right-2 md:-bottom-6 md:-right-6 w-24 h-24 md:w-32 md:h-32 bg-viralio-100 rounded-full blur-2xl md:blur-3xl -z-10"></div>
-                <div class="absolute -top-4 -left-2 md:-top-6 md:-left-6 w-24 h-24 md:w-32 md:h-32 bg-pink-100 rounded-full blur-2xl md:blur-3xl -z-10"></div>
+                <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl -z-10"></div>
+                <div class="absolute -top-6 -left-6 w-32 h-32 bg-pink-500/10 rounded-full blur-3xl -z-10"></div>
             </div>
 
         </div>
@@ -725,23 +728,23 @@
                 <div>
                     <span class="text-[0.55rem] text-red-400 font-bold uppercase tracking-widest mb-1.5 block"><i class="fa-solid fa-microphone-lines-slash mr-1"></i> Original</span>
                     <div class="flex items-end justify-between gap-1 md:gap-1.5 h-8 md:h-10 opacity-80">
-                        <div class="w-full bg-slate-500 rounded-t-sm eq-bar" style="animation-delay: 0.1s;"></div>
-                        <div class="w-full bg-slate-500 rounded-t-sm eq-bar" style="animation-delay: 0.3s;"></div>
-                        <div class="w-full bg-red-500/80 rounded-t-sm h-[15%]"></div> 
-                        <div class="w-full bg-slate-500 rounded-t-sm eq-bar" style="animation-delay: 0.5s;"></div>
-                        <div class="w-full bg-slate-500 rounded-t-sm eq-bar" style="animation-delay: 0.2s;"></div>
-                        <div class="w-full bg-red-500/80 rounded-t-sm h-[15%]"></div> 
-                        <div class="w-full bg-slate-500 rounded-t-sm eq-bar" style="animation-delay: 0.6s;"></div>
+<div class="w-full h-full bg-slate-500 rounded-t-sm eq-bar" style="animation-delay: 0.1s;"></div>
+                        <div class="w-full h-full bg-slate-500 rounded-t-sm eq-bar" style="animation-delay: 0.3s;"></div>
+                        <div class="w-full h-[15%] bg-red-500/80 rounded-t-sm"></div> 
+                        <div class="w-full h-full bg-slate-500 rounded-t-sm eq-bar" style="animation-delay: 0.5s;"></div>
+                        <div class="w-full h-full bg-slate-500 rounded-t-sm eq-bar" style="animation-delay: 0.2s;"></div>
+                        <div class="w-full h-[15%] bg-red-500/80 rounded-t-sm"></div> 
+                        <div class="w-full h-full bg-slate-500 rounded-t-sm eq-bar" style="animation-delay: 0.6s;"></div>
                     </div>
                 </div>
                 <div>
                     <span class="text-[0.55rem] text-emerald-400 font-bold uppercase tracking-widest mb-1.5 block"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Curățat AI</span>
                     <div class="flex items-end justify-between gap-1 md:gap-1.5 h-8 md:h-10">
-                        <div class="w-full bg-emerald-500 rounded-t-sm shadow-[0_0_8px_#10b981] eq-bar" style="animation-delay: 0.2s;"></div>
-                        <div class="w-full bg-emerald-500 rounded-t-sm shadow-[0_0_8px_#10b981] eq-bar" style="animation-delay: 0.4s;"></div>
-                        <div class="w-full bg-emerald-500 rounded-t-sm shadow-[0_0_8px_#10b981] eq-bar" style="animation-delay: 0.1s;"></div>
-                        <div class="w-full bg-emerald-500 rounded-t-sm shadow-[0_0_8px_#10b981] eq-bar" style="animation-delay: 0.6s;"></div>
-                        <div class="w-full bg-emerald-500 rounded-t-sm shadow-[0_0_8px_#10b981] eq-bar" style="animation-delay: 0.3s;"></div>
+<div class="w-full h-full bg-emerald-500 rounded-t-sm shadow-[0_0_8px_#10b981] eq-bar" style="animation-delay: 0.2s;"></div>
+                        <div class="w-full h-full bg-emerald-500 rounded-t-sm shadow-[0_0_8px_#10b981] eq-bar" style="animation-delay: 0.4s;"></div>
+                        <div class="w-full h-full bg-emerald-500 rounded-t-sm shadow-[0_0_8px_#10b981] eq-bar" style="animation-delay: 0.1s;"></div>
+                        <div class="w-full h-full bg-emerald-500 rounded-t-sm shadow-[0_0_8px_#10b981] eq-bar" style="animation-delay: 0.6s;"></div>
+                        <div class="w-full h-full bg-emerald-500 rounded-t-sm shadow-[0_0_8px_#10b981] eq-bar" style="animation-delay: 0.3s;"></div>
                     </div>
                 </div>
             </div>
