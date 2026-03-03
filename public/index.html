@@ -1177,24 +1177,31 @@
     let currentUserEmail = null; 
 
 function updateUI(user) {
-            const btnDesktop = document.getElementById('login-top-btn');
-            if(btnDesktop) btnDesktop.classList.add('hidden');
+    // 1. Ascundem meniul pentru vizitatori (butoanele de login)
+    const guestNav = document.getElementById('guest-nav');
+    if(guestNav) {
+        guestNav.classList.add('hidden');
+        guestNav.style.display = 'none'; // Ne asigurăm că dispare complet
+    }
 
-            const userNav = document.getElementById('user-nav');
-            if(userNav) {
-                userNav.classList.remove('hidden'); 
-                userNav.style.display = 'flex'; 
-            }
-            
-            document.getElementById('nav-name').innerText = user.name.split(' ')[0];
-            document.getElementById('nav-avatar').src = user.picture;
-            document.getElementById('nav-credits').innerText = user.credits || 0;
-            
-            const charsEl = document.getElementById('nav-chars');
-            if (charsEl) charsEl.innerText = (user.voice_characters || 0).toLocaleString('ro-RO');
-            
-            currentUserEmail = user.email; 
-        }
+    // 2. Afișăm meniul pentru utilizator (avatar, nume, credite)
+    const userNav = document.getElementById('user-nav');
+    if(userNav) {
+        userNav.classList.remove('hidden'); 
+        userNav.style.display = 'flex'; 
+    }
+    
+    // 3. Populăm datele utilizatorului
+    document.getElementById('nav-name').innerText = user.name.split(' ')[0];
+    document.getElementById('nav-avatar').src = user.picture;
+    document.getElementById('nav-credits').innerText = user.credits || 0;
+    
+    const charsEl = document.getElementById('nav-chars');
+    if (charsEl) charsEl.innerText = (user.voice_characters || 0).toLocaleString('ro-RO');
+    
+    // 4. Salvăm emailul global pentru checkout (Stripe)
+    currentUserEmail = user.email; 
+}
 
     async function handleCredentialResponse(response) {
         try {
