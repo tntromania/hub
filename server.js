@@ -70,13 +70,19 @@ mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('✅ Conectat la MongoDB! (HUB CENTRAL)'))
     .catch(err => console.error('❌ Eroare MongoDB:', err));
 
+// 1. Schema unică, completă și identică pe toate aplicațiile
 const UserSchema = new mongoose.Schema({
-    googleId: String, email: String, name: String, picture: String, 
-    credits: { type: Number, default: 10 }, 
-    voice_characters: { type: Number, default: 3000 }, 
+    googleId: { type: String, required: true, unique: true },
+    email: { type: String, required: true },
+    name: String,
+    picture: String,
+    credits: { type: Number, default: 10 }, // Universal: 10 credite
+    voice_characters: { type: Number, default: 3000 }, // Universal: 3000 caractere
     createdAt: { type: Date, default: Date.now }
 });
-const User = mongoose.model('User', UserSchema);
+
+// 2. Crearea modelului (Atenție la o eroare comună în Mongoose unde re-definirea aruncă eroare)
+const User = mongoose.models.User || mongoose.model('User', UserSchema);
 
 const WaitlistSchema = new mongoose.Schema({
     email: String, name: String, date: { type: Date, default: Date.now }
