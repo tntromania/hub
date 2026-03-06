@@ -109,7 +109,7 @@ app.post('/api/auth/google', async (req, res) => {
         
 if (!user) {
             const userCount = await User.countDocuments();
-            if (userCount >= 12) {
+            if (userCount >= 20) {
                 const dejaInLista = await Waitlist.findOne({ email: payload.email });
                 if (!dejaInLista) {
                     await Waitlist.create({ email: payload.email, name: payload.name });
@@ -117,7 +117,8 @@ if (!user) {
                 // Mesaj actualizat pentru a redirecționa către Discord
                 return res.status(403).json({ 
                     error: 'BETA_FULL', 
-                    message: 'Locurile limitate pentru Beta s-au epuizat! Te-am adăugat pe lista de așteptare. Pentru acces prioritar și coduri exclusive, intră în comunitatea noastră de Discord: https://discord.gg/h8Ah6VKDzm' 
+                    message: 'Locurile limitate pentru Beta s-au epuizat! Te-am adăugat pe lista de așteptare.',
+                    discordLink: 'https://discord.gg/h8Ah6VKDzm' // Trimitem linkul separat
                 });
             }
 
