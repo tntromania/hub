@@ -229,12 +229,20 @@
             <a href="#pricing" onclick="toggleMobileMenu()" class="px-5 py-3.5 text-sm font-bold text-slate-700 hover:text-viralio-600 hover:bg-slate-50/50 transition-colors">
                 <i class="fa-solid fa-credit-card w-5 text-slate-400"></i> Prețuri / Acces
             </a>
+			<a href="/tutoriale/" onclick="toggleMobileMenu()" class="px-5 py-3.5 text-sm font-bold text-indigo-600 hover:bg-indigo-50/50 transition-colors border-t border-slate-200/50">
+                <i class="fa-solid fa-graduation-cap w-5"></i> Tutoriale Viralio
+            </a>
         </div>
+		
         
-        <div class="hidden md:flex items-center space-x-12 text-[0.95rem] font-bold text-slate-500">
+<div class="hidden md:flex items-center space-x-12 text-[0.95rem] font-bold text-slate-500">
             <a class="hover:text-slate-900 transition-colors relative after:absolute after:-bottom-1.5 after:left-0 after:w-0 after:h-[2px] after:bg-viralio-500 hover:after:w-full after:transition-all after:duration-300" href="#cum-functioneaza">Tehnologie</a>
             <a class="hover:text-slate-900 transition-colors relative after:absolute after:-bottom-1.5 after:left-0 after:w-0 after:h-[2px] after:bg-viralio-500 hover:after:w-full after:transition-all after:duration-300" href="#features">Ecosistem</a>
             <a class="hover:text-slate-900 transition-colors relative after:absolute after:-bottom-1.5 after:left-0 after:w-0 after:h-[2px] after:bg-viralio-500 hover:after:w-full after:transition-all after:duration-300" href="#pricing">Acces</a>
+            
+            <a class="text-indigo-500 hover:text-indigo-600 transition-colors relative after:absolute after:-bottom-1.5 after:left-0 after:w-0 after:h-[2px] after:bg-indigo-500 hover:after:w-full after:transition-all after:duration-300 flex items-center gap-1.5" href="/tutoriale/">
+                <i class="fa-solid fa-graduation-cap"></i> Tutoriale
+            </a>
         </div>
 
         <div class="flex items-center justify-end">
@@ -336,8 +344,8 @@
             Nu mai pierde ore cu editarea. Folosește infrastructura AI Viralio pentru a genera, curăța și scala conținutul tău direct pentru piața internațională. <span class="font-bold text-slate-800 block mt-2">Primești 10 credite + 3000 cuvinte gratuite la înregistrare.</span>
         </p>
 
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up px-4" style="animation-delay: 0.4s; opacity: 0;">
-            <a href="https://downloader.viralio.ro/" onclick="handleProtectedAction(event, this.href)" class="w-full sm:w-auto group">
+<div class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up px-4" style="animation-delay: 0.4s; opacity: 0;">
+            <a href="#features" class="w-full sm:w-auto group">
                 <button class="w-full relative inline-flex cursor-pointer items-center justify-center overflow-hidden rounded-[1rem] px-8 py-4 text-base md:text-lg font-black text-white shadow-[0_15px_30px_rgba(99,102,241,0.4)] transition-all hover:scale-105 focus:outline-none" style="background:linear-gradient(to right, #4f46e5, #ec4899); animation:bounceZoom 0.5s cubic-bezier(.68,-0.55,.27,1.55)">
                     <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent" style="animation:slideGlow 3s cubic-bezier(0.4, 0, 0.2, 1) infinite"></div>
                     <span class="relative z-10 flex items-center gap-2">
@@ -346,9 +354,9 @@
                 </button>
             </a>
             <a href="#features" class="w-full sm:w-auto">
-                <button class="w-full relative inline-flex items-center justify-center rounded-[1rem] px-8 py-4 text-base md:text-lg font-bold text-slate-700 bg-white border border-slate-200/80 shadow-sm transition-all duration-300 hover:bg-slate-50 hover:-translate-y-1 hover:border-slate-300">
-                    Explorează Ecosistemul
-                </button>
+<button onclick="openTutorial()" class="w-full sm:w-auto relative inline-flex items-center justify-center rounded-[1rem] px-8 py-4 text-base md:text-lg font-bold text-slate-700 bg-white border border-slate-200/80 shadow-sm transition-all duration-300 hover:bg-slate-50 hover:-translate-y-1 hover:border-slate-300 gap-2.5">
+    <i class="fa-brands fa-youtube text-red-500 text-xl"></i> Vezi cum funcționează
+</button>
             </a>
         </div>
         
@@ -739,7 +747,47 @@
 
     </div>
 </div>
+<div id="tutorial-modal" style="display: none;" class="fixed inset-0 bg-slate-900/90 backdrop-blur-xl z-[100000] items-center justify-center opacity-0 transition-opacity duration-300">
+    <div class="absolute inset-0 cursor-pointer" onclick="closeTutorial()"></div>
+    
+    <div class="relative w-[95%] max-w-5xl aspect-video bg-black rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/20 transform scale-95 transition-transform duration-300 flex flex-col z-10">
+        <button onclick="closeTutorial()" class="absolute -top-12 right-0 md:-right-12 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-red-500 hover:text-white transition-all shadow-lg">
+            <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+        <iframe id="tutorial-iframe" class="w-full h-full rounded-2xl" src="" title="Viralio Tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+</div>
 <script>
+// --- LOGICĂ TUTORIAL YOUTUBE ---
+function openTutorial() {
+    const modal = document.getElementById('tutorial-modal');
+    const iframe = document.getElementById('tutorial-iframe');
+    
+    // ATENȚIE: Înlocuiește "ID_VIDEO_AICI" cu codul videoclipului tău (ex: dQw4w9WgXcQ)
+    // Punem link-ul doar când se deschide ca să facă autoplay instant
+    iframe.src = "https://www.youtube.com/embed/ID_VIDEO_AICI?autoplay=1&rel=0";
+    
+    modal.style.display = 'flex';
+    setTimeout(() => {
+        modal.classList.add('opacity-100');
+        modal.querySelector('div.relative').classList.remove('scale-95');
+        modal.querySelector('div.relative').classList.add('scale-100');
+    }, 10);
+}
+
+function closeTutorial() {
+    const modal = document.getElementById('tutorial-modal');
+    const iframe = document.getElementById('tutorial-iframe');
+    
+    modal.classList.remove('opacity-100');
+    modal.querySelector('div.relative').classList.remove('scale-100');
+    modal.querySelector('div.relative').classList.add('scale-95');
+    
+    setTimeout(() => {
+        modal.style.display = 'none';
+        iframe.src = ""; // Golim sursa ca să se oprească sunetul pe fundal
+    }, 300);
+}
     function initYTAnim() {
         const urlStr = "youtube.com/watch?v=viral";
         const urlEl = document.getElementById('yt-url');
@@ -1065,6 +1113,7 @@
                 <h3 class="text-white font-black mb-2 text-xs uppercase tracking-widest">Companie</h3>
                 <a href="#pricing" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Credite & Prețuri</a>
                 <a href="#cum-functioneaza" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Cum funcționează</a>
+<a href="/tutoriale/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors flex items-center gap-1.5"><i class="fa-solid fa-video text-indigo-400"></i> Tutoriale</a>
             </div>
             <div class="flex flex-col gap-4 col-span-2 md:col-span-1">
                 <h3 class="text-white font-black mb-2 text-xs uppercase tracking-widest">Legal</h3>
