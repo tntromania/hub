@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ro" class="scroll-smooth">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tutoriale | Academia Viralio</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="https://viralio.ro/assets/apple-touch-icon.png?v=3">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://viralio.ro/assets/favicon-32x32.png?v=3">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://viralio.ro/assets/favicon-16x16.png?v=3">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { viralio: { 50: '#eef2ff', 100: '#e0e7ff', 500: '#6366f1', 600: '#4f46e5', 900: '#09090b', accent: '#ec4899' } },
+                    animation: { 'slide-up': 'slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards' },
+                    keyframes: { slideUp: { '0%': { opacity: 0, transform: 'translateY(20px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } } }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #F8FAFC; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; color: #09090b; }
+        .bg-gradient-viralio { background: linear-gradient(135deg, #4f46e5 0%, #ec4899 100%); }
+        ::-webkit-scrollbar { width: 6px; } 
+        ::-webkit-scrollbar-track { background: transparent; } 
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
+        #login-modal { display: none; position: fixed; inset: 0; background: rgba(9, 9, 11, 0.75); backdrop-filter: blur(12px); z-index: 99999; align-items: center; justify-content: center; opacity: 0; transition: 0.4s; }
+        #login-modal.show { display: flex; opacity: 1; }
+        .modal-content { background: #ffffff; border-radius: 2rem; padding: 40px 24px; text-align: center; max-width: 400px; width: 90%; transform: translateY(30px) scale(0.95); transition: 0.5s; box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.4); }
+        #login-modal.show .modal-content { transform: translateY(0) scale(1); }
+
+        /* Widget Premium Shine */
+        @keyframes premiumShine { 0% { transform: translateX(-150%) skewX(-20deg); opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { transform: translateX(250%) skewX(-20deg); opacity: 0; } }
+        .animate-shine-fast { animation: premiumShine 2.5s infinite cubic-bezier(0.4, 0, 0.2, 1); }
+        .glass-premium-fin { box-shadow: 0 10px 30px -10px rgba(0,0,0,0.15), inset 0 0 0 1px rgba(255,255,255,0.8); }
+    </style>
+</head>
+<body class="relative">
+
+<div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] pointer-events-none -z-10 opacity-50">
+    <div class="absolute top-[5%] left-[10%] w-[400px] h-[400px] bg-indigo-500/20 blur-[100px] rounded-full mix-blend-multiply"></div>
+    <div class="absolute top-[10%] right-[10%] w-[500px] h-[500px] bg-pink-500/20 blur-[120px] rounded-full mix-blend-multiply"></div>
+</div>
+
+<div class="fixed top-4 inset-x-0 z-50 flex justify-center px-4 pointer-events-none">
+    <nav class="pointer-events-auto w-full max-w-6xl rounded-[2rem] border border-white/60 bg-white/70 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] px-4 md:px-8 py-3 flex justify-between items-center transition-all duration-500 hover:bg-white/90">
+        
+        <div class="flex items-center gap-6">
+            <a class="flex items-center font-black text-xl md:text-2xl tracking-tight text-slate-900 group" href="https://viralio.ro">
+                <div class="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-gradient-viralio flex items-center justify-center text-white mr-2 md:mr-3 shadow-lg group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-bolt text-xs md:text-sm"></i>
+                </div>
+                Viralio
+            </a>
+            <a href="https://viralio.ro" class="hidden md:flex items-center text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors gap-1.5">
+                <i class="fa-solid fa-arrow-left"></i> Înapoi pe Hub
+            </a>
+        </div>
+
+        <div class="flex items-center justify-end">
+            <div id="guest-nav" class="flex items-center space-x-4">
+                <button onclick="openLoginModal()" class="group relative px-5 md:px-6 py-2 bg-slate-900 text-white rounded-full font-bold text-xs md:text-sm overflow-hidden shadow-lg hover:shadow-xl transition-all hover:scale-105">
+                    Conectează-te
+                </button>
+            </div>
+            <div id="user-nav" class="hidden items-center bg-white border border-slate-200 py-1 pl-1.5 pr-2 rounded-full shadow-sm">
+                <img id="nav-avatar" src="" alt="Avatar" class="w-7 h-7 md:w-8 md:h-8 rounded-full border border-slate-100">
+                <div class="flex flex-col leading-none ml-2 mr-3 hidden sm:flex">
+                    <span id="nav-name" class="text-xs font-bold text-slate-900 mb-1"></span>
+                    <div class="flex items-center text-[0.65rem] font-bold tracking-wide">
+                        <span class="text-amber-500"><i class="fa-solid fa-bolt mr-0.5 text-[0.6rem]"></i> <span id="nav-credits">0</span></span>
+                        <span class="text-slate-300 mx-1.5">|</span>
+                        <span class="text-viralio-600"><i class="fa-solid fa-font mr-0.5 text-[0.6rem]"></i> <span id="nav-chars">0</span></span>
+                    </div>
+                </div>
+                <button onclick="logout()" class="w-7 h-7 rounded-full bg-slate-50 text-slate-400 hover:text-red-500 hover:bg-red-50 flex items-center justify-center transition-all ml-2 sm:ml-0"><i class="fa-solid fa-power-off text-xs"></i></button>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<div id="login-modal">
+    <div class="modal-content relative">
+        <button class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:text-slate-900 transition-all" onclick="closeLoginModal()"><i class="fa-solid fa-xmark text-sm"></i></button>
+        <div class="w-16 h-16 rounded-[1.2rem] bg-indigo-50 border border-indigo-100 text-viralio-600 flex items-center justify-center text-3xl mx-auto mb-5"><i class="fas fa-fingerprint"></i></div>
+        <h2 class="text-2xl font-black mb-2 text-slate-900 tracking-tight">Acces Viralio</h2>
+        <p class="text-slate-500 text-xs mb-6 font-medium px-2">Autentifică-te pentru a-ți accesa portofelul.</p>
+        <div class="flex justify-center bg-slate-50 py-3 rounded-2xl border border-slate-200">
+            <div id="g_id_onload" data-client_id="743541351685-br4h5r61n3ai28bbhm9blt34944rju8p.apps.googleusercontent.com" data-context="signin" data-ux_mode="popup" data-callback="handleCredentialResponse" data-auto_prompt="false"></div>
+            <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline" data-text="signin_with" data-size="large"></div>
+        </div>
+    </div>
+</div>
+
+<div class="pt-36 md:pt-48 pb-12 px-4 text-center z-10 relative">
+    <span class="bg-indigo-50 text-indigo-600 font-bold tracking-widest text-[0.65rem] uppercase px-4 py-1.5 rounded-full mb-4 border border-indigo-100 inline-block">Academia Viralio</span>
+    <h1 class="text-4xl md:text-[3.5rem] font-black text-slate-900 tracking-tight mb-4">Ghiduri & Strategii</h1>
+    <p class="text-slate-500 font-medium max-w-xl mx-auto text-sm md:text-base">Învață cum să folosești suita AI la potențial maxim pentru a fura startul pe YouTube și TikTok.</p>
+</div>
+
+<main class="max-w-6xl mx-auto px-4 pb-24 z-10 relative">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <div class="bg-white rounded-[2rem] border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 animate-slide-up" style="opacity: 0;">
+            <div class="w-full aspect-video bg-slate-900 relative">
+                <iframe class="w-full h-full" src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0" title="Tutorial Viralio" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="p-6 md:p-8">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="bg-red-50 text-red-600 text-[0.6rem] font-bold uppercase tracking-widest px-2.5 py-1 rounded-md border border-red-100"><i class="fa-brands fa-youtube mr-1"></i>Masterclass</span>
+                </div>
+                <h2 class="text-xl font-black text-slate-900 mb-2">Metoda Secretă: Cum să folosești corect aplicația</h2>
+                <p class="text-slate-500 text-sm font-medium leading-relaxed mb-6">Află exact cum să descarci un clip viral internațional, să extragi scriptul cu AI și să aplici o voce nouă în română folosind suita Viralio.</p>
+                <a href="https://downloader.viralio.ro" class="inline-flex items-center justify-center w-full py-3.5 bg-slate-900 text-white font-bold rounded-xl hover:bg-viralio-600 transition-colors shadow-md text-sm">Deschide Aplicația <i class="fa-solid fa-arrow-right ml-2"></i></a>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-[2rem] border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 animate-slide-up" style="opacity: 0; animation-delay: 0.2s;">
+            <div class="w-full aspect-video bg-slate-100 relative flex items-center justify-center">
+                <i class="fa-solid fa-video text-4xl text-slate-300"></i>
+                <div class="absolute inset-0 bg-black/5 flex items-center justify-center backdrop-blur-sm">
+                    <span class="bg-white text-slate-900 font-bold px-4 py-2 rounded-full text-xs shadow-lg uppercase tracking-widest">În curând</span>
+                </div>
+            </div>
+            <div class="p-6 md:p-8 opacity-60">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="bg-pink-50 text-pink-600 text-[0.6rem] font-bold uppercase tracking-widest px-2.5 py-1 rounded-md border border-pink-100">Inpainting</span>
+                </div>
+                <h2 class="text-xl font-black text-slate-900 mb-2">Cum să cureți perfect watermark-urile</h2>
+                <p class="text-slate-500 text-sm font-medium leading-relaxed mb-6">Un ghid pas cu pas despre cum să folosești Caption Eraser pentru a lăsa clipurile curate ca lacrima.</p>
+                <button disabled class="w-full py-3.5 bg-slate-100 text-slate-400 font-bold rounded-xl text-sm cursor-not-allowed">Producție Video...</button>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<div class="fixed bottom-5 right-5 md:right-6 z-[100000] flex items-center bg-white/70 backdrop-blur-2xl glass-premium-fin rounded-full p-1.5 transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_15px_40px_-10px_rgba(0,0,0,0.2)] hover:bg-white/90">
+    <a href="https://discord.gg/h8Ah6VKDzm" target="_blank" class="group flex items-center gap-2 hover:bg-slate-100 rounded-full px-3 py-1.5 transition-all duration-300">
+        <div class="flex items-center justify-center w-8 h-8 rounded-full bg-slate-900 text-white shadow-sm group-hover:bg-[#5865F2] group-hover:scale-105 transition-all duration-300">
+            <i class="fa-brands fa-discord text-sm"></i>
+        </div>
+        <div class="flex-col hidden sm:flex text-left">
+            <span class="text-[0.55rem] font-bold text-slate-400 uppercase tracking-widest leading-none mb-0.5">Ai Întrebări?</span>
+            <span class="text-xs font-black text-slate-800 leading-none group-hover:text-black transition-colors duration-300">Suport Discord</span>
+        </div>
+    </a>
+    <div class="w-px h-6 bg-gradient-to-b from-transparent via-slate-300 to-transparent mx-1"></div>
+    <a href="https://t.me/SmartCreator_official" target="_blank" class="group flex items-center gap-2 rounded-full px-3 py-1.5 transition-all duration-300">
+        <div class="relative flex items-center justify-center w-8 h-8 group-hover:scale-110 transition-transform duration-300">
+            <div class="absolute inset-0 rounded-full bg-gradient-to-br from-[#0088cc] to-[#00aaff] overflow-hidden shadow-[0_0_15px_rgba(0,136,204,0.4)]">
+                <div class="absolute inset-0 w-[250%] h-full bg-gradient-to-r from-transparent via-white/60 to-transparent animate-shine-fast z-10"></div>
+            </div>
+            <i class="fa-brands fa-telegram text-white text-sm pr-0.5 relative z-20"></i>
+            <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white animate-pulse z-30 shadow-sm"></span>
+        </div>
+        <div class="flex-col hidden sm:flex text-left">
+            <span class="text-[0.55rem] font-bold text-red-500 uppercase tracking-widest leading-none mb-0.5 drop-shadow-sm">Giveaways</span>
+            <span class="text-xs font-black text-slate-800 leading-none group-hover:text-[#0088cc] transition-colors duration-300">Telegram VIP</span>
+        </div>
+    </a>
+</div>
+
+<script>
+    const loginModal = document.getElementById('login-modal');
+    function openLoginModal() { loginModal.classList.add('show'); }
+    function closeLoginModal() { loginModal.classList.remove('show'); }
+
+    function setToken(token) { document.cookie = "viralio_token=" + token + "; domain=.viralio.ro; path=/; max-age=604800; Secure; SameSite=Lax"; }
+    function getToken() { const match = document.cookie.match(/(?:^|; )viralio_token=([^;]*)/); return match ? match[1] : null; }
+    function removeToken() { document.cookie = "viralio_token=; domain=.viralio.ro; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"; }
+
+    function updateUI(user) {
+        document.getElementById('guest-nav').style.display = 'none';
+        const userNav = document.getElementById('user-nav');
+        userNav.classList.remove('hidden'); userNav.style.display = 'flex';
+        
+        document.getElementById('nav-name').innerText = user.name.split(' ')[0];
+        document.getElementById('nav-avatar').src = user.picture;
+        document.getElementById('nav-credits').innerText = user.credits || 0;
+        document.getElementById('nav-chars').innerText = (user.voice_characters || 0).toLocaleString('ro-RO');
+    }
+
+    async function handleCredentialResponse(response) {
+        try {
+            const res = await fetch('https://viralio.ro/api/auth/google', { 
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ credential: response.credential })
+            });
+            const data = await res.json();
+            
+            if (!res.ok && data.error === 'BETA_FULL') {
+                closeLoginModal();
+                alert(data.message);
+                return;
+            }
+
+            if(data.token) { setToken(data.token); closeLoginModal(); updateUI(data.user); }
+        } catch (e) { alert('Eroare conexiune server.'); }
+    }
+
+    function logout() { removeToken(); location.reload(); }
+
+    window.onload = async () => {
+        const token = getToken();
+        if(token) {
+            try {
+                const res = await fetch('https://viralio.ro/api/auth/me', { headers: { 'Authorization': `Bearer ${token}` } });
+                if(res.ok) { const data = await res.json(); updateUI(data.user); } else { removeToken(); }
+            } catch (e) {}
+        }
+    };
+</script>
+</body>
+</html>
