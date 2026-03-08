@@ -779,9 +779,14 @@ window.addEventListener('scroll', () => {
         // Hide sticky CTA when logged in
         document.getElementById('sticky-cta').classList.remove('visible');
     }
-    async function handleCredentialResponse(response) {
+async function handleCredentialResponse(response) {
         try {
-            const res = await fetch('https://downloader.viralio.ro/api/auth/google', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({credential: response.credential}) });
+            // AICI AM MODIFICAT
+            const res = await fetch('/api/auth/google', { 
+                method: 'POST', 
+                headers: {'Content-Type':'application/json'}, 
+                body: JSON.stringify({credential: response.credential}) 
+            });
             const data = await res.json();
             if (!res.ok && data.error === 'BETA_FULL') {
                 closeLoginModal();
@@ -798,11 +803,12 @@ window.addEventListener('scroll', () => {
         window.location.href = url;
     }
     function logout() { removeToken(); location.reload(); }
-    window.onload = async () => {
+window.onload = async () => {
         const token = getToken();
         if(token) {
             try {
-                const res = await fetch('https://downloader.viralio.ro/api/auth/me', {headers:{'Authorization':`Bearer ${token}`}});
+                // AICI AM MODIFICAT
+                const res = await fetch('/api/auth/me', {headers:{'Authorization':`Bearer ${token}`}});
                 if(res.ok) { const data = await res.json(); updateUI(data.user); } else { removeToken(); }
             } catch(e) {}
         }
