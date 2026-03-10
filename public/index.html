@@ -174,7 +174,25 @@
         <p class="text-[0.65rem] text-slate-400 mt-5 font-medium">Continuând, accepți Termenii de Utilizare.</p>
     </div>
 </div>
-
+<div id="inapp-modal">
+    <div class="modal-content relative">
+        <button onclick="closeInAppModal()" style="position:absolute;top:14px;right:18px;background:none;border:none;color:#94a3b8;font-size:1.3rem;cursor:pointer;z-index:10"><i class="fa-solid fa-xmark"></i></button>
+        
+        <div class="w-16 h-16 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center text-3xl mx-auto mb-4 border border-amber-100 shadow-inner">
+            <i class="fa-brands fa-safari"></i>
+        </div>
+        
+        <h2 class="text-xl font-extrabold mb-2 text-slate-900 tracking-tight">Deschide în Browser</h2>
+        
+        <p class="text-slate-500 text-sm mb-6 px-1 leading-relaxed">
+            TikTok / Instagram blochează logarea securizată.<br><br>
+            Apasă pe cele <strong class="text-slate-800">3 puncte (⋯)</strong> din colțul ecranului și alege:<br>
+            <span class="inline-block mt-3 bg-slate-50 text-slate-800 font-black px-3 py-2 rounded-xl border border-slate-200 shadow-sm">"Open in Browser" / "Deschide"</span>
+        </p>
+        
+        <button onclick="closeInAppModal()" class="w-full py-3.5 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-slate-800 transition-all shadow-md">Am înțeles</button>
+    </div>
+</div>
 <div id="waitlist-modal" style="display: none;" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[100000] items-center justify-center opacity-0 transition-opacity duration-300">
     <div class="bg-white rounded-[2rem] p-8 md:p-10 text-center max-w-md w-[90%] transform scale-95 transition-transform duration-300 shadow-2xl border border-slate-100 relative">
         <button class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all" onclick="document.getElementById('waitlist-modal').classList.remove('show'); setTimeout(()=>document.getElementById('waitlist-modal').style.display='none',300);"><i class="fa-solid fa-xmark"></i></button>
@@ -763,17 +781,37 @@ window.addEventListener('scroll', () => {
     function switchFeature(index) { activeFeatureIndex = index; startProgress(index); }
     if(features.length > 0) { startProgress(0); }
 
-    // AUTH
-    const loginModal = document.getElementById('login-modal');
-    function openLoginModal() { loginModal.classList.add('show'); }
-    function closeLoginModal() { loginModal.classList.remove('show'); }
+	// ═══ AUTH ═══
+const $loginModal = document.getElementById('login-modal');
+const $inappModal = document.getElementById('inapp-modal');
+
+// Funcția care detectează dacă e în TikTok / IG / FB
+function isInAppBrowser() {
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
+    return /FBAN|FBAV|Instagram|TikTok|Bytedance|Snapchat/i.test(ua);
+}
+
+// Logica inteligentă la click pe login
+function openLoginModal() { 
+    if (isInAppBrowser()) {
+        // Dacă e în aplicație, îi dăm pop-up-ul cu cele 3 puncte
+        if($inappModal) $inappModal.classList.add('show');
+    } else {
+        // Dacă e în browser normal, arătăm Google Login-ul
+        if($loginModal) $loginModal.classList.add('show'); 
+    }
+}
+
+function closeLoginModal() { $loginModal.classList.remove('show'); }
+function closeInAppModal() { if($inappModal) $inappModal.classList.remove('show'); }
+
+function setToken(t)  { document.cookie = "viralio_token="+t+"; domain=.viralio.ro; path=/; max-age=604800; Secure; SameSite=Lax"; }
+function getToken()   { const m = document.cookie.match(/(?:^|; )viralio_token=([^;]*)/); return m?m[1]:null; }
+function removeToken(){ document.cookie = "viralio_token=; domain=.viralio.ro; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"; }
     function handleProtectedAction(e, url) {
         if (!getToken()) { if(e) e.preventDefault(); openLoginModal(); }
         else if (!url) { if(e) e.preventDefault(); document.getElementById('pricing').scrollIntoView({behavior: 'smooth'}); }
     }
-    function setToken(t) { document.cookie = "viralio_token=" + t + "; domain=.viralio.ro; path=/; max-age=604800; Secure; SameSite=Lax"; }
-    function getToken() { const m = document.cookie.match(/(?:^|; )viralio_token=([^;]*)/); return m ? m[1] : null; }
-    function removeToken() { document.cookie = "viralio_token=; domain=.viralio.ro; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"; }
     let currentUserEmail = null;
     function updateUI(user) {
         const gn = document.getElementById('guest-nav'); if(gn) { gn.classList.add('hidden'); gn.style.display = 'none'; }
