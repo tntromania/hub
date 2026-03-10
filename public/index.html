@@ -160,8 +160,15 @@
         <div class="w-16 h-16 rounded-[1.2rem] bg-indigo-50 border border-indigo-100 text-viralio-600 flex items-center justify-center text-3xl mx-auto mb-5 shadow-inner"><i class="fas fa-fingerprint"></i></div>
         <h2 class="text-2xl font-black mb-2 text-slate-900 tracking-tight">Acces Viralio</h2>
         <p class="text-slate-500 text-xs mb-6 font-medium px-2">Securizat de Google. Autentifică-te pentru a debloca rețeaua AI globală.</p>
-        <div class="flex justify-center bg-slate-50/80 py-3 rounded-2xl border border-slate-200 shadow-sm hover:border-indigo-200 transition-colors">
-            <div id="g_id_onload" data-client_id="743541351685-br4h5r61n3ai28bbhm9blt34944rju8p.apps.googleusercontent.com" data-context="signin" data-ux_mode="popup" data-callback="handleCredentialResponse" data-auto_prompt="false"></div>
+<div class="flex justify-center bg-slate-50/80 py-3 rounded-2xl border border-slate-200 shadow-sm hover:border-indigo-200 transition-colors min-h-[60px]">
+            <div id="g_id_onload" 
+                 data-client_id="743541351685-br4h5r61n3ai28bbhm9blt34944rju8p.apps.googleusercontent.com" 
+                 data-context="signin" 
+                 data-ux_mode="popup" 
+                 data-callback="handleCredentialResponse" 
+                 data-auto_prompt="false"
+                 data-itp_support="true">
+            </div>
             <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline" data-text="signin_with" data-size="large" data-logo_alignment="left"></div>
         </div>
         <p class="text-[0.65rem] text-slate-400 mt-5 font-medium">Continuând, accepți Termenii de Utilizare.</p>
@@ -684,7 +691,7 @@ window.addEventListener('scroll', () => {
     function openTutorial() {
         const modal = document.getElementById('tutorial-modal');
         const iframe = document.getElementById('tutorial-iframe');
-        iframe.src = "https://www.youtube.com/embed/fEZ6-674acQ?si=dUlvnQv0zyfynPbw?autoplay=1&rel=0";
+        iframe.src = "https://www.youtube.com/embed/fEZ6-674acQ?autoplay=1&rel=0";
         modal.style.display = 'flex';
         setTimeout(() => {
             modal.classList.add('opacity-100');
