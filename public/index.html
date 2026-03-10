@@ -244,13 +244,12 @@
         </p>
 
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up px-4" style="animation-delay: 0.4s; opacity: 0;">
-            <a href="#features" class="w-full sm:w-auto group">
                 <button class="w-full relative inline-flex cursor-pointer items-center justify-center overflow-hidden rounded-[1rem] px-8 py-4 text-base md:text-lg font-black text-white shadow-[0_15px_30px_rgba(99,102,241,0.4)] transition-all hover:scale-105 focus:outline-none" style="background:linear-gradient(to right, #4f46e5, #ec4899); animation:bounceZoom 0.5s cubic-bezier(.68,-0.55,.27,1.55)">
                     <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent" style="animation:slideGlow 3s cubic-bezier(0.4, 0, 0.2, 1) infinite"></div>
                     <span class="relative z-10 flex items-center gap-2"><i class="fa-solid fa-bolt text-amber-300"></i> Deschide Studio</span>
                 </button>
             </a>
-            <a href="#features" class="w-full sm:w-auto">
+            <a href="#" class="w-full sm:w-auto" onclick="event.preventDefault()">
                 <button onclick="openTutorial()" class="w-full sm:w-auto relative inline-flex items-center justify-center rounded-[1rem] px-8 py-4 text-base md:text-lg font-bold text-slate-700 bg-white border border-slate-200/80 shadow-sm transition-all duration-300 hover:bg-slate-50 hover:-translate-y-1 hover:border-slate-300 gap-2.5">
                     <i class="fa-brands fa-youtube text-red-500 text-xl"></i> Vezi cum funcționează
                 </button>
@@ -709,7 +708,8 @@ window.addEventListener('scroll', () => {
     function openTutorial() {
         const modal = document.getElementById('tutorial-modal');
         const iframe = document.getElementById('tutorial-iframe');
-        iiframe.src = "https://www.youtube.com/embed/fEZ6-674acQ?autoplay=1&mute=1&rel=0"
+        iframe.src = "https://www.youtube.com/embed/fEZ6-674acQ?autoplay=1&mute=1&rel=0"
+
         modal.style.display = 'flex';
         setTimeout(() => {
             modal.classList.add('opacity-100');
