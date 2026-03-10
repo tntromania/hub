@@ -758,37 +758,18 @@ window.addEventListener('scroll', () => {
 
     // AUTH
     const loginModal = document.getElementById('login-modal');
-function isInAppBrowser() {
-    const ua = navigator.userAgent || '';
-    return /Instagram|FBAN|FBAV|Twitter|TikTok|Line|KAKAOTALK/i.test(ua);
-}
-
 function openLoginModal() {
     if (isInAppBrowser()) {
-        // Înlocuiește conținutul modalului cu mesaj de redirect
-        document.querySelector('#login-modal .modal-content').innerHTML = `
-            <div class="text-center py-4">
-                <div class="w-16 h-16 rounded-[1.2rem] bg-orange-50 border border-orange-100 text-orange-500 flex items-center justify-center text-3xl mx-auto mb-5">
-                    <i class="fas fa-browser"></i>
-                </div>
-                <h2 class="text-xl font-black mb-2 text-slate-900">Deschide în Browser</h2>
-                <p class="text-slate-500 text-sm mb-6 font-medium px-2">
-                    Google Sign-In nu funcționează în aplicații sociale.<br>
-                    Apasă mai jos pentru a deschide Viralio în browserul tău.
-                </p>
-                <a href="https://viralio.ro" target="_blank" 
-                   class="block w-full py-3 rounded-xl bg-slate-900 text-white font-bold text-sm text-center">
-                    <i class="fa-solid fa-arrow-up-right-from-square mr-2"></i> Deschide în Browser
-                </a>
-                <button onclick="closeLoginModal()" 
-                        class="mt-3 w-full py-3 rounded-xl bg-slate-50 text-slate-500 font-bold text-sm">
-                    Înapoi
-                </button>
-            </div>`;
-        loginModal.classList.add('show');
+        // Deschide direct în Safari/Chrome nativ
+        window.location.href = 'https://viralio.ro/?utm_source=inapp&open_login=1';
         return;
     }
     loginModal.classList.add('show');
+}
+
+function isInAppBrowser() {
+    const ua = navigator.userAgent || '';
+    return /Instagram|FBAN|FBAV|Twitter|TikTok|Line|KAKAOTALK/i.test(ua);
 }
     function closeLoginModal() { loginModal.classList.remove('show'); }
     function handleProtectedAction(e, url) {
@@ -835,15 +816,20 @@ async function handleCredentialResponse(response) {
     }
     function logout() { removeToken(); location.reload(); }
 window.onload = async () => {
-        const token = getToken();
-        if(token) {
-            try {
-                // AICI AM MODIFICAT
-                const res = await fetch('/api/auth/me', {headers:{'Authorization':`Bearer ${token}`}});
-                if(res.ok) { const data = await res.json(); updateUI(data.user); } else { removeToken(); }
-            } catch(e) {}
-        }
-    };
+    const token = getToken();
+    if(token) {
+        try {
+            const res = await fetch('/api/auth/me', {headers:{'Authorization':`Bearer ${token}`}});
+            if(res.ok) { const data = await res.json(); updateUI(data.user); } else { removeToken(); }
+        } catch(e) {}
+    }
+    
+    // Auto-deschide loginul daca vine din redirect in-app
+    if (new URLSearchParams(window.location.search).get('open_login') === '1' && !getToken()) {
+        setTimeout(() => loginModal.classList.add('show'), 500);
+    }
+};
+
     function toggleFaq(btn) {
         const content = btn.nextElementSibling;
         const isOpen = content.classList.contains('open');
