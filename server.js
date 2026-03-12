@@ -10,7 +10,32 @@ const app = express();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY); 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-// 🚨 TREBUIE SĂ FIE ÎNAINTE DE app.use(express.json()) !!!
+const PORT = process.env.PORT || 3000;
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+// 1. CONECTARE BAZĂ DE DATE ȘI MODELE (Mutate sus pentru a fi accesibile webhook-ului)
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log('✅ Conectat la MongoDB! (HUB CENTRAL)'))
+    .catch(err => console.error('❌ Eroare MongoDB:', err));
+
+const UserSchema = new mongoose.Schema({
+    googleId: { type: String, required: true, unique: true },
+    email: { type: String, required: true },
+    name: String,
+    picture: String,
+    credits: { type: Number, default: 10 }, 
+    voice_characters: { type: Number, default: 3000 }, 
+    createdAt: { type: Date, default: Date.now }
+});
+const User = mongoose.models.User || mongoose.model('User', UserSchema);
+
+const WaitlistSchema = new mongoose.Schema({
+    email: String, name: String, date: { type: Date, default: Date.now }
+});
+const Waitlist = mongoose.model('Waitlist', WaitlistSchema);
+
+
+// 2. STRIPE WEBHOOK (Trebuie să rămână deasupra lui express.json)
 app.post('/api/webhook/stripe', express.raw({type: 'application/json'}), async (request, response) => {
     const sig = request.headers['stripe-signature'];
     let event;
@@ -24,7 +49,7 @@ app.post('/api/webhook/stripe', express.raw({type: 'application/json'}), async (
 
     if (event.type === 'checkout.session.completed') {
         const session = event.data.object;
-        const customerEmail = session.customer_details.email;
+        const customerEmail = session.customer_details?.email;
         const amountPaid = session.amount_total; 
 
         let creditsToAdd = 0;
@@ -39,16 +64,22 @@ app.post('/api/webhook/stripe', express.raw({type: 'application/json'}), async (
 
         if (creditsToAdd > 0 && customerEmail) {
             try {
-                await User.findOneAndUpdate(
+                const user = await User.findOneAndUpdate(
                     { email: customerEmail },
                     { 
                         $inc: { 
                             credits: creditsToAdd,
                             voice_characters: charsToAdd 
                         } 
-                    }
+                    },
+                    { new: true }
                 );
-                console.log(`💰 [STRIPE SUCCES] Am adăugat ${creditsToAdd} cr / ${charsToAdd} litere pentru ${customerEmail}`);
+                
+                if(user) {
+                    console.log(`💰 [STRIPE SUCCES] +${creditsToAdd} cr / +${charsToAdd} litere pentru ${customerEmail}`);
+                } else {
+                    console.log(`⚠️ [STRIPE WARNING] Plata primită, dar emailul ${customerEmail} nu a fost găsit în baza de date!`);
+                }
             } catch (err) {
                 console.error("Eroare la adaugarea creditelor:", err);
             }
@@ -58,36 +89,11 @@ app.post('/api/webhook/stripe', express.raw({type: 'application/json'}), async (
     response.send();
 });
 
-const PORT = process.env.PORT || 3000;
-const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
+// 3. MIDDLEWARE GENERALE (Vin OBLIGATORIU după webhook)
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-
-// BAZA DE DATE
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log('✅ Conectat la MongoDB! (HUB CENTRAL)'))
-    .catch(err => console.error('❌ Eroare MongoDB:', err));
-
-// 1. Schema unică, completă și identică pe toate aplicațiile
-const UserSchema = new mongoose.Schema({
-    googleId: { type: String, required: true, unique: true },
-    email: { type: String, required: true },
-    name: String,
-    picture: String,
-    credits: { type: Number, default: 10 }, // Universal: 10 credite
-    voice_characters: { type: Number, default: 3000 }, // Universal: 3000 caractere
-    createdAt: { type: Date, default: Date.now }
-});
-
-// 2. Crearea modelului (Atenție la o eroare comună în Mongoose unde re-definirea aruncă eroare)
-const User = mongoose.models.User || mongoose.model('User', UserSchema);
-
-const WaitlistSchema = new mongoose.Schema({
-    email: String, name: String, date: { type: Date, default: Date.now }
-});
-const Waitlist = mongoose.model('Waitlist', WaitlistSchema);
 
 const authenticate = (req, res, next) => {
     const token = req.headers.authorization?.split(' ')[1];
@@ -99,7 +105,8 @@ const authenticate = (req, res, next) => {
     } catch (e) { return res.status(401).json({ error: "Sesiune expirată." }); }
 };
 
-// RUTE AUTH (Folosite de index.html-ul de pe HUB)
+
+// 4. RUTE AUTENTIFICARE
 app.post('/api/auth/google', async (req, res) => {
     try {
         const ticket = await googleClient.verifyIdToken({ idToken: req.body.credential, audience: process.env.GOOGLE_CLIENT_ID });
@@ -107,18 +114,17 @@ app.post('/api/auth/google', async (req, res) => {
         
         let user = await User.findOne({ googleId: payload.sub });
         
-if (!user) {
+        if (!user) {
             const userCount = await User.countDocuments();
             if (userCount >= 50) {
                 const dejaInLista = await Waitlist.findOne({ email: payload.email });
                 if (!dejaInLista) {
                     await Waitlist.create({ email: payload.email, name: payload.name });
                 }
-                // Mesaj actualizat pentru a redirecționa către Discord
                 return res.status(403).json({ 
                     error: 'BETA_FULL', 
                     message: 'Locurile limitate pentru Beta s-au epuizat! Te-am adăugat pe lista de așteptare.',
-                    discordLink: 'https://discord.gg/h8Ah6VKDzm' // Trimitem linkul separat
+                    discordLink: 'https://discord.gg/h8Ah6VKDzm' 
                 });
             }
 
@@ -142,7 +148,8 @@ app.get('/api/auth/me', authenticate, async (req, res) => {
     res.json({ user: { name: user.name, picture: user.picture, credits: user.credits, voice_characters: user.voice_characters, email: user.email } });
 });
 
-// AICI SE RETURNEAZA FRONTEND-UL (HUB)
+
+// 5. CATCH-ALL PENTRU FRONTEND (HUB)
 app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
 app.listen(PORT, () => console.log(`🚀 HUB rulează pe portul ${PORT}`));
