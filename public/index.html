@@ -386,10 +386,71 @@
             <div class="p-5 pb-4 flex flex-col flex-1 relative z-20"><h3 class="text-[1.15rem] font-black text-slate-900 mb-1 tracking-tight">Voice Studio <span class="text-viralio-500">PRO</span></h3><p class="text-[0.8rem] text-slate-500 font-medium leading-relaxed mb-4 line-clamp-2 pr-2">Transformă textul în voce perfect umană. Modele premium ultra-realiste.</p><div class="flex items-center justify-between mt-auto"><span class="text-[0.6rem] font-bold text-viralio-600 bg-viralio-50 border border-viralio-100 px-2.5 py-1 rounded-md uppercase tracking-widest">Generativ AI</span><span class="font-black text-amber-500 text-xs flex items-center gap-1.5"><i class="fa-solid fa-font"></i> Consumă Litere</span></div></div>
             <div class="relative w-full h-[180px] md:h-[220px] border-t border-slate-100 overflow-hidden z-10 bg-black flex justify-center items-center"><video src="/ai-voiceover.mp4" autoplay loop muted playsinline class="w-full h-full object-cover"></video></div>
         </a>
-        <div class="group flex flex-col bg-slate-50 border border-slate-200/80 border-dashed rounded-[1.8rem] md:rounded-[2rem] overflow-hidden opacity-60 grayscale cursor-not-allowed">
-            <div class="p-5 pb-4 flex flex-col flex-1 relative z-20"><h3 class="text-[1.15rem] font-black text-slate-500 mb-1 tracking-tight">Generator Media (Pro)</h3><p class="text-[0.8rem] text-slate-400 font-medium leading-relaxed mb-4 line-clamp-2 pr-2">Videoclipuri cinematice și imagini ultra-realiste generate cu AI.</p><div class="flex items-center justify-between mt-auto"><span class="text-[0.6rem] font-bold text-slate-400 bg-white border border-slate-200 px-2.5 py-1 rounded-md uppercase tracking-widest">VEO / NANO</span><span class="font-bold text-slate-400 text-xs flex items-center gap-1.5"><i class="fa-solid fa-clock"></i> ÎN CURÂND</span></div></div>
-            <div class="relative w-full h-[180px] md:h-[220px] border-t border-slate-200 overflow-hidden z-10 bg-black flex justify-center items-center"><video src="/ai-videogen.mp4" autoplay loop muted playsinline class="w-full h-full object-cover opacity-30"></video></div>
-        </div>
+<a href="https://video.viralio.ro/" onclick="handleProtectedAction(event, this.href)" class="group flex flex-col bg-white border border-slate-200/80 rounded-[1.8rem] md:rounded-[2rem] overflow-hidden hover:-translate-y-2 transition-all duration-500 shadow-sm hover:shadow-xl cursor-pointer">
+            <div class="p-5 pb-4 flex flex-col flex-1 relative z-20">
+                <h3 class="text-[1.15rem] font-black text-slate-900 mb-1 tracking-tight">Media Studio <span class="text-indigo-500">PRO</span></h3>
+                <p class="text-[0.8rem] text-slate-500 font-medium leading-relaxed mb-4 line-clamp-2 pr-2">Videoclipuri cinematice și imagini ultra-realiste generate cu AI.</p>
+                <div class="flex items-center justify-between mt-auto">
+                    <span class="text-[0.6rem] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2.5 py-1 rounded-md uppercase tracking-widest">VEO / NANO</span>
+                    <span class="font-black text-amber-500 text-xs flex items-center gap-1.5"><i class="fa-solid fa-coins"></i> 1-5 Credite</span>
+                </div>
+            </div>
+            
+            <div class="relative w-full h-[180px] md:h-[220px] border-t border-slate-100 overflow-hidden z-10 bg-black flex justify-center items-center">
+                
+                <style>
+                    /* Cinematic Slow Zoom & Fade */
+                    .anim-img-slide {
+                        position: absolute;
+                        inset: 0;
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        opacity: 0;
+                        animation: ai-slide-fade 12s infinite ease-in-out;
+                    }
+                    /* Timpii pentru cele 3 imagini */
+                    .img-1 { animation-delay: 0s; }
+                    .img-2 { animation-delay: 4s; }
+                    .img-3 { animation-delay: 8s; }
+                    
+                    @keyframes ai-slide-fade {
+                        0% { opacity: 0; transform: scale(1.1) translateX(-10px); }
+                        5% { opacity: 1; }
+                        28% { opacity: 1; transform: scale(1.02) translateX(-2px); }
+                        33.33% { opacity: 0; transform: scale(1) translateX(0); }
+                        100% { opacity: 0; }
+                    }
+
+                    /* Efect de scanare AI */
+                    @keyframes scanLine {
+                        0% { top: 0%; opacity: 0; }
+                        10% { opacity: 1; }
+                        90% { opacity: 1; }
+                        100% { top: 100%; opacity: 0; }
+                    }
+                </style>
+
+                <img src="/1.png" class="anim-img-slide img-1" alt="AI Gen 1">
+                <img src="/2.png" class="anim-img-slide img-2" alt="AI Gen 2">
+                <img src="/3.png" alt="AI Gen 3">
+
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 pointer-events-none z-10"></div>
+                
+                <div class="absolute inset-x-0 top-0 h-0.5 bg-indigo-500/50 shadow-[0_0_15px_#6366f1] z-20" style="animation: scanLine 2s linear infinite;"></div>
+
+                <div class="absolute top-3 left-3 z-20 flex items-center gap-1.5 bg-black/40 backdrop-blur-md px-2.5 py-1.5 rounded-lg border border-white/10">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]"></span>
+                    <span class="text-[0.55rem] font-bold text-emerald-400 tracking-widest uppercase font-mono mt-0.5">Randează</span>
+                </div>
+                
+                <div class="absolute bottom-3 right-3 z-20 flex items-center gap-1.5 bg-black/40 backdrop-blur-md px-2.5 py-1.5 rounded-lg border border-white/10 group-hover:bg-indigo-600/50 transition-colors">
+                    <i class="fa-solid fa-wand-magic-sparkles text-amber-400 text-[0.6rem]"></i>
+                    <span class="text-[0.55rem] font-bold text-white tracking-widest uppercase font-mono mt-0.5">Nano Banana PRO</span>
+                </div>
+                
+            </div>
+        </a>
         <div class="group flex flex-col bg-slate-50 border border-slate-200/80 border-dashed rounded-[1.8rem] md:rounded-[2rem] overflow-hidden opacity-60 grayscale cursor-not-allowed">
             <div class="p-5 pb-4 flex flex-col flex-1 relative z-20"><h3 class="text-[1.15rem] font-black text-slate-500 mb-1 tracking-tight">No Watermark</h3><p class="text-[0.8rem] text-slate-400 font-medium leading-relaxed mb-4 line-clamp-2 pr-2">Descarcă de pe TikTok sau IG fără logo-uri. Calitate originală, perfectă.</p><div class="flex items-center justify-between mt-auto"><span class="text-[0.6rem] font-bold text-slate-400 bg-white border border-slate-200 px-2.5 py-1 rounded-md uppercase tracking-widest">DIN SURSĂ</span><span class="font-bold text-slate-400 text-xs flex items-center gap-1.5"><i class="fa-solid fa-clock"></i> ÎN LUCRU</span></div></div>
             <div class="relative w-full h-[180px] md:h-[220px] border-t border-slate-200 overflow-hidden z-10 bg-black flex justify-center items-center"><video src="/watermarkMobile.mp4" autoplay loop muted playsinline class="w-full h-full object-cover opacity-30"></video></div>
@@ -578,7 +639,14 @@
             </div>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-8 lg:gap-10 lg:w-2/3 lg:justify-items-end">
-            <div class="flex flex-col gap-4"><h3 class="text-white font-black mb-2 text-xs uppercase tracking-widest">Ecosistem</h3><a href="https://downloader.viralio.ro/" onclick="handleProtectedAction(event, this.href)" class="text-slate-400 hover:text-white font-medium text-sm transition-colors"><i class="fa-brands fa-youtube text-red-500 mr-2"></i>YT Downloader</a><a href="https://captions.viralio.ro/" onclick="handleProtectedAction(event, this.href)" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Caption Eraser</a><a href="https://audiocut.viralio.ro/" onclick="handleProtectedAction(event, this.href)" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Audio Slicer AI</a><a href="https://voice.viralio.ro/" onclick="handleProtectedAction(event, this.href)" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Voice Studio PRO</a></div>
+            <div class="flex flex-col gap-4">
+    <h3 class="text-white font-black mb-2 text-xs uppercase tracking-widest">Ecosistem</h3>
+    <a href="https://downloader.viralio.ro/" onclick="handleProtectedAction(event, this.href)" class="text-slate-400 hover:text-white font-medium text-sm transition-colors"><i class="fa-brands fa-youtube text-red-500 mr-2"></i>YT Downloader</a>
+    <a href="https://captions.viralio.ro/" onclick="handleProtectedAction(event, this.href)" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Caption Eraser</a>
+    <a href="https://audiocut.viralio.ro/" onclick="handleProtectedAction(event, this.href)" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Audio Slicer AI</a>
+    <a href="https://voice.viralio.ro/" onclick="handleProtectedAction(event, this.href)" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Voice Studio PRO</a>
+    <a href="https://video.viralio.ro/" onclick="handleProtectedAction(event, this.href)" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Media Studio PRO</a>
+</div>
             <div class="flex flex-col gap-4"><h3 class="text-white font-black mb-2 text-xs uppercase tracking-widest">Companie</h3><a href="#pricing" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Credite & Prețuri</a><a href="#cum-functioneaza" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Cum funcționează</a><a href="/tutoriale/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors flex items-center gap-1.5"><i class="fa-solid fa-video text-indigo-400"></i> Tutoriale</a></div>
             <div class="flex flex-col gap-4 col-span-2 md:col-span-1"><h3 class="text-white font-black mb-2 text-xs uppercase tracking-widest">Legal</h3><a href="#" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Contact Suport</a><a href="#" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Termeni de utilizare</a></div>
         </div>
