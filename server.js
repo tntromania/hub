@@ -116,7 +116,7 @@ app.post('/api/auth/google', async (req, res) => {
         
         if (!user) {
             const userCount = await User.countDocuments();
-            if (userCount >= 290) {
+            if (userCount >= 280) {
                 const dejaInLista = await Waitlist.findOne({ email: payload.email });
                 if (!dejaInLista) {
                     await Waitlist.create({ email: payload.email, name: payload.name });
@@ -150,6 +150,6 @@ app.get('/api/auth/me', authenticate, async (req, res) => {
 
 
 // 5. CATCH-ALL PENTRU FRONTEND (HUB)
-app.get('/(.*)', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
 app.listen(PORT, () => console.log(`🚀 HUB rulează pe portul ${PORT}`));
