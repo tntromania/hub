@@ -150,6 +150,6 @@ app.get('/api/auth/me', authenticate, async (req, res) => {
 
 
 // 5. CATCH-ALL PENTRU FRONTEND (HUB) - MODIFICAT AICI PENTRU EXPRESS 5
-app.get('/(.*)', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.use((req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
 app.listen(PORT, () => console.log(`🚀 HUB rulează pe portul ${PORT}`));
