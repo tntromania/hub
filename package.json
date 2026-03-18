@@ -1,18 +1,24 @@
 {
-  "name": "viralio-hub",
+  "name": "saas-app",
   "version": "1.0.0",
-  "description": "Viralio Hub - Central Ecosistem",
+  "description": "",
   "main": "server.js",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
   "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "google-auth-library": "^9.15.0",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.2.1",
-    "stripe": "^15.8.0"
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "google-auth-library": "^10.5.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.2.1",
+	"stripe": "^14.18.0"
   }
 }
