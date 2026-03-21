@@ -79,10 +79,7 @@ app.post('/api/webhook/stripe', express.raw({ type: 'application/json' }), async
         switch (event.type) {
 
             // ── Abonament nou activat (prima plată) sau reînnoire lunară ──────
-            case 'invoice.payment_succeeded': {
-                const invoice = event.data.object;
-                // Ignorăm facturile de setup ($0)
-				case 'invoice.payment_succeeded': {
+case 'invoice.payment_succeeded': {
     const invoice = event.data.object;
     
     // LOG TEMPORAR - șterge după debug
