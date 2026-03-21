@@ -517,7 +517,7 @@
                 <li class="flex items-center text-slate-600 font-medium"><div class="w-5 h-5 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center mr-3 shrink-0"><i class="fa-solid fa-check text-[0.6rem]"></i></div>Istoric sesiune (7 zile)</li>
                 <li class="flex items-center text-slate-900 font-bold bg-slate-50 px-3 py-2.5 rounded-xl -ml-3 border border-slate-100 mt-1 transition-colors group-hover:bg-indigo-50/50"><div class="w-6 h-6 rounded-full bg-white shadow-sm text-viralio-500 flex items-center justify-center mr-2.5 shrink-0"><i class="fa-solid fa-microphone-lines text-[0.6rem]"></i></div>50.000 Caractere Voce AI</li>
             </ul>
-            <button onclick="buyPackage('starter')" class="mt-auto w-full py-3.5 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-sm hover:bg-slate-50 hover:border-slate-300 hover:text-slate-900 transition-all shadow-sm">Alege Starter</button>
+            <button id="btn-starter" onclick="handlePlanClick('starter')" class="mt-auto w-full py-3.5 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-sm hover:bg-slate-50 hover:border-slate-300 hover:text-slate-900 transition-all shadow-sm">Alege Starter</button>
         </div>
 
         <!-- IMPROVED: Pulsing "Recomandat" badge -->
@@ -537,7 +537,7 @@
                     <li class="flex items-center text-white font-bold bg-white/5 px-3 py-2.5 rounded-xl -ml-3 border border-white/10 mt-1 backdrop-blur-sm shadow-sm"><div class="w-6 h-6 rounded-full bg-indigo-500/30 text-indigo-300 flex items-center justify-center mr-2.5 shrink-0"><i class="fa-solid fa-microphone-lines text-[0.6rem]"></i></div>150.000 Caractere Voce AI</li>
                     <li class="pt-4 mt-4 block border-t border-white/5"><span class="text-[0.6rem] uppercase tracking-widest font-bold text-amber-400 mb-2.5 block opacity-90">Avantaje Exclusive:</span><div class="flex items-center text-slate-200 font-bold mb-2.5 text-xs"><i class="fa-solid fa-rocket text-amber-400/80 mr-2.5"></i> Procesare Prioritară</div><div class="flex items-center text-slate-200 font-bold text-xs"><i class="fa-solid fa-flask text-pink-400/80 mr-2.5"></i> Acces Beta noi aplicații</div></li>
                 </ul>
-                <button onclick="buyPackage('creator')" class="mt-auto w-full py-4 rounded-xl bg-gradient-viralio text-white font-black text-sm shadow-[0_10px_30px_rgba(99,102,241,0.3)] hover:scale-[1.02] hover:shadow-[0_15px_40px_rgba(99,102,241,0.5)] transition-all relative z-20">Activează Creator</button>
+                <button id="btn-creator" onclick="handlePlanClick('creator')" class="mt-auto w-full py-4 rounded-xl bg-gradient-viralio text-white font-black text-sm shadow-[0_10px_30px_rgba(99,102,241,0.3)] hover:scale-[1.02] hover:shadow-[0_15px_40px_rgba(99,102,241,0.5)] transition-all relative z-20">Activează Creator</button>
             </div>
         </div>
 
@@ -553,7 +553,7 @@
                 <li class="flex items-center text-slate-900 font-bold bg-slate-50 px-3 py-2.5 rounded-xl -ml-3 border border-slate-100 mt-1 transition-colors group-hover:border-slate-200"><div class="w-6 h-6 rounded-full bg-white shadow-sm text-viralio-500 flex items-center justify-center mr-2.5 shrink-0"><i class="fa-solid fa-microphone-lines text-[0.6rem]"></i></div>500.000 Caractere Voce AI</li>
                 <li class="pt-4 mt-4 block border-t border-slate-100"><span class="text-[0.6rem] uppercase tracking-widest font-bold text-slate-400 mb-2.5 block">Pentru Profesioniști:</span><div class="flex items-center text-slate-800 font-bold mb-2.5 text-xs"><div class="w-5 h-5 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mr-2.5 shrink-0"><i class="fa-solid fa-copyright text-[0.6rem]"></i></div>Licență Comercială Extinsă</div><div class="flex items-center text-slate-800 font-bold text-xs"><div class="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mr-2.5 shrink-0"><i class="fa-solid fa-headset text-[0.6rem]"></i></div>Suport VIP Dedicat</div></li>
             </ul>
-            <button onclick="buyPackage('agency')" class="mt-auto w-full py-3.5 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-slate-800 hover:shadow-lg transition-all shadow-md">Alege Agency</button>
+            <button id="btn-agency" onclick="handlePlanClick('agency')" class="mt-auto w-full py-3.5 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-slate-800 hover:shadow-lg transition-all shadow-md">Alege Agency</button>
         </div>
     </div>
 </div>
@@ -931,6 +931,8 @@ function removeToken(){ document.cookie = "viralio_token=; domain=.viralio.ro; p
         }
         // Hide sticky CTA when logged in
         document.getElementById('sticky-cta').classList.remove('visible');
+        // Update plan buttons
+        updatePlanButtons();
     }
 async function handleCredentialResponse(response) {
         try {
@@ -960,6 +962,89 @@ async function handleCredentialResponse(response) {
             if (data.url) window.location.href = data.url;
             else alert('Eroare la procesare. Încearcă din nou.');
         } catch(e) { alert('Eroare de conexiune.'); }
+    }
+
+    // Planuri ordonate după nivel
+    const PLAN_LEVELS = { none: 0, starter: 1, creator: 2, agency: 3 };
+    const PLAN_LABELS = { starter: 'Starter (49.90 RON/lună)', creator: 'Creator PRO (99.90 RON/lună)', agency: 'Agency (249.90 RON/lună)' };
+    const PLAN_PRICES = { starter: 49.90, creator: 99.90, agency: 249.90 };
+    let pendingUpgradePlan = null;
+
+    function handlePlanClick(plan) {
+        if (!getToken()) { openLoginModal(); return; }
+        // Dacă nu e abonat sau e același plan → flow normal
+        if (currentUserStatus !== 'active' || currentUserPlan === 'none') {
+            buyPackage(plan); return;
+        }
+        // Dacă e același plan → nu face nimic
+        if (currentUserPlan === plan) return;
+        // Dacă e downgrade → flow normal fără reducere
+        if (PLAN_LEVELS[plan] <= PLAN_LEVELS[currentUserPlan]) {
+            buyPackage(plan); return;
+        }
+        // Upgrade → arată modalul cu -10%
+        openUpgradeModal(plan);
+    }
+
+    function openUpgradeModal(plan) {
+        pendingUpgradePlan = plan;
+        const originalPrice = PLAN_PRICES[plan];
+        const discountedPrice = (originalPrice * 0.9).toFixed(2);
+
+        document.getElementById('upgrade-from-label').textContent = PLAN_LABELS[currentUserPlan];
+        document.getElementById('upgrade-to-label').textContent = PLAN_LABELS[plan];
+        document.getElementById('upgrade-price-original').textContent = originalPrice.toFixed(2) + ' RON/lună';
+        document.getElementById('upgrade-price-final').textContent = discountedPrice + ' RON/lună';
+
+        document.getElementById('upgrade-modal').classList.add('show');
+    }
+
+    function closeUpgradeModal() {
+        document.getElementById('upgrade-modal').classList.remove('show');
+        pendingUpgradePlan = null;
+    }
+
+    async function confirmUpgrade() {
+        if (!pendingUpgradePlan) return;
+        closeUpgradeModal();
+        try {
+            const res = await fetch('/api/stripe/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() },
+                body: JSON.stringify({ plan: pendingUpgradePlan, upgrade: true })
+            });
+            const data = await res.json();
+            if (data.url) window.location.href = data.url;
+            else alert('Eroare la procesare. Încearcă din nou.');
+        } catch(e) { alert('Eroare de conexiune.'); }
+    }
+
+    function updatePlanButtons() {
+        const plans = ['starter', 'creator', 'agency'];
+        plans.forEach(plan => {
+            const btn = document.getElementById('btn-' + plan);
+            if (!btn) return;
+            const defaultLabels = { starter: 'Alege Starter', creator: 'Activează Creator', agency: 'Alege Agency' };
+
+            if (currentUserStatus === 'active' && currentUserPlan === plan) {
+                // Plan activ curent
+                btn.textContent = '✓ Plan Activ';
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
+                btn.style.cursor = 'not-allowed';
+            } else if (currentUserStatus === 'active' && PLAN_LEVELS[plan] > PLAN_LEVELS[currentUserPlan]) {
+                // Upgrade disponibil
+                btn.innerHTML = '<i class="fa-solid fa-arrow-up mr-1.5"></i> Upgrade -10%';
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
+            } else {
+                btn.innerHTML = defaultLabels[plan];
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
+            }
+        });
     }
 
     let currentUserPlan = 'none';
@@ -1070,7 +1155,7 @@ window.onload = async () => {
             <button onclick="buyTopup('micro')" class="group w-full flex items-center justify-between bg-white/5 hover:bg-white/10 border border-white/10 hover:border-amber-500/30 rounded-2xl px-5 py-4 transition-all">
                 <div class="text-left">
                     <div class="text-white font-black text-sm">50 Credite</div>
-                    <div class="text-slate-500 text-xs font-medium mt-0.5">≈ 12 clipuri complete</div>
+                    <div class="text-slate-500 text-xs font-medium mt-0.5">≈ 6 clipuri complete</div>
                 </div>
                 <div class="text-right">
                     <div class="text-amber-400 font-black text-base">19.90 <span class="text-xs font-bold text-slate-500">RON</span></div>
@@ -1082,7 +1167,7 @@ window.onload = async () => {
                 <div class="absolute top-0 right-0 bg-amber-500 text-[#09090b] text-[0.5rem] font-black px-2.5 py-1 rounded-bl-xl uppercase tracking-widest">Popular</div>
                 <div class="text-left">
                     <div class="text-white font-black text-sm">150 Credite</div>
-                    <div class="text-slate-500 text-xs font-medium mt-0.5">≈ 37 clipuri complete</div>
+                    <div class="text-slate-500 text-xs font-medium mt-0.5">≈ 14 clipuri complete</div>
                 </div>
                 <div class="text-right">
                     <div class="text-amber-400 font-black text-base">54.90 <span class="text-xs font-bold text-slate-500">RON</span></div>
@@ -1093,7 +1178,7 @@ window.onload = async () => {
             <button onclick="buyTopup('pro')" class="group w-full flex items-center justify-between bg-white/5 hover:bg-white/10 border border-white/10 hover:border-indigo-500/30 rounded-2xl px-5 py-4 transition-all">
                 <div class="text-left">
                     <div class="text-white font-black text-sm">400 Credite</div>
-                    <div class="text-slate-500 text-xs font-medium mt-0.5">≈ 100 clipuri complete</div>
+                    <div class="text-slate-500 text-xs font-medium mt-0.5">≈ 38 clipuri complete</div>
                 </div>
                 <div class="text-right">
                     <div class="text-amber-400 font-black text-base">139.90 <span class="text-xs font-bold text-slate-500">RON</span></div>
@@ -1114,6 +1199,59 @@ window.onload = async () => {
 #topup-modal.show { opacity: 1 !important; pointer-events: auto !important; }
 #topup-modal.show > div { transform: translateY(0) !important; }
 #topup-discount-badge.show-badge { display: flex !important; }
+</style>
+
+
+<!-- UPGRADE MODAL -->
+<div id="upgrade-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[100000] flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300" style="opacity:0;pointer-events:none">
+    <div class="w-full max-w-sm bg-[#09090b] border border-white/10 rounded-[2rem] p-7 shadow-2xl relative overflow-hidden">
+        <div class="absolute -top-16 -right-16 w-48 h-48 bg-indigo-500/15 blur-[60px] rounded-full pointer-events-none"></div>
+        <div class="absolute -bottom-16 -left-16 w-48 h-48 bg-amber-500/10 blur-[60px] rounded-full pointer-events-none"></div>
+
+        <button onclick="closeUpgradeModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 flex items-center justify-center transition-all"><i class="fa-solid fa-xmark text-sm"></i></button>
+
+        <div class="flex items-center gap-3 mb-5">
+            <div class="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0"><i class="fa-solid fa-arrow-up"></i></div>
+            <div>
+                <h3 class="text-white font-black text-lg tracking-tight">Upgrade Plan</h3>
+                <p class="text-slate-500 text-xs font-medium">Reducere exclusivă pentru abonați</p>
+            </div>
+        </div>
+
+        <div class="bg-indigo-500/10 border border-indigo-500/20 rounded-xl px-4 py-3 mb-5 flex items-center gap-2">
+            <i class="fa-solid fa-tag text-amber-400 text-sm"></i>
+            <span class="text-slate-200 text-xs font-bold">Upgrade acum și primești <span class="text-amber-400">-10% reducere</span> la noul plan!</span>
+        </div>
+
+        <div class="bg-white/5 border border-white/10 rounded-xl px-4 py-3 mb-6">
+            <div class="flex items-center justify-between mb-1">
+                <span class="text-slate-400 text-xs font-medium">Plan curent</span>
+                <span id="upgrade-from-label" class="text-slate-300 text-xs font-bold"></span>
+            </div>
+            <div class="flex items-center justify-between">
+                <span class="text-slate-400 text-xs font-medium">Upgrade la</span>
+                <span id="upgrade-to-label" class="text-indigo-300 text-xs font-black"></span>
+            </div>
+            <div class="border-t border-white/10 mt-3 pt-3 flex items-center justify-between">
+                <span class="text-slate-400 text-xs font-medium">Preț cu reducere</span>
+                <div class="text-right">
+                    <span id="upgrade-price-original" class="text-slate-600 text-xs line-through mr-1"></span>
+                    <span id="upgrade-price-final" class="text-amber-400 font-black text-sm"></span>
+                </div>
+            </div>
+        </div>
+
+        <button id="upgrade-confirm-btn" onclick="confirmUpgrade()" class="w-full py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-black text-sm hover:scale-[1.02] transition-all shadow-[0_10px_30px_rgba(99,102,241,0.3)] mb-3">
+            Confirmă Upgrade-ul
+        </button>
+        <button onclick="closeUpgradeModal()" class="w-full py-2.5 rounded-xl bg-white/5 text-slate-400 font-bold text-xs hover:bg-white/10 transition-all">
+            Anulează
+        </button>
+    </div>
+</div>
+
+<style>
+#upgrade-modal.show { opacity: 1 !important; pointer-events: auto !important; }
 </style>
 
 </body>
