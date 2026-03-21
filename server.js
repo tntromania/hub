@@ -82,6 +82,31 @@ app.post('/api/webhook/stripe', express.raw({ type: 'application/json' }), async
             case 'invoice.payment_succeeded': {
                 const invoice = event.data.object;
                 // Ignorăm facturile de setup ($0)
+				case 'invoice.payment_succeeded': {
+    const invoice = event.data.object;
+    
+    // LOG TEMPORAR - șterge după debug
+    const fs = require('fs');
+    fs.appendFileSync('/root/webhook-debug.txt', 
+        `\n--- ${new Date().toISOString()} ---\n` +
+        `amount_paid: ${invoice.amount_paid}\n` +
+        `subscription: ${invoice.subscription}\n` +
+        `customer: ${invoice.customer}\n` +
+        `PLANS keys: ${JSON.stringify(Object.keys(PLANS))}\n`
+    );
+    
+    if (invoice.amount_paid === 0) break;
+    if (!invoice.subscription) break;
+
+    const sub = await stripe.subscriptions.retrieve(invoice.subscription);
+    const priceId = sub.items.data[0]?.price?.id;
+    
+    fs.appendFileSync('/root/webhook-debug.txt', 
+        `priceId din Stripe: ${priceId}\n` +
+        `planCfg găsit: ${JSON.stringify(PLANS[priceId])}\n`
+    );
+    
+    // ... restul codului rămâne la fel
                 if (invoice.amount_paid === 0) break;
                 // Funcționează doar pentru subscriptions, nu one-time
                 if (!invoice.subscription) break;
