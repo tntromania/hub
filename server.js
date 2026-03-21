@@ -38,9 +38,12 @@ const WaitlistSchema = new mongoose.Schema({
 const Waitlist = mongoose.model('Waitlist', WaitlistSchema);
 
 const PLANS = {
-    [process.env.STRIPE_PRICE_STARTER]: { plan: 'starter', credits: 150,  chars: 50000  },
-    [process.env.STRIPE_PRICE_CREATOR]: { plan: 'creator', credits: 400,  chars: 150000 },
-    [process.env.STRIPE_PRICE_AGENCY]:  { plan: 'agency',  credits: 1500, chars: 500000 },
+    [process.env.STRIPE_PRICE_STARTER]:        { plan: 'starter', credits: 150,  chars: 50000  },
+    [process.env.STRIPE_PRICE_CREATOR]:        { plan: 'creator', credits: 400,  chars: 150000 },
+    [process.env.STRIPE_PRICE_AGENCY]:         { plan: 'agency',  credits: 1500, chars: 500000 },
+    [process.env.STRIPE_PRICE_STARTER_YEARLY]: { plan: 'starter', credits: 150,  chars: 50000  },
+    [process.env.STRIPE_PRICE_CREATOR_YEARLY]: { plan: 'creator', credits: 400,  chars: 150000 },
+    [process.env.STRIPE_PRICE_AGENCY_YEARLY]:  { plan: 'agency',  credits: 1500, chars: 500000 },
 };
 
 const TOPUP = {
@@ -266,13 +269,15 @@ app.get('/api/auth/me', authenticate, async (req, res) => {
 // ── STRIPE ROUTES ────────────────────────────
 app.post('/api/stripe/subscribe', authenticate, async (req, res) => {
     const { plan } = req.body;
+    const interval = req.body.interval || 'monthly';
     const priceMap = {
-        starter: process.env.STRIPE_PRICE_STARTER,
-        creator: process.env.STRIPE_PRICE_CREATOR,
-        agency:  process.env.STRIPE_PRICE_AGENCY,
+        starter: interval === 'yearly' ? process.env.STRIPE_PRICE_STARTER_YEARLY : process.env.STRIPE_PRICE_STARTER,
+        creator: interval === 'yearly' ? process.env.STRIPE_PRICE_CREATOR_YEARLY : process.env.STRIPE_PRICE_CREATOR,
+        agency:  interval === 'yearly' ? process.env.STRIPE_PRICE_AGENCY_YEARLY  : process.env.STRIPE_PRICE_AGENCY,
     };
     const priceId = priceMap[plan];
     if (!priceId) return res.status(400).json({ error: 'Plan invalid' });
+    console.log('📅 Subscribe: plan=' + plan + ' interval=' + interval + ' priceId=' + priceId);
 
     const user = await User.findById(req.userId);
     try {
