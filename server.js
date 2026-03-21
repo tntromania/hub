@@ -276,6 +276,7 @@ app.post('/api/stripe/subscribe', authenticate, async (req, res) => {
 
     const user = await User.findById(req.userId);
     try {
+        const isUpgrade = req.body.upgrade === true;
         const sessionParams = {
             mode: 'subscription',
             line_items: [{ price: priceId, quantity: 1 }],
@@ -286,6 +287,10 @@ app.post('/api/stripe/subscribe', authenticate, async (req, res) => {
         };
         if (user.stripeCustomerId) sessionParams.customer = user.stripeCustomerId;
         else sessionParams.customer_email = user.email;
+        // Aplicăm 10% reducere la upgrade
+        if (isUpgrade && user.subscriptionStatus === 'active' && process.env.STRIPE_COUPON_SUBSCRIBER_10) {
+            sessionParams.discounts = [{ coupon: process.env.STRIPE_COUPON_SUBSCRIBER_10 }];
+        }
 
         const session = await stripe.checkout.sessions.create(sessionParams);
         res.json({ url: session.url });
