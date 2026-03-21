@@ -9,7 +9,6 @@ const jwt = require('jsonwebtoken');
 const app = express();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
 const PORT = process.env.PORT || 3000;
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -50,9 +49,9 @@ const TOPUP = {
     [process.env.STRIPE_PRICE_TOPUP_400]: 400,
 };
 
-console.log('📋 PLANS loaded:', JSON.stringify(PLANS));
-console.log('📋 TOPUP loaded:', JSON.stringify(TOPUP));
-console.log('📋 WEBHOOK_SECRET starts with:', endpointSecret ? endpointSecret.substring(0, 12) + '...' : 'LIPSESTE!');
+console.log('📋 PLANS:', JSON.stringify(PLANS));
+console.log('📋 TOPUP:', JSON.stringify(TOPUP));
+console.log('📋 WEBHOOK_SECRET:', endpointSecret ? endpointSecret.substring(0, 12) + '...' : 'LIPSESTE!');
 
 // ── WEBHOOK ──────────────────────────────────
 app.post('/api/webhook/stripe', express.raw({ type: 'application/json' }), async (req, res) => {
@@ -69,27 +68,40 @@ app.post('/api/webhook/stripe', express.raw({ type: 'application/json' }), async
     console.log('📨 WEBHOOK PRIMIT:', event.type);
 
     try {
+
         if (event.type === 'invoice.payment_succeeded') {
             const invoice = event.data.object;
-            console.log('💳 amount_paid=' + invoice.amount_paid + ' | subscription=' + invoice.subscription);
 
-            if (invoice.amount_paid === 0) { console.log('⏭️ Skip: amount=0'); return res.sendStatus(200); }
-            if (!invoice.subscription) { console.log('⏭️ Skip: nu e subscription'); return res.sendStatus(200); }
+            const subId = invoice.subscription
+                || invoice.parent?.subscription_details?.subscription
+                || invoice.lines?.data?.[0]?.subscription;
 
-            const sub = await stripe.subscriptions.retrieve(invoice.subscription);
+            console.log('💳 amount_paid=' + invoice.amount_paid + ' | subId=' + subId);
+            console.log('💳 parent=' + JSON.stringify(invoice.parent || null).substring(0, 300));
+
+            if (invoice.amount_paid === 0) {
+                console.log('⏭️ Skip: amount=0');
+                return res.sendStatus(200);
+            }
+            if (!subId) {
+                console.log('⏭️ Skip: nu e subscription');
+                return res.sendStatus(200);
+            }
+
+            const sub = await stripe.subscriptions.retrieve(subId);
             const priceId = sub.items.data[0]?.price?.id;
-            console.log('🔑 priceId din Stripe: ' + priceId);
-            console.log('🗺️ PLANS keys: ' + JSON.stringify(Object.keys(PLANS)));
+            console.log('🔑 priceId=' + priceId);
+            console.log('🗺️ PLANS keys=' + JSON.stringify(Object.keys(PLANS)));
 
             const planCfg = PLANS[priceId];
             if (!planCfg) {
-                console.error('❌ PRICE ID NECUNOSCUT: ' + priceId + ' — verifica env STRIPE_PRICE_*');
+                console.error('❌ PRICE ID NECUNOSCUT: ' + priceId);
                 return res.sendStatus(200);
             }
 
             const customer = await stripe.customers.retrieve(invoice.customer);
             const email = customer.email;
-            console.log('📧 Email Stripe: ' + email);
+            console.log('📧 Email: ' + email);
 
             const user = await User.findOneAndUpdate(
                 { email },
@@ -97,7 +109,7 @@ app.post('/api/webhook/stripe', express.raw({ type: 'application/json' }), async
                     credits:            planCfg.credits,
                     voice_characters:   planCfg.chars,
                     stripeCustomerId:   invoice.customer,
-                    subscriptionId:     invoice.subscription,
+                    subscriptionId:     subId,
                     subscriptionPlan:   planCfg.plan,
                     subscriptionStatus: 'active',
                     currentPeriodEnd:   new Date(sub.current_period_end * 1000),
@@ -106,25 +118,35 @@ app.post('/api/webhook/stripe', express.raw({ type: 'application/json' }), async
             );
 
             if (user) {
-                console.log('✅ SUCCES: ' + email + ' → plan=' + planCfg.plan + ' | credits=' + planCfg.credits);
+                console.log('✅ SUCCES: ' + email + ' plan=' + planCfg.plan + ' credits=' + planCfg.credits);
             } else {
-                console.error('❌ USER NEGASIT in DB pentru: ' + email);
+                console.error('❌ USER NEGASIT pentru: ' + email);
             }
         }
 
         else if (event.type === 'checkout.session.completed') {
             const session = event.data.object;
-            console.log('🛒 checkout mode=' + session.mode);
-            if (session.mode !== 'payment') { console.log('⏭️ Skip: e subscription'); return res.sendStatus(200); }
+            console.log('🛒 mode=' + session.mode);
+
+            if (session.mode !== 'payment') {
+                console.log('⏭️ Skip: e subscription');
+                return res.sendStatus(200);
+            }
 
             const topupPriceId = session.metadata?.topup_price_id;
             const creditsToAdd = topupPriceId ? TOPUP[topupPriceId] : null;
-            console.log('🎯 topup_price_id=' + topupPriceId + ' → ' + creditsToAdd + ' credite');
+            console.log('🎯 topup_price_id=' + topupPriceId + ' credite=' + creditsToAdd);
 
-            if (!creditsToAdd) { console.error('❌ TOPUP metadata lipsa'); return res.sendStatus(200); }
+            if (!creditsToAdd) {
+                console.error('❌ TOPUP metadata lipsa');
+                return res.sendStatus(200);
+            }
 
             const email = session.customer_details?.email;
-            if (!email) { console.error('❌ TOPUP email lipsa'); return res.sendStatus(200); }
+            if (!email) {
+                console.error('❌ TOPUP email lipsa');
+                return res.sendStatus(200);
+            }
 
             const user = await User.findOneAndUpdate(
                 { email },
@@ -132,8 +154,8 @@ app.post('/api/webhook/stripe', express.raw({ type: 'application/json' }), async
                 { new: true }
             );
 
-            if (user) console.log('✅ TOPUP: +' + creditsToAdd + ' pentru ' + email + ' (total: ' + user.credits + ')');
-            else console.error('❌ TOPUP: ' + email + ' negasit in DB');
+            if (user) console.log('✅ TOPUP +' + creditsToAdd + ' pentru ' + email + ' total=' + user.credits);
+            else console.error('❌ TOPUP negasit: ' + email);
         }
 
         else if (event.type === 'customer.subscription.deleted') {
@@ -156,7 +178,7 @@ app.post('/api/webhook/stripe', express.raw({ type: 'application/json' }), async
         }
 
         else {
-            console.log('ℹ️ Event ignorat: ' + event.type);
+            console.log('ℹ️ Ignorat: ' + event.type);
         }
 
     } catch (err) {
