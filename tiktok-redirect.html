@@ -2,7 +2,13 @@
 <html lang="ro">
 <head>
 <script>
-  sessionStorage.setItem('openedFromTikTok', '1');
+  // Dacă NU suntem în TikTok in-app browser, înseamnă că userul a deschis în browser real
+  // Îl trimitem direct la site
+  var ua = navigator.userAgent || '';
+  var isTikTokInApp = /BytedanceWebview|ByteLocale/i.test(ua);
+  if (!isTikTokInApp) {
+    window.location.replace('/');
+  }
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
