@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="ro" class="scroll-smooth">
 <head>
+<script>
+  (function() {
+    var ua = navigator.userAgent || '';
+    var isTikTok = /musical_ly|tiktok|BytedanceWebview|ByteLocale/i.test(ua);
+    if (isTikTok) {
+      window.location.href = '/open-in-browser';
+    }
+  })();
+</script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Viralio – Platformă AI pentru Content Creatori & Editare Video</title>
