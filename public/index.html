@@ -4,9 +4,10 @@
 <script>
   (function() {
     var ua = navigator.userAgent || '';
-    var isTikTok = /musical_ly|tiktok|BytedanceWebview|ByteLocale/i.test(ua);
-    if (isTikTok) {
-      window.location.href = '/open-in-browser';
+    // BytedanceWebview = DOAR in-app browser TikTok, nu browserul extern
+    var isTikTokInApp = /BytedanceWebview|ByteLocale/i.test(ua);
+    if (isTikTokInApp) {
+      window.location.replace('/open-in-browser');
     }
   })();
 </script>
