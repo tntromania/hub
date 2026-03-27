@@ -194,6 +194,9 @@ app.post('/api/webhook/stripe', express.raw({ type: 'application/json' }), async
 // ── MIDDLEWARE ───────────────────────────────
 app.use(cors({ origin: '*' }));
 app.use(express.json());
+app.get('/open-in-browser', (req, res) => {
+    res.sendFile(path.join(__dirname, 'tiktok-redirect.html'));
+});
 app.use(express.static(path.join(__dirname, 'public')));
 
 const authenticate = (req, res, next) => {
