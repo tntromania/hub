@@ -4,8 +4,15 @@
 <script>
   (function() {
     var ua = navigator.userAgent || '';
-    // BytedanceWebview = DOAR in-app browser TikTok, nu browserul extern
-    var isTikTokInApp = /BytedanceWebview|ByteLocale/i.test(ua);
+    // Detecție robustă TikTok in-app browser (acoperă versiunile noi din 2024-2025)
+    var isTikTokInApp = (
+      /BytedanceWebview|ByteLocale|musical_ly|TikTok/i.test(ua) ||
+      /aweme/i.test(ua) ||
+      // iOS WebView fără Safari real (heuristică pentru TikTok pe iPhone)
+      (/iPhone|iPad|iPod/i.test(ua) && !/Safari\//i.test(ua) && /AppleWebKit/i.test(ua)) ||
+      // Android WebView (wv) cu Version/ în UA — semn clar de in-app browser
+      (/Android/i.test(ua) && /wv\)/i.test(ua) && /Version\//i.test(ua))
+    );
     if (isTikTokInApp) {
       window.location.replace('/open-in-browser');
     }
@@ -1002,10 +1009,16 @@ window.addEventListener('scroll', () => {
 const $loginModal = document.getElementById('login-modal');
 const $inappModal = document.getElementById('inapp-modal');
 
-// Funcția care detectează dacă e în TikTok / IG / FB
+// Funcția care detectează dacă e în TikTok / IG / FB / orice in-app browser
 function isInAppBrowser() {
-    const ua = navigator.userAgent || navigator.vendor || window.opera;
-    return /FBAN|FBAV|Instagram|TikTok|Bytedance|Snapchat/i.test(ua);
+    var ua = navigator.userAgent || navigator.vendor || window.opera || '';
+    // Detecție explicită TikTok + alte app-uri
+    if (/FBAN|FBAV|Instagram|TikTok|Bytedance|ByteLocale|BytedanceWebview|musical_ly|aweme|Snapchat/i.test(ua)) return true;
+    // iOS WebView fără Safari real (TikTok, Instagram etc. pe iPhone)
+    if (/iPhone|iPad|iPod/i.test(ua) && !/Safari\//i.test(ua) && /AppleWebKit/i.test(ua)) return true;
+    // Android WebView cu wv) în UA
+    if (/Android/i.test(ua) && /wv\)/i.test(ua) && /Version\//i.test(ua)) return true;
+    return false;
 }
 
 // Logica inteligentă la click pe login
