@@ -2,10 +2,17 @@
 <html lang="ro">
 <head>
 <script>
-  // Dacă NU suntem în TikTok in-app browser, înseamnă că userul a deschis în browser real
-  // Îl trimitem direct la site
+  // Detecție robustă TikTok in-app browser (2024-2025)
   var ua = navigator.userAgent || '';
-  var isTikTokInApp = /BytedanceWebview|ByteLocale/i.test(ua);
+  var isTikTokInApp = (
+    /BytedanceWebview|ByteLocale|musical_ly|TikTok/i.test(ua) ||
+    /aweme/i.test(ua) ||
+    (typeof window.__TIKTOK_WEBVIEW__ !== 'undefined') ||
+    // Fallback: dacă nu are Chrome real sau Safari real (heuristică)
+    (/iPhone|iPad|iPod/i.test(ua) && !/Safari\//i.test(ua) && /AppleWebKit/i.test(ua)) ||
+    (/Android/i.test(ua) && /wv\)/i.test(ua) && /Version\//i.test(ua))
+  );
+
   if (!isTikTokInApp) {
     window.location.replace('/');
   }
