@@ -1335,6 +1335,296 @@ window.onload = async () => {
 
 
 
+<!-- ============================================================
+     VIRALIO — SMART UPSELL SYSTEM
+     Injectează înainte de </body> în index.html
+     ============================================================ -->
 
+<!-- ① MODALUL DE UPSELL (apare la 80% credite consumate) -->
+<div id="upsell-modal" style="display:none;opacity:0;pointer-events:none" class="fixed inset-0 z-[200000] flex items-end sm:items-center justify-center bg-slate-900/80 backdrop-blur-md transition-opacity duration-300">
+    <div id="upsell-box" class="w-full sm:max-w-lg bg-[#09090b] border border-white/10 rounded-t-[2rem] sm:rounded-[2rem] p-6 sm:p-8 shadow-2xl relative overflow-hidden translate-y-8 sm:translate-y-0 transition-transform duration-300">
+
+        <!-- Glow bg -->
+        <div class="absolute -top-24 -right-24 w-64 h-64 bg-indigo-500/15 blur-[80px] rounded-full pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-pink-500/10 blur-[80px] rounded-full pointer-events-none"></div>
+
+        <!-- Close -->
+        <button onclick="closeUpsellModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 flex items-center justify-center transition-all z-10">
+            <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+
+        <!-- Header -->
+        <div class="flex items-center gap-3 mb-5 relative z-10">
+            <div class="w-11 h-11 rounded-xl bg-amber-500/20 flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-triangle-exclamation text-amber-400 text-lg"></i>
+            </div>
+            <div>
+                <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-0.5">Atenție</p>
+                <h3 class="text-white font-black text-lg tracking-tight leading-tight">Creditele tale se termină curând!</h3>
+            </div>
+        </div>
+
+        <!-- Progress bar credite -->
+        <div class="relative z-10 bg-white/5 border border-white/10 rounded-2xl p-4 mb-5">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-slate-400 text-xs font-bold uppercase tracking-widest flex items-center gap-1.5">
+                    <i class="fa-solid fa-bolt text-amber-400 text-[0.6rem]"></i> Credite rămase
+                </span>
+                <span class="text-white font-black text-sm"><span id="upsell-credits-left">0</span> / <span id="upsell-credits-total">0</span></span>
+            </div>
+            <div class="w-full h-2.5 bg-white/10 rounded-full overflow-hidden">
+                <div id="upsell-progress-bar" class="h-full rounded-full transition-all duration-700" style="width:20%;background:linear-gradient(90deg,#f59e0b,#ef4444)"></div>
+            </div>
+            <p class="text-slate-500 text-[0.65rem] font-medium mt-2">Mai poți genera aproximativ <span id="upsell-videos-left" class="text-amber-400 font-bold">—</span> videoclipuri 1080p</p>
+        </div>
+
+        <!-- Tabs: Top-up vs Upgrade -->
+        <div class="relative z-10 flex gap-1.5 bg-white/5 p-1 rounded-xl mb-5" id="upsell-tabs">
+            <button onclick="upsellTab('topup')" id="tab-topup" class="flex-1 py-2 rounded-lg text-xs font-bold transition-all bg-white/10 text-white">
+                ⚡ Top-up Rapid
+            </button>
+            <button onclick="upsellTab('upgrade')" id="tab-upgrade" class="flex-1 py-2 rounded-lg text-xs font-bold transition-all text-slate-400">
+                🚀 Upgrade Plan
+            </button>
+        </div>
+
+        <!-- PANEL: TOP-UP -->
+        <div id="panel-topup" class="relative z-10 flex flex-col gap-2.5">
+            <button onclick="buyTopup('micro'); closeUpsellModal();" class="group w-full flex items-center justify-between bg-white/5 hover:bg-white/10 border border-white/10 hover:border-amber-500/30 rounded-2xl px-5 py-3.5 transition-all">
+                <div class="text-left">
+                    <div class="text-white font-black text-sm">50 Credite</div>
+                    <div class="text-slate-500 text-xs font-medium mt-0.5">≈ 25 videoclipuri 1080p</div>
+                </div>
+                <div class="text-right">
+                    <div class="text-amber-400 font-black text-base">19.90 <span class="text-xs font-bold text-slate-500">RON</span></div>
+                    <div class="text-slate-600 text-[0.6rem] font-bold uppercase tracking-widest mt-0.5">fără abonament</div>
+                </div>
+            </button>
+            <button onclick="buyTopup('standard'); closeUpsellModal();" class="group w-full flex items-center justify-between bg-white/5 hover:bg-white/10 border border-amber-500/30 hover:border-amber-500/60 rounded-2xl px-5 py-3.5 transition-all relative overflow-hidden">
+                <div class="absolute top-0 right-0 bg-amber-500 text-[#09090b] text-[0.5rem] font-black px-2.5 py-1 rounded-bl-xl uppercase tracking-widest">Popular</div>
+                <div class="text-left">
+                    <div class="text-white font-black text-sm">150 Credite</div>
+                    <div class="text-slate-500 text-xs font-medium mt-0.5">≈ 75 videoclipuri 1080p</div>
+                </div>
+                <div class="text-right">
+                    <div class="text-amber-400 font-black text-base">54.90 <span class="text-xs font-bold text-slate-500">RON</span></div>
+                    <div class="text-slate-600 text-[0.6rem] font-bold uppercase tracking-widest mt-0.5">0.37 RON/cr</div>
+                </div>
+            </button>
+            <button onclick="buyTopup('pro'); closeUpsellModal();" class="group w-full flex items-center justify-between bg-white/5 hover:bg-white/10 border border-white/10 hover:border-indigo-500/30 rounded-2xl px-5 py-3.5 transition-all">
+                <div class="text-left">
+                    <div class="text-white font-black text-sm">400 Credite</div>
+                    <div class="text-slate-500 text-xs font-medium mt-0.5">≈ 200 videoclipuri 1080p</div>
+                </div>
+                <div class="text-right">
+                    <div class="text-amber-400 font-black text-base">139.90 <span class="text-xs font-bold text-slate-500">RON</span></div>
+                    <div class="text-slate-600 text-[0.6rem] font-bold uppercase tracking-widest mt-0.5">0.35 RON/cr</div>
+                </div>
+            </button>
+            <p class="text-center text-slate-600 text-[0.65rem] font-medium mt-1">Creditele de top-up nu expiră niciodată.</p>
+        </div>
+
+        <!-- PANEL: UPGRADE -->
+        <div id="panel-upgrade" class="relative z-10 flex flex-col gap-3" style="display:none">
+
+            <!-- De ce să upgradeți — beneficii rapide -->
+            <div class="grid grid-cols-2 gap-2 mb-1">
+                <div class="bg-white/5 border border-white/10 rounded-xl p-3 flex items-start gap-2">
+                    <i class="fa-solid fa-bolt text-amber-400 text-xs mt-0.5 shrink-0"></i>
+                    <div>
+                        <p class="text-white text-[0.7rem] font-bold leading-tight">Mai multe credite lunar</p>
+                        <p class="text-slate-500 text-[0.6rem] font-medium mt-0.5">Reset automat în fiecare lună</p>
+                    </div>
+                </div>
+                <div class="bg-white/5 border border-white/10 rounded-xl p-3 flex items-start gap-2">
+                    <i class="fa-solid fa-cloud text-indigo-400 text-xs mt-0.5 shrink-0"></i>
+                    <div>
+                        <p class="text-white text-[0.7rem] font-bold leading-tight">Istoric cloud salvat</p>
+                        <p class="text-slate-500 text-[0.6rem] font-medium mt-0.5">30 zile → permanent</p>
+                    </div>
+                </div>
+                <div class="bg-white/5 border border-white/10 rounded-xl p-3 flex items-start gap-2">
+                    <i class="fa-solid fa-rocket text-pink-400 text-xs mt-0.5 shrink-0"></i>
+                    <div>
+                        <p class="text-white text-[0.7rem] font-bold leading-tight">Procesare prioritară</p>
+                        <p class="text-slate-500 text-[0.6rem] font-medium mt-0.5">Generezi înaintea altora</p>
+                    </div>
+                </div>
+                <div class="bg-white/5 border border-white/10 rounded-xl p-3 flex items-start gap-2">
+                    <i class="fa-solid fa-microphone-lines text-emerald-400 text-xs mt-0.5 shrink-0"></i>
+                    <div>
+                        <p class="text-white text-[0.7rem] font-bold leading-tight">3× mai multe litere voce</p>
+                        <p class="text-slate-500 text-[0.6rem] font-medium mt-0.5">150k → 500k caractere</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plan cards upgrade -->
+            <div id="upsell-plan-cards" class="flex flex-col gap-2">
+                <!-- Se generează dinamic în JS în funcție de planul curent -->
+            </div>
+
+            <p class="text-center text-slate-600 text-[0.65rem] font-medium">Anulezi oricând. Fără contract.</p>
+        </div>
+
+    </div>
+</div>
+
+<style>
+#upsell-modal.show { opacity: 1 !important; pointer-events: auto !important; }
+#upsell-modal.show #upsell-box { transform: translateY(0) !important; }
+#tab-topup.active-tab  { background: rgba(255,255,255,0.12); color: #fff; }
+#tab-upgrade.active-tab { background: rgba(255,255,255,0.12); color: #fff; }
+</style>
+
+<script>
+// ── UPSELL SYSTEM ──────────────────────────────────────────────
+
+// Câte credite erau la începutul lunii (din subscripție)
+// Mapă plan → credite incluse
+const PLAN_CREDITS_MAP = { starter: 150, creator: 400, agency: 1500, none: 10 };
+
+// Planurile disponibile pentru upgrade (mai mari decât cel curent)
+const UPGRADE_OPTIONS = {
+    none:    ['starter','creator','agency'],
+    starter: ['creator','agency'],
+    creator: ['agency'],
+    agency:  [] // deja pe cel mai mare
+};
+
+const PLAN_LABELS = { starter: 'Starter', creator: 'Creator PRO', agency: 'Agency' };
+const PLAN_PRICES = { starter: '49.90', creator: '99.90', agency: '249.90' };
+const PLAN_CREDITS = { starter: '150', creator: '400', agency: '1.500' };
+const PLAN_HIGHLIGHT = { starter: false, creator: true, agency: false };
+
+// ── Logica trigger la 80% consumate ───────────────────────────
+function checkCreditsUpsell(user) {
+    const plan = user.subscriptionPlan || 'none';
+    const status = user.subscriptionStatus || 'inactive';
+    const creditsNow = user.credits || 0;
+
+    // Credite incluse în plan (sau 10 gratuite pentru free)
+    const totalPlanCredits = PLAN_CREDITS_MAP[plan] || 10;
+
+    // Calculăm procentul rămas
+    const percentLeft = creditsNow / totalPlanCredits;
+
+    // Trigger dacă au mai puțin de 20% din credite (adică au consumat 80%+)
+    // și dacă nu au văzut modalul în ultimele 24h
+    if (percentLeft <= 0.20 && creditsNow < totalPlanCredits) {
+        const lastShown = localStorage.getItem('viralio_upsell_shown');
+        const now = Date.now();
+        // Nu arăta mai des de o dată la 24 ore
+        if (!lastShown || (now - parseInt(lastShown)) > 86400000) {
+            setTimeout(() => {
+                openUpsellModal(creditsNow, totalPlanCredits, plan, status);
+                localStorage.setItem('viralio_upsell_shown', now.toString());
+            }, 2000); // delay mic să nu fie agresiv
+        }
+    }
+}
+
+// ── Deschide modalul ──────────────────────────────────────────
+function openUpsellModal(creditsLeft, creditsTotal, plan, status) {
+    // Completează datele dinamice
+    document.getElementById('upsell-credits-left').textContent = creditsLeft;
+    document.getElementById('upsell-credits-total').textContent = creditsTotal;
+
+    // Videos rămase la 2 credite/video 1080p
+    const videosLeft = Math.floor(creditsLeft / 2);
+    document.getElementById('upsell-videos-left').textContent = videosLeft > 0 ? videosLeft : 'mai puțin de 1';
+
+    // Progress bar
+    const pct = Math.max(2, Math.round((creditsLeft / creditsTotal) * 100));
+    const bar = document.getElementById('upsell-progress-bar');
+    bar.style.width = pct + '%';
+    // Culoare în funcție de cât a mai rămas
+    if (pct <= 10) bar.style.background = 'linear-gradient(90deg,#ef4444,#b91c1c)';
+    else bar.style.background = 'linear-gradient(90deg,#f59e0b,#ef4444)';
+
+    // Construiește cardurile de upgrade dinamic
+    buildUpgradeCards(plan, status);
+
+    // Dacă nu mai are opțiuni de upgrade (e pe Agency), arată doar top-up
+    const upgrades = UPGRADE_OPTIONS[plan] || [];
+    if (upgrades.length === 0) {
+        document.getElementById('tab-upgrade').style.display = 'none';
+        upsellTab('topup');
+    } else {
+        document.getElementById('tab-upgrade').style.display = '';
+        // Default: arată upgrade dacă nu e pe niciun plan
+        upsellTab(plan === 'none' ? 'upgrade' : 'topup');
+    }
+
+    // Afișează modalul
+    const modal = document.getElementById('upsell-modal');
+    modal.style.display = 'flex';
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => { modal.classList.add('show'); });
+    });
+}
+
+function buildUpgradeCards(currentPlan, status) {
+    const container = document.getElementById('upsell-plan-cards');
+    const upgrades = UPGRADE_OPTIONS[currentPlan] || [];
+    container.innerHTML = '';
+
+    upgrades.forEach(plan => {
+        const isHighlighted = PLAN_HIGHLIGHT[plan];
+        const card = document.createElement('button');
+        card.onclick = () => { buyPackage(plan); closeUpsellModal(); };
+        card.className = 'w-full flex items-center justify-between rounded-2xl px-5 py-3.5 transition-all text-left';
+        card.style.cssText = isHighlighted
+            ? 'background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(236,72,153,0.1));border:1.5px solid rgba(99,102,241,0.4)'
+            : 'background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1)';
+
+        card.innerHTML = `
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="text-white font-black text-sm">${PLAN_LABELS[plan]}</span>
+                    ${isHighlighted ? '<span style="font-size:0.5rem;font-weight:900;padding:2px 8px;border-radius:4px;background:linear-gradient(90deg,#6366f1,#ec4899);color:#fff;text-transform:uppercase;letter-spacing:0.08em">Recomandat</span>' : ''}
+                </div>
+                <div class="text-slate-500 text-xs font-medium mt-0.5">${PLAN_CREDITS[plan]} credite/lună · Reset automat</div>
+            </div>
+            <div class="text-right shrink-0 ml-4">
+                <div style="color:#f59e0b;font-size:1rem;font-weight:900">${PLAN_PRICES[plan]} <span style="font-size:0.7rem;font-weight:700;color:#64748b">RON/lună</span></div>
+                ${status === 'active' ? '<div style="font-size:0.6rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;margin-top:2px">upgrade instant</div>' : ''}
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function closeUpsellModal() {
+    const modal = document.getElementById('upsell-modal');
+    modal.classList.remove('show');
+    setTimeout(() => { modal.style.display = 'none'; }, 300);
+}
+
+// Tabs topup / upgrade
+function upsellTab(tab) {
+    document.getElementById('panel-topup').style.display  = tab === 'topup'   ? 'flex'  : 'none';
+    document.getElementById('panel-topup').style.flexDirection = 'column';
+    document.getElementById('panel-upgrade').style.display = tab === 'upgrade' ? 'flex'  : 'none';
+    document.getElementById('panel-upgrade').style.flexDirection = 'column';
+    document.getElementById('tab-topup').classList.toggle('active-tab',  tab === 'topup');
+    document.getElementById('tab-upgrade').classList.toggle('active-tab', tab === 'upgrade');
+}
+
+// Close on backdrop click
+document.getElementById('upsell-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeUpsellModal();
+});
+
+// ── HOOK în updateUI existent ──────────────────────────────────
+// Salvăm referința la funcția originală și o wrappuim
+(function() {
+    const _origUpdateUI = window.updateUI;
+    window.updateUI = function(user) {
+        _origUpdateUI(user);          // rulăm logica originală
+        checkCreditsUpsell(user);     // + verificăm creditele
+    };
+})();
+</script>
 </body>
 </html>
