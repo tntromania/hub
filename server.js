@@ -196,7 +196,7 @@ app.post('/api/auth/google', async (req, res) => {
 
         if (!user) {
             const userCount = await User.countDocuments();
-            if (userCount >= 650) {
+            if (userCount >= 800) {
                 const dejaInLista = await Waitlist.findOne({ email: payload.email });
                 if (!dejaInLista) await Waitlist.create({ email: payload.email, name: payload.name });
                 return res.status(403).json({
