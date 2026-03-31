@@ -40,7 +40,8 @@ const UserSchema = new mongoose.Schema({
     referralTier:       { type: Number, default: 0 },
     referralBonusesClaimed: [{ type: Number }],  // tier indexes already claimed
     registrationIp:     { type: String, default: null },
-    createdAt:          { type: Date, default: Date.now }
+    createdAt:          { type: Date, default: Date.now },
+    earlyAccess:        { type: Boolean, default: false }
 });
 const User = mongoose.models.User || mongoose.model('User', UserSchema);
 
@@ -380,6 +381,17 @@ app.post('/api/auth/google', async (req, res) => {
             }
         }
 
+        // ── EARLY ACCESS CHECK ──
+        if (!user.earlyAccess) {
+            return res.status(403).json({
+                error: 'EARLY_ACCESS',
+                message: 'Nu ai primit încă acces early. Vei fi notificat când contul tău este activat.',
+                email: user.email,
+                name: user.name,
+                picture: user.picture,
+            });
+        }
+
         const sessionToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
         res.json({
             token: sessionToken,
@@ -401,6 +413,7 @@ app.post('/api/auth/google', async (req, res) => {
 app.get('/api/auth/me', authenticate, async (req, res) => {
     const user = await User.findById(req.userId);
     if (!user) return res.status(404).json({ error: 'User inexistent.' });
+    if (!user.earlyAccess) return res.status(403).json({ error: 'EARLY_ACCESS' });
     res.json({
         user: {
             name: user.name, picture: user.picture,
