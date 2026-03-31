@@ -1377,36 +1377,64 @@ async function handleCredentialResponse(response) {
             document.getElementById('referral-stat-count').textContent = data.referralCount || 0;
             document.getElementById('referral-stat-credits').textContent = data.referralCreditsEarned || 0;
 
-            // Progress tiers
-            const count = data.referralCount || 0;
-            const tiers = [0, 3, 10, 25];
-            let progress = 0;
-            let nextTierMsg = '';
-            if (count >= 25) {
-                progress = 100;
-                nextTierMsg = 'Nivel maxim atins!';
-            } else if (count >= 10) {
-                progress = 66 + ((count - 10) / 15) * 34;
-                nextTierMsg = (25 - count) + ' invitații până la nivelul următor';
-            } else if (count >= 3) {
-                progress = 33 + ((count - 3) / 7) * 33;
-                nextTierMsg = (10 - count) + ' invitații până la nivelul următor';
-            } else {
-                progress = (count / 3) * 33;
-                nextTierMsg = count === 0 ? 'Trimite primul link!' : (3 - count) + ' invitații până la nivelul următor';
+            // Update tier badge
+            const ct = data.currentTierData;
+            if (ct) {
+                document.getElementById('ref-tier-icon').textContent = ct.icon;
+                document.getElementById('ref-tier-name').textContent = ct.name;
+                document.getElementById('ref-per-credit').textContent = ct.perReferral;
+                document.getElementById('ref-tier-per').textContent = '+' + ct.perReferral + ' cr/invitație';
             }
-            const fillEl = document.getElementById('referral-progress-fill');
-            if (fillEl) setTimeout(() => { fillEl.style.width = Math.min(progress, 100) + '%'; }, 200);
-            
-            const msgEl = document.getElementById('referral-next-tier-msg');
-            if (msgEl) msgEl.textContent = nextTierMsg;
+            if (data.nextTier) {
+                document.getElementById('ref-tier-next-msg').textContent = data.remainingForNext + ' invitații până la ' + data.nextTier.name + ' ' + data.nextTier.icon;
+            } else {
+                document.getElementById('ref-tier-next-msg').textContent = 'Nivel maxim atins!';
+            }
 
-            // Activate tier dots
-            if (count >= 3) { const d = document.getElementById('tier-3'); if(d) d.classList.add('active'); }
-            if (count >= 10) { const d = document.getElementById('tier-10'); if(d) d.classList.add('active'); }
-            if (count >= 25) { const d = document.getElementById('tier-25'); if(d) d.classList.add('active'); }
+            // Build tier roadmap
+            const roadmap = document.getElementById('ref-tiers-roadmap');
+            if (roadmap && data.allTiers) {
+                roadmap.innerHTML = data.allTiers.map((t, i) => {
+                    const isLast = i === data.allTiers.length - 1;
+                    const dotClass = t.current ? 'current' : t.reached ? 'reached' : 'locked';
+                    const lineClass = t.reached && !isLast ? 'active' : '';
+                    const tagClass = t.current ? 'current' : t.reached ? 'reached' : '';
+                    const nameColor = t.current ? 'text-emerald-400' : t.reached ? 'text-white' : 'text-slate-600';
+                    const minLabel = t.minReferrals === 0 ? 'Start' : t.minReferrals + ' invitații';
 
-            // Recent referrals with modern cards
+                    let rewardsHtml = '';
+                    if (i > 0) {
+                        rewardsHtml += `<span class="ref-roadmap-reward-tag ${tagClass}"><i class="fa-solid fa-bolt" style="font-size:0.45rem;margin-right:2px"></i> +${t.bonus} credite</span>`;
+                        if (t.bonusVoice > 0) {
+                            const voiceK = t.bonusVoice >= 1000 ? (t.bonusVoice/1000) + 'k' : t.bonusVoice;
+                            rewardsHtml += `<span class="ref-roadmap-reward-tag ${tagClass}"><i class="fa-solid fa-microphone-lines" style="font-size:0.45rem;margin-right:2px"></i> +${voiceK} voice</span>`;
+                        }
+                        if (t.perReferral > (data.allTiers[i-1]?.perReferral || 5)) {
+                            rewardsHtml += `<span class="ref-roadmap-reward-tag ${tagClass}"><i class="fa-solid fa-arrow-trend-up" style="font-size:0.45rem;margin-right:2px"></i> ${t.perReferral} cr/ref</span>`;
+                        }
+                        if (t.badge) {
+                            rewardsHtml += `<span class="ref-roadmap-reward-tag ${tagClass}"><i class="fa-solid fa-award" style="font-size:0.45rem;margin-right:2px"></i> Badge ${t.badge}</span>`;
+                        }
+                    } else {
+                        rewardsHtml = `<span class="ref-roadmap-reward-tag reached">${t.perReferral} credite per invitație</span>`;
+                    }
+
+                    return `<div class="ref-roadmap-item">
+                        ${!isLast ? `<div class="ref-roadmap-line ${lineClass}"></div>` : ''}
+                        <div class="ref-roadmap-dot ${dotClass}">${t.icon}</div>
+                        <div class="ref-roadmap-content">
+                            <div class="flex items-center gap-2">
+                                <span class="${nameColor} text-xs font-black">${t.name}</span>
+                                <span class="text-slate-600 text-[0.5rem] font-medium">${minLabel}</span>
+                                ${t.bonusClaimed ? '<span class="text-emerald-500 text-[0.5rem]"><i class="fa-solid fa-check-circle"></i></span>' : ''}
+                            </div>
+                            <div class="ref-roadmap-rewards">${rewardsHtml}</div>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+
+            // Recent referrals
             const listContainer = document.getElementById('referral-recent-list');
             const itemsContainer = document.getElementById('referral-recent-items');
             if (data.recentReferrals && data.recentReferrals.length > 0) {
@@ -1495,130 +1523,139 @@ window.onload = async () => {
     }
 </script>
 
-<!-- REFERRAL MODAL — ULTRA MODERN -->
+<!-- REFERRAL MODAL — TIER SYSTEM -->
 <div id="referral-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[100000] flex items-end sm:items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300" style="opacity:0;pointer-events:none">
-    <div class="w-full sm:max-w-[440px] bg-[#09090b] border border-white/10 rounded-t-[2rem] sm:rounded-[2rem] p-6 sm:p-8 shadow-2xl relative overflow-hidden transition-transform duration-300 translate-y-8 sm:translate-y-0">
+    <div class="w-full sm:max-w-[460px] max-h-[92vh] bg-[#09090b] border border-white/10 rounded-t-[2rem] sm:rounded-[2rem] shadow-2xl relative overflow-hidden transition-transform duration-300 translate-y-8 sm:translate-y-0 flex flex-col">
         
         <!-- Animated glow orbs -->
         <div class="ref-orb ref-orb-1"></div>
         <div class="ref-orb ref-orb-2"></div>
-        <div class="ref-orb ref-orb-3"></div>
 
-        <!-- Close -->
-        <button onclick="closeReferralModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 flex items-center justify-center transition-all z-30"><i class="fa-solid fa-xmark text-sm"></i></button>
-        
-        <!-- Header with animated icon -->
-        <div class="flex items-center gap-3.5 mb-6 relative z-10">
-            <div class="ref-icon-wrap">
-                <div class="ref-icon-ring"></div>
-                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center shrink-0 shadow-[0_0_25px_rgba(16,185,129,0.4)] relative z-10">
-                    <i class="fa-solid fa-gift text-white text-lg"></i>
-                </div>
-            </div>
-            <div>
-                <h3 class="text-white font-black text-xl tracking-tight">Invită & Câștigă</h3>
-                <p class="text-slate-500 text-xs font-medium">Fiecare prieten = credite gratuite</p>
-            </div>
-        </div>
-
-        <!-- Reward cards with animated counters -->
-        <div class="flex gap-3 mb-6 relative z-10">
-            <div class="flex-1 ref-reward-card group">
-                <div class="ref-reward-glow bg-emerald-500/20"></div>
-                <div class="relative z-10">
-                    <div class="flex items-center justify-center gap-1 mb-1.5">
-                        <i class="fa-solid fa-arrow-up text-emerald-400 text-[0.6rem]"></i>
-                        <span class="text-3xl font-black text-emerald-400 tabular-nums">5</span>
+        <!-- Fixed header -->
+        <div class="p-6 pb-0 relative z-10 shrink-0">
+            <button onclick="closeReferralModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 flex items-center justify-center transition-all z-30"><i class="fa-solid fa-xmark text-sm"></i></button>
+            
+            <div class="flex items-center gap-3.5 mb-1">
+                <div class="ref-icon-wrap">
+                    <div class="ref-icon-ring"></div>
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center shrink-0 shadow-[0_0_25px_rgba(16,185,129,0.4)] relative z-10">
+                        <i class="fa-solid fa-gift text-white text-base"></i>
                     </div>
-                    <div class="text-white text-[0.7rem] font-bold text-center">Tu primești</div>
-                    <div class="text-slate-500 text-[0.55rem] font-medium text-center mt-0.5">credite per invitație</div>
+                </div>
+                <div>
+                    <h3 class="text-white font-black text-lg tracking-tight">Invită & Câștigă</h3>
+                    <p class="text-slate-500 text-[0.7rem] font-medium">Deblochează niveluri pentru recompense mai mari</p>
                 </div>
             </div>
-            <div class="ref-reward-divider">
-                <div class="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
-                    <i class="fa-solid fa-plus text-slate-500 text-[0.6rem]"></i>
-                </div>
-            </div>
-            <div class="flex-1 ref-reward-card group">
-                <div class="ref-reward-glow bg-indigo-500/20"></div>
-                <div class="relative z-10">
-                    <div class="flex items-center justify-center gap-1 mb-1.5">
-                        <i class="fa-solid fa-arrow-up text-indigo-400 text-[0.6rem]"></i>
-                        <span class="text-3xl font-black text-indigo-400 tabular-nums">3</span>
+        </div>
+
+        <!-- Scrollable content -->
+        <div class="overflow-y-auto flex-1 p-6 pt-4 ref-scroll">
+
+            <!-- Current tier badge -->
+            <div id="ref-tier-badge" class="flex items-center gap-2.5 mb-5 bg-white/[0.03] border border-white/[0.06] rounded-2xl px-4 py-3">
+                <span id="ref-tier-icon" class="text-2xl">🌱</span>
+                <div class="flex-1">
+                    <div class="flex items-center gap-2">
+                        <span id="ref-tier-name" class="text-white font-black text-sm">Începător</span>
+                        <span id="ref-tier-per" class="text-emerald-400 text-[0.6rem] font-bold bg-emerald-500/10 px-2 py-0.5 rounded-md">+5 cr/invitație</span>
                     </div>
-                    <div class="text-white text-[0.7rem] font-bold text-center">Prietenul tău</div>
-                    <div class="text-slate-500 text-[0.55rem] font-medium text-center mt-0.5">credite bonus la start</div>
+                    <span id="ref-tier-next-msg" class="text-slate-500 text-[0.6rem] font-medium mt-0.5 block"></span>
                 </div>
+                <span id="referral-loading" class="text-emerald-500 text-xs"><i class="fa-solid fa-circle-notch fa-spin"></i></span>
             </div>
-        </div>
 
-        <!-- Link section — modern input -->
-        <div class="mb-4 relative z-10">
-            <label class="text-slate-500 text-[0.6rem] font-bold uppercase tracking-[0.15em] block mb-2 ml-1">Linkul tău unic</label>
-            <div class="ref-link-container">
-                <div class="ref-link-border"></div>
-                <div class="relative flex gap-2 p-1">
-                    <div class="flex-1 bg-white/[0.03] rounded-xl px-4 py-3 flex items-center overflow-hidden">
-                        <i class="fa-solid fa-link text-slate-600 text-[0.6rem] mr-2.5 shrink-0"></i>
-                        <span id="referral-link-display" class="text-slate-300 text-[0.8rem] font-medium truncate font-mono">Se încarcă...</span>
+            <!-- Reward cards -->
+            <div class="flex gap-3 mb-5">
+                <div class="flex-1 ref-reward-card group">
+                    <div class="ref-reward-glow bg-emerald-500/20"></div>
+                    <div class="relative z-10">
+                        <div class="flex items-center justify-center gap-1 mb-1">
+                            <i class="fa-solid fa-arrow-up text-emerald-400 text-[0.55rem]"></i>
+                            <span id="ref-per-credit" class="text-2xl font-black text-emerald-400 tabular-nums">5</span>
+                        </div>
+                        <div class="text-white text-[0.65rem] font-bold text-center">Tu primești</div>
+                        <div class="text-slate-500 text-[0.5rem] font-medium text-center">credite per invitație</div>
                     </div>
-                    <button onclick="copyReferralLink()" id="referral-copy-btn" class="ref-copy-btn bg-emerald-500 hover:bg-emerald-400 text-white px-5 py-3 rounded-xl font-bold text-sm transition-all hover:scale-[1.03] flex items-center gap-2 shrink-0 shadow-[0_4px_15px_rgba(16,185,129,0.3)]">
-                        <i class="fa-solid fa-copy text-xs" id="referral-copy-icon"></i>
-                        <span id="referral-copy-text">Copiază</span>
-                    </button>
+                </div>
+                <div class="ref-reward-divider">
+                    <div class="w-7 h-7 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
+                        <i class="fa-solid fa-plus text-slate-600 text-[0.5rem]"></i>
+                    </div>
+                </div>
+                <div class="flex-1 ref-reward-card group">
+                    <div class="ref-reward-glow bg-indigo-500/20"></div>
+                    <div class="relative z-10">
+                        <div class="flex items-center justify-center gap-1 mb-1">
+                            <i class="fa-solid fa-arrow-up text-indigo-400 text-[0.55rem]"></i>
+                            <span class="text-2xl font-black text-indigo-400 tabular-nums">3</span>
+                        </div>
+                        <div class="text-white text-[0.65rem] font-bold text-center">Prietenul tău</div>
+                        <div class="text-slate-500 text-[0.5rem] font-medium text-center">credite bonus la start</div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Share buttons — modern pills -->
-        <div class="flex gap-2 mb-6 relative z-10">
-            <button onclick="shareReferralWhatsApp()" class="ref-share-btn flex-1 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/20 hover:border-[#25D366]/40 text-[#25D366] rounded-xl py-3 font-bold text-xs transition-all flex items-center justify-center gap-2 hover:scale-[1.03] hover:shadow-[0_5px_20px_rgba(37,211,102,0.15)]">
-                <i class="fa-brands fa-whatsapp text-base"></i> WhatsApp
-            </button>
-            <button onclick="shareReferralTelegram()" class="ref-share-btn flex-1 bg-[#0088cc]/10 hover:bg-[#0088cc]/20 border border-[#0088cc]/20 hover:border-[#0088cc]/40 text-[#0088cc] rounded-xl py-3 font-bold text-xs transition-all flex items-center justify-center gap-2 hover:scale-[1.03] hover:shadow-[0_5px_20px_rgba(0,136,204,0.15)]">
-                <i class="fa-brands fa-telegram text-base"></i> Telegram
-            </button>
-            <button onclick="shareReferralTwitter()" class="ref-share-btn flex-1 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-slate-300 rounded-xl py-3 font-bold text-xs transition-all flex items-center justify-center gap-2 hover:scale-[1.03]">
-                <i class="fa-brands fa-x-twitter text-base"></i> X
-            </button>
-        </div>
+            <!-- Link section -->
+            <div class="mb-4">
+                <label class="text-slate-500 text-[0.6rem] font-bold uppercase tracking-[0.15em] block mb-2 ml-1">Linkul tău unic</label>
+                <div class="ref-link-container">
+                    <div class="ref-link-border"></div>
+                    <div class="relative flex gap-2 p-1">
+                        <div class="flex-1 bg-white/[0.03] rounded-xl px-3 py-2.5 flex items-center overflow-hidden min-w-0">
+                            <i class="fa-solid fa-link text-slate-600 text-[0.55rem] mr-2 shrink-0"></i>
+                            <span id="referral-link-display" class="text-slate-300 text-[0.75rem] font-medium truncate font-mono">Se încarcă...</span>
+                        </div>
+                        <button onclick="copyReferralLink()" id="referral-copy-btn" class="ref-copy-btn bg-emerald-500 hover:bg-emerald-400 text-white px-4 py-2.5 rounded-xl font-bold text-xs transition-all hover:scale-[1.03] flex items-center gap-1.5 shrink-0 shadow-[0_4px_15px_rgba(16,185,129,0.3)]">
+                            <i class="fa-solid fa-copy text-[0.6rem]" id="referral-copy-icon"></i>
+                            <span id="referral-copy-text">Copiază</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Progress tiers -->
-        <div class="mb-5 relative z-10">
-            <div class="flex items-center justify-between mb-2.5">
-                <span class="text-slate-500 text-[0.6rem] font-bold uppercase tracking-[0.15em]">Progresul tău</span>
-                <span id="referral-loading" class="text-emerald-500 text-[0.6rem]"><i class="fa-solid fa-circle-notch fa-spin"></i></span>
+            <!-- Share buttons -->
+            <div class="flex gap-2 mb-5">
+                <button onclick="shareReferralWhatsApp()" class="ref-share-btn flex-1 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/20 hover:border-[#25D366]/40 text-[#25D366] rounded-xl py-2.5 font-bold text-[0.7rem] transition-all flex items-center justify-center gap-1.5 hover:scale-[1.03]">
+                    <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
+                </button>
+                <button onclick="shareReferralTelegram()" class="ref-share-btn flex-1 bg-[#0088cc]/10 hover:bg-[#0088cc]/20 border border-[#0088cc]/20 hover:border-[#0088cc]/40 text-[#0088cc] rounded-xl py-2.5 font-bold text-[0.7rem] transition-all flex items-center justify-center gap-1.5 hover:scale-[1.03]">
+                    <i class="fa-brands fa-telegram text-sm"></i> Telegram
+                </button>
+                <button onclick="shareReferralTwitter()" class="ref-share-btn flex-1 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-slate-300 rounded-xl py-2.5 font-bold text-[0.7rem] transition-all flex items-center justify-center gap-1.5 hover:scale-[1.03]">
+                    <i class="fa-brands fa-x-twitter text-sm"></i> X
+                </button>
             </div>
-            <div class="ref-progress-track">
-                <div id="referral-progress-fill" class="ref-progress-fill" style="width: 0%"></div>
-                <div class="ref-tier" style="left: 0%"><div class="ref-tier-dot active"></div><span class="ref-tier-label">Start</span></div>
-                <div class="ref-tier" style="left: 33%"><div class="ref-tier-dot" id="tier-3"></div><span class="ref-tier-label">3</span></div>
-                <div class="ref-tier" style="left: 66%"><div class="ref-tier-dot" id="tier-10"></div><span class="ref-tier-label">10</span></div>
-                <div class="ref-tier" style="left: 100%"><div class="ref-tier-dot" id="tier-25"></div><span class="ref-tier-label">25</span></div>
-            </div>
-            <div class="flex items-center justify-between mt-1.5">
-                <span class="text-slate-600 text-[0.5rem] font-medium">Nivel 1</span>
-                <span id="referral-next-tier-msg" class="text-slate-500 text-[0.5rem] font-medium"></span>
-            </div>
-        </div>
 
-        <!-- Stats cards -->
-        <div class="flex gap-3 mb-4 relative z-10">
-            <div class="flex-1 bg-white/[0.03] border border-white/[0.06] rounded-2xl p-4 text-center">
-                <span class="text-white font-black text-2xl block tabular-nums" id="referral-stat-count">0</span>
-                <span class="text-slate-500 text-[0.6rem] font-bold mt-0.5 block">Prieteni invitați</span>
+            <!-- Stats row -->
+            <div class="flex gap-3 mb-5">
+                <div class="flex-1 bg-white/[0.03] border border-white/[0.06] rounded-2xl p-3.5 text-center">
+                    <span class="text-white font-black text-xl block tabular-nums" id="referral-stat-count">0</span>
+                    <span class="text-slate-500 text-[0.55rem] font-bold block">Prieteni invitați</span>
+                </div>
+                <div class="flex-1 bg-white/[0.03] border border-white/[0.06] rounded-2xl p-3.5 text-center">
+                    <span class="text-emerald-400 font-black text-xl block tabular-nums" id="referral-stat-credits">0</span>
+                    <span class="text-slate-500 text-[0.55rem] font-bold block">Credite câștigate</span>
+                </div>
             </div>
-            <div class="flex-1 bg-white/[0.03] border border-white/[0.06] rounded-2xl p-4 text-center">
-                <span class="text-emerald-400 font-black text-2xl block tabular-nums" id="referral-stat-credits">0</span>
-                <span class="text-slate-500 text-[0.6rem] font-bold mt-0.5 block">Credite câștigate</span>
-            </div>
-        </div>
 
-        <!-- Recent referrals with avatars -->
-        <div id="referral-recent-list" class="relative z-10 hidden">
-            <div class="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-4">
-                <span class="text-slate-500 text-[0.55rem] font-bold uppercase tracking-[0.15em] block mb-3">Invitații recente</span>
-                <div id="referral-recent-items" class="flex flex-col gap-2"></div>
+            <!-- TIER ROADMAP -->
+            <div class="mb-5">
+                <div class="flex items-center gap-2 mb-3">
+                    <i class="fa-solid fa-road text-slate-600 text-[0.6rem]"></i>
+                    <span class="text-slate-500 text-[0.6rem] font-bold uppercase tracking-[0.15em]">Roadmap Niveluri</span>
+                </div>
+                <div id="ref-tiers-roadmap" class="flex flex-col gap-0">
+                    <!-- Generated by JS -->
+                </div>
+            </div>
+
+            <!-- Recent referrals -->
+            <div id="referral-recent-list" class="hidden">
+                <div class="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-4">
+                    <span class="text-slate-500 text-[0.55rem] font-bold uppercase tracking-[0.15em] block mb-3">Invitații recente</span>
+                    <div id="referral-recent-items" class="flex flex-col gap-2"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -1691,107 +1728,90 @@ window.onload = async () => {
 #referral-modal.show { opacity: 1 !important; pointer-events: auto !important; }
 #referral-modal.show > div { transform: translateY(0) !important; }
 
-/* ── REFERRAL MODAL ULTRA MODERN STYLES ── */
-.ref-orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    pointer-events: none;
-    z-index: 0;
-}
+/* ── REFERRAL MODAL STYLES ── */
+.ref-scroll { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.08) transparent; }
+.ref-scroll::-webkit-scrollbar { width: 4px; }
+.ref-scroll::-webkit-scrollbar-track { background: transparent; }
+.ref-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 99px; }
+
+.ref-orb { position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; }
 .ref-orb-1 { width: 200px; height: 200px; background: rgba(16,185,129,0.12); top: -60px; right: -40px; animation: refFloat 8s ease-in-out infinite; }
 .ref-orb-2 { width: 180px; height: 180px; background: rgba(99,102,241,0.10); bottom: -50px; left: -40px; animation: refFloat 10s ease-in-out infinite reverse; }
-.ref-orb-3 { width: 120px; height: 120px; background: rgba(236,72,153,0.08); top: 50%; left: 50%; transform: translate(-50%,-50%); animation: refFloat 6s ease-in-out infinite; }
 @keyframes refFloat { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-15px) scale(1.05); } }
 
 .ref-icon-wrap { position: relative; }
 .ref-icon-ring {
     position: absolute; inset: -4px; border-radius: 1.1rem;
     background: conic-gradient(from 0deg, rgba(16,185,129,0.4), rgba(99,102,241,0.4), rgba(16,185,129,0.4));
-    animation: refRingSpin 3s linear infinite;
-    opacity: 0.6;
+    animation: refRingSpin 3s linear infinite; opacity: 0.6;
 }
 @keyframes refRingSpin { to { transform: rotate(360deg); } }
 
 .ref-reward-card {
     position: relative; overflow: hidden;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 1.2rem; padding: 1.2rem 1rem;
-    transition: all 0.3s ease;
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 1.2rem; padding: 1rem 0.8rem; transition: all 0.3s ease;
 }
 .ref-reward-card:hover { border-color: rgba(255,255,255,0.12); transform: translateY(-2px); }
-.ref-reward-glow {
-    position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
-    width: 80px; height: 80px; border-radius: 50%; filter: blur(40px);
-    opacity: 0; transition: opacity 0.3s;
-}
+.ref-reward-glow { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 80px; height: 80px; border-radius: 50%; filter: blur(40px); opacity: 0; transition: opacity 0.3s; }
 .ref-reward-card:hover .ref-reward-glow { opacity: 1; }
+.ref-reward-divider { display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
-.ref-reward-divider {
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-}
-
-.ref-link-container {
-    position: relative; border-radius: 1rem; overflow: hidden;
-    background: rgba(255,255,255,0.03);
-}
+.ref-link-container { position: relative; border-radius: 1rem; overflow: hidden; background: rgba(255,255,255,0.03); }
 .ref-link-border {
     position: absolute; inset: 0; border-radius: 1rem; padding: 1px;
     background: linear-gradient(135deg, rgba(16,185,129,0.3), rgba(99,102,241,0.1), rgba(16,185,129,0.3));
-    background-size: 200% 200%;
-    animation: refBorderShift 4s ease infinite;
+    background-size: 200% 200%; animation: refBorderShift 4s ease infinite;
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor; mask-composite: exclude;
-    pointer-events: none;
+    -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
 }
 @keyframes refBorderShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
 
 .ref-copy-btn { position: relative; overflow: hidden; }
 .ref-copy-btn::after {
     content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-    transition: left 0.5s;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent); transition: left 0.5s;
 }
 .ref-copy-btn:hover::after { left: 100%; }
-
-/* Progress track */
-.ref-progress-track {
-    position: relative; height: 4px; border-radius: 99px;
-    background: rgba(255,255,255,0.06);
-    margin-top: 8px;
-}
-.ref-progress-fill {
-    position: absolute; top: 0; left: 0; height: 100%; border-radius: 99px;
-    background: linear-gradient(90deg, #10b981, #6366f1);
-    transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 0 12px rgba(16,185,129,0.4);
-}
-.ref-tier {
-    position: absolute; top: 50%; transform: translate(-50%, -50%);
-    display: flex; flex-direction: column; align-items: center;
-}
-.ref-tier-dot {
-    width: 10px; height: 10px; border-radius: 50%;
-    background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.15);
-    transition: all 0.3s;
-}
-.ref-tier-dot.active { background: #10b981; border-color: #10b981; box-shadow: 0 0 8px rgba(16,185,129,0.5); }
-.ref-tier-label {
-    position: absolute; top: 14px;
-    font-size: 0.5rem; font-weight: 700; color: rgba(255,255,255,0.25);
-    white-space: nowrap;
-}
-.ref-tier-dot.active + .ref-tier-label { color: #10b981; }
 
 .ref-share-btn { position: relative; overflow: hidden; }
 .ref-share-btn::before {
     content: ''; position: absolute; inset: 0; opacity: 0;
-    background: radial-gradient(circle at center, currentColor, transparent 70%);
-    transition: opacity 0.3s;
+    background: radial-gradient(circle at center, currentColor, transparent 70%); transition: opacity 0.3s;
 }
 .ref-share-btn:hover::before { opacity: 0.05; }
+
+/* Tier roadmap */
+.ref-roadmap-item {
+    display: flex; align-items: flex-start; gap: 12px; position: relative; padding: 0 0 0 0;
+}
+.ref-roadmap-line {
+    position: absolute; left: 15px; top: 32px; bottom: -2px; width: 2px;
+    background: rgba(255,255,255,0.06);
+}
+.ref-roadmap-line.active { background: linear-gradient(to bottom, #10b981, rgba(16,185,129,0.2)); }
+.ref-roadmap-dot {
+    width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; z-index: 2; position: relative;
+    background: rgba(255,255,255,0.04); border: 2px solid rgba(255,255,255,0.08);
+    transition: all 0.3s;
+}
+.ref-roadmap-dot.reached { background: rgba(16,185,129,0.15); border-color: #10b981; }
+.ref-roadmap-dot.current { background: rgba(16,185,129,0.25); border-color: #10b981; box-shadow: 0 0 12px rgba(16,185,129,0.4); animation: refPulse 2s ease infinite; }
+.ref-roadmap-dot.locked { opacity: 0.4; }
+@keyframes refPulse { 0%, 100% { box-shadow: 0 0 8px rgba(16,185,129,0.3); } 50% { box-shadow: 0 0 16px rgba(16,185,129,0.5); } }
+.ref-roadmap-content { flex: 1; min-width: 0; padding: 4px 0 16px 0; }
+.ref-roadmap-rewards {
+    display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px;
+}
+.ref-roadmap-reward-tag {
+    font-size: 0.55rem; font-weight: 700; padding: 2px 8px; border-radius: 6px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.4);
+}
+.ref-roadmap-reward-tag.reached { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.2); color: #10b981; }
+.ref-roadmap-reward-tag.current { background: rgba(16,185,129,0.15); border-color: rgba(16,185,129,0.3); color: #10b981; }
 
 </style>
 
