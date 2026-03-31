@@ -210,6 +210,16 @@
                             </div>
                         </button>
 
+                        <button onclick="openReferralModal(); closeUserMenu();" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-emerald-50 transition-colors group text-left">
+                            <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 group-hover:bg-emerald-500 group-hover:text-white transition-all">
+                                <i class="fa-solid fa-gift text-xs"></i>
+                            </div>
+                            <div>
+                                <div class="text-slate-800 font-bold text-sm">Invită Prieteni</div>
+                                <div class="text-emerald-600 text-[0.65rem] font-bold">+5 credite per invitație</div>
+                            </div>
+                        </button>
+
                         <a href="https://billing.stripe.com/p/login/dRm00k1hTdQS6fxfbO1Nu00" target="_blank" onclick="closeUserMenu()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-indigo-50 transition-colors group text-left">
                             <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-500 flex items-center justify-center shrink-0 group-hover:bg-indigo-500 group-hover:text-white transition-all">
                                 <i class="fa-solid fa-credit-card text-xs"></i>
@@ -295,6 +305,15 @@
      HERO SECTION WITH ANIMATED MESH BACKGROUND
      ============================================ -->
 <main class="relative pt-32 md:pt-44 pb-16 md:pb-20 overflow-hidden bg-white rounded-b-[2rem] md:rounded-b-[3rem] shadow-sm z-10">
+
+    <!-- REFERRAL WELCOME BANNER -->
+    <div id="referral-banner" class="hidden fixed top-20 inset-x-0 z-[9999] flex justify-center px-4 pointer-events-none" style="display:none">
+        <div class="pointer-events-auto bg-emerald-500 text-white px-5 py-2.5 rounded-2xl shadow-lg border border-emerald-400/50 flex items-center gap-3 text-sm font-bold animate-slide-up">
+            <i class="fa-solid fa-gift text-lg"></i>
+            <span>Ai fost invitat! Creează cont și primești <strong>3 credite bonus</strong> gratuit.</span>
+            <button onclick="document.getElementById('referral-banner').style.display='none'" class="ml-2 text-white/70 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    </div>
     
     <!-- IMPROVEMENT: Animated mesh background orbs -->
     <div class="hero-mesh">
@@ -762,6 +781,26 @@
     </section>
 </div>
 
+<!-- REFERRAL PROMO SECTION -->
+<div id="referral-promo-section" class="hidden py-16 md:py-20 bg-slate-50 border-t border-slate-200" style="display:none">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+        <div class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-600 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-6 border border-emerald-100">
+            <i class="fa-solid fa-gift"></i> Program de Referral
+        </div>
+        <h2 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight mb-4">Invită prieteni. Primește credite.</h2>
+        <p class="text-slate-500 font-medium text-base md:text-lg max-w-2xl mx-auto mb-8">Pentru fiecare prieten care se înscrie prin linkul tău, primești <strong class="text-emerald-600">5 credite gratuite</strong>. Prietenul tău primește <strong class="text-indigo-600">3 credite bonus</strong>. Fără limită!</p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button onclick="openReferralModal()" class="inline-flex items-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-xl font-black text-sm hover:bg-slate-800 hover:scale-105 transition-all shadow-lg">
+                <i class="fa-solid fa-link"></i> Copiază linkul de invitație
+            </button>
+            <div class="flex items-center gap-4 text-slate-400 text-sm font-medium">
+                <div class="flex items-center gap-1.5"><i class="fa-solid fa-infinity text-emerald-500"></i> Fără limită</div>
+                <div class="flex items-center gap-1.5"><i class="fa-solid fa-bolt text-amber-500"></i> Credite instant</div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="flex justify-center px-4 pt-12 pb-24 reveal bg-slate-50">
     <div class="relative w-full max-w-4xl bg-slate-900 rounded-[2rem] p-8 md:p-12 flex flex-col md:flex-row items-center justify-between shadow-[0_30px_60px_rgba(0,0,0,0.15)] border border-slate-800 overflow-hidden group">
         <div class="absolute -left-32 -top-32 w-64 h-64 bg-indigo-500/30 blur-[80px] rounded-full group-hover:bg-indigo-500/50 transition-colors duration-700 pointer-events-none"></div>
@@ -1043,6 +1082,22 @@ function removeToken(){ document.cookie = "viralio_token=; domain=.viralio.ro; p
         else if (!url) { if(e) e.preventDefault(); document.getElementById('pricing').scrollIntoView({behavior: 'smooth'}); }
     }
     let currentUserEmail = null;
+    // ── REFERRAL: Capture ref code from URL ──
+    let pendingReferralCode = null;
+    (function() {
+        const params = new URLSearchParams(window.location.search);
+        const ref = params.get('ref');
+        if (ref) {
+            pendingReferralCode = ref;
+            sessionStorage.setItem('viralio_ref', ref);
+            // Clean URL
+            params.delete('ref');
+            const clean = params.toString();
+            history.replaceState({}, '', clean ? '/?' + clean : '/');
+        } else {
+            pendingReferralCode = sessionStorage.getItem('viralio_ref');
+        }
+    })();
     function updateUI(user) {
         const gn = document.getElementById('guest-nav'); if(gn) { gn.classList.add('hidden'); gn.style.display = 'none'; }
         const un = document.getElementById('user-nav'); if(un) { un.classList.remove('hidden'); un.style.display = 'flex'; }
@@ -1053,6 +1108,7 @@ function removeToken(){ document.cookie = "viralio_token=; domain=.viralio.ro; p
         currentUserEmail = user.email;
         currentUserPlan = user.subscriptionPlan || 'none';
         currentUserStatus = user.subscriptionStatus || 'inactive';
+        if (user.referralCode) currentReferralCode = user.referralCode;
         // Show plan badge in nav
         const planBadge = document.getElementById('nav-plan-badge');
         if (planBadge) {
@@ -1066,6 +1122,9 @@ function removeToken(){ document.cookie = "viralio_token=; domain=.viralio.ro; p
         }
         // Hide sticky CTA when logged in
         document.getElementById('sticky-cta').classList.remove('visible');
+        // Show referral section when logged in
+        const refPromo = document.getElementById('referral-promo-section');
+        if (refPromo) { refPromo.classList.remove('hidden'); refPromo.style.display = 'block'; }
         // Update dropdown credits
         const dc = document.getElementById('dropdown-credits');
         const dch = document.getElementById('dropdown-chars');
@@ -1087,18 +1146,33 @@ function removeToken(){ document.cookie = "viralio_token=; domain=.viralio.ro; p
     }
 async function handleCredentialResponse(response) {
         try {
+            const bodyData = { credential: response.credential };
+            // Atașează cod referral dacă există
+            if (pendingReferralCode) bodyData.referralCode = pendingReferralCode;
+
             // AICI AM MODIFICAT
             const res = await fetch('/api/auth/google', { 
                 method: 'POST', 
                 headers: {'Content-Type':'application/json'}, 
-                body: JSON.stringify({credential: response.credential}) 
+                body: JSON.stringify(bodyData) 
             });
             const data = await res.json();
             if (!res.ok && data.error === 'BETA_FULL') {
                 closeLoginModal();
                 const w = document.getElementById('waitlist-modal'); w.style.display = 'flex'; setTimeout(() => w.classList.add('show'), 10); return;
             }
-            if(data.token) { setToken(data.token); closeLoginModal(); updateUI(data.user); }
+            if(data.token) {
+                setToken(data.token);
+                closeLoginModal();
+                updateUI(data.user);
+                // Curăță referral code după folosire
+                sessionStorage.removeItem('viralio_ref');
+                pendingReferralCode = null;
+                // Arată toast dacă a venit prin referral și e user nou
+                if (data.isNewUser && data.user.referralCode) {
+                    setTimeout(() => showToast('🎁 Ai primit 3 credite bonus prin invitație!', 'success'), 500);
+                }
+            }
         } catch(e) { alert('Eroare de conexiune cu serverul.'); }
     }
     let currentBilling = 'monthly';
@@ -1247,7 +1321,104 @@ async function handleCredentialResponse(response) {
     });
 
     function logout() { removeToken(); location.reload(); }
+
+    // ── REFERRAL SYSTEM ──
+    let currentReferralCode = null;
+    let currentReferralLink = null;
+
+    function openReferralModal() {
+        if (!getToken()) { openLoginModal(); return; }
+        const modal = document.getElementById('referral-modal');
+        if (!modal) return;
+        modal.classList.add('show');
+        loadReferralInfo();
+    }
+    function closeReferralModal() {
+        const modal = document.getElementById('referral-modal');
+        if (modal) modal.classList.remove('show');
+    }
+
+    async function loadReferralInfo() {
+        const loadingEl = document.getElementById('referral-loading');
+        if (loadingEl) loadingEl.style.display = 'inline';
+        try {
+            const res = await fetch('/api/referral/info', {
+                headers: { 'Authorization': 'Bearer ' + getToken() }
+            });
+            if (!res.ok) return;
+            const data = await res.json();
+            currentReferralCode = data.referralCode;
+            currentReferralLink = data.referralLink;
+
+            document.getElementById('referral-link-display').textContent = data.referralLink;
+            document.getElementById('referral-stat-count').textContent = data.referralCount || 0;
+            document.getElementById('referral-stat-credits').textContent = data.referralCreditsEarned || 0;
+
+            // Recent referrals
+            const listContainer = document.getElementById('referral-recent-list');
+            const itemsContainer = document.getElementById('referral-recent-items');
+            if (data.recentReferrals && data.recentReferrals.length > 0) {
+                listContainer.classList.remove('hidden');
+                itemsContainer.innerHTML = data.recentReferrals.map(r => {
+                    const d = new Date(r.date);
+                    const dateStr = d.toLocaleDateString('ro-RO', { day: 'numeric', month: 'short' });
+                    return `<div class="flex items-center gap-2.5">
+                        <img src="${r.picture || ''}" alt="" class="w-6 h-6 rounded-full border border-white/10">
+                        <span class="text-slate-300 text-xs font-medium flex-1 truncate">${r.name || 'Anonim'}</span>
+                        <span class="text-emerald-400 text-[0.6rem] font-bold">+5 cr</span>
+                        <span class="text-slate-600 text-[0.55rem]">${dateStr}</span>
+                    </div>`;
+                }).join('');
+            } else {
+                listContainer.classList.add('hidden');
+            }
+        } catch (e) {
+            console.error('Referral info error:', e);
+        } finally {
+            if (loadingEl) loadingEl.style.display = 'none';
+        }
+    }
+
+    function copyReferralLink() {
+        if (!currentReferralLink) return;
+        navigator.clipboard.writeText(currentReferralLink).then(() => {
+            const btn = document.getElementById('referral-copy-btn');
+            const icon = document.getElementById('referral-copy-icon');
+            const text = document.getElementById('referral-copy-text');
+            icon.className = 'fa-solid fa-check text-xs';
+            text.textContent = 'Copiat!';
+            btn.classList.remove('bg-emerald-500', 'hover:bg-emerald-400');
+            btn.classList.add('bg-indigo-500', 'hover:bg-indigo-400');
+            setTimeout(() => {
+                icon.className = 'fa-solid fa-copy text-xs';
+                text.textContent = 'Copiază';
+                btn.classList.remove('bg-indigo-500', 'hover:bg-indigo-400');
+                btn.classList.add('bg-emerald-500', 'hover:bg-emerald-400');
+            }, 2000);
+        });
+    }
+
+    function shareReferralWhatsApp() {
+        if (!currentReferralLink) return;
+        const msg = encodeURIComponent('Încearcă Viralio - platforma AI pentru content creatori! Primești credite bonus gratuit: ' + currentReferralLink);
+        window.open('https://wa.me/?text=' + msg, '_blank');
+    }
+    function shareReferralTelegram() {
+        if (!currentReferralLink) return;
+        const msg = encodeURIComponent('Încearcă Viralio - platforma AI pentru content creatori! Primești credite bonus gratuit:');
+        window.open('https://t.me/share/url?url=' + encodeURIComponent(currentReferralLink) + '&text=' + msg, '_blank');
+    }
+    function shareReferralTwitter() {
+        if (!currentReferralLink) return;
+        const msg = encodeURIComponent('Am descoperit Viralio - platformă AI incredibilă pentru content creatori. Primești credite gratuit dacă te înscrii aici: ' + currentReferralLink);
+        window.open('https://x.com/intent/tweet?text=' + msg, '_blank');
+    }
 window.onload = async () => {
+        // Show referral banner if arrived via ref link and not logged in
+        if (pendingReferralCode && !getToken()) {
+            const banner = document.getElementById('referral-banner');
+            if (banner) { banner.classList.remove('hidden'); banner.style.display = 'flex'; }
+        }
         const token = getToken();
         if(token) {
             try {
@@ -1265,6 +1436,89 @@ window.onload = async () => {
         if (!isOpen) { content.classList.add('open'); btn.classList.add('open'); }
     }
 </script>
+
+<!-- REFERRAL MODAL -->
+<div id="referral-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[100000] flex items-end sm:items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300" style="opacity:0;pointer-events:none">
+    <div class="w-full sm:max-w-md bg-[#09090b] border border-white/10 rounded-t-[2rem] sm:rounded-[2rem] p-6 sm:p-8 shadow-2xl relative overflow-hidden transition-transform duration-300 translate-y-8 sm:translate-y-0">
+        <!-- glow bg -->
+        <div class="absolute -top-20 -right-20 w-56 h-56 bg-emerald-500/10 blur-[80px] rounded-full pointer-events-none"></div>
+        <div class="absolute -bottom-20 -left-20 w-56 h-56 bg-indigo-500/10 blur-[80px] rounded-full pointer-events-none"></div>
+        
+        <!-- header -->
+        <button onclick="closeReferralModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 flex items-center justify-center transition-all"><i class="fa-solid fa-xmark text-sm"></i></button>
+        <div class="flex items-center gap-3 mb-5">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0"><i class="fa-solid fa-gift"></i></div>
+            <div>
+                <h3 class="text-white font-black text-lg tracking-tight">Invită & Câștigă</h3>
+                <p class="text-slate-500 text-xs font-medium">Credite gratuite pentru tine și prietenii tăi</p>
+            </div>
+        </div>
+
+        <!-- Rewards explanation -->
+        <div class="flex gap-3 mb-5">
+            <div class="flex-1 bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
+                <div class="text-2xl font-black text-emerald-400 mb-1">+5</div>
+                <div class="text-slate-400 text-[0.65rem] font-bold uppercase tracking-wider">Tu primești</div>
+                <div class="text-slate-500 text-[0.55rem] font-medium mt-0.5">credite / invitație</div>
+            </div>
+            <div class="flex-1 bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
+                <div class="text-2xl font-black text-indigo-400 mb-1">+3</div>
+                <div class="text-slate-400 text-[0.65rem] font-bold uppercase tracking-wider">Prietenul</div>
+                <div class="text-slate-500 text-[0.55rem] font-medium mt-0.5">credite bonus</div>
+            </div>
+        </div>
+
+        <!-- Link section -->
+        <div class="mb-4">
+            <label class="text-slate-400 text-[0.65rem] font-bold uppercase tracking-widest block mb-2">Linkul tău de invitație</label>
+            <div class="flex gap-2">
+                <div class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 flex items-center overflow-hidden">
+                    <span id="referral-link-display" class="text-slate-300 text-sm font-mono truncate">Se încarcă...</span>
+                </div>
+                <button onclick="copyReferralLink()" id="referral-copy-btn" class="bg-emerald-500 hover:bg-emerald-400 text-white px-4 py-3 rounded-xl font-bold text-sm transition-all hover:scale-105 flex items-center gap-2 shrink-0">
+                    <i class="fa-solid fa-copy text-xs" id="referral-copy-icon"></i>
+                    <span id="referral-copy-text">Copiază</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Share buttons -->
+        <div class="flex gap-2 mb-5">
+            <button onclick="shareReferralWhatsApp()" class="flex-1 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/20 text-[#25D366] rounded-xl py-2.5 font-bold text-xs transition-all flex items-center justify-center gap-2">
+                <i class="fa-brands fa-whatsapp"></i> WhatsApp
+            </button>
+            <button onclick="shareReferralTelegram()" class="flex-1 bg-[#0088cc]/10 hover:bg-[#0088cc]/20 border border-[#0088cc]/20 text-[#0088cc] rounded-xl py-2.5 font-bold text-xs transition-all flex items-center justify-center gap-2">
+                <i class="fa-brands fa-telegram"></i> Telegram
+            </button>
+            <button onclick="shareReferralTwitter()" class="flex-1 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 rounded-xl py-2.5 font-bold text-xs transition-all flex items-center justify-center gap-2">
+                <i class="fa-brands fa-x-twitter"></i> X
+            </button>
+        </div>
+
+        <!-- Stats -->
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-4">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-slate-400 text-[0.65rem] font-bold uppercase tracking-widest">Statisticile tale</span>
+                <span id="referral-loading" class="text-slate-500 text-[0.6rem]"><i class="fa-solid fa-circle-notch fa-spin"></i></span>
+            </div>
+            <div class="flex items-center justify-between">
+                <div class="flex flex-col">
+                    <span class="text-white font-black text-xl" id="referral-stat-count">0</span>
+                    <span class="text-slate-500 text-[0.6rem] font-bold">Prieteni invitați</span>
+                </div>
+                <div class="flex flex-col items-end">
+                    <span class="text-emerald-400 font-black text-xl" id="referral-stat-credits">0</span>
+                    <span class="text-slate-500 text-[0.6rem] font-bold">Credite câștigate</span>
+                </div>
+            </div>
+            <!-- Recent referrals -->
+            <div id="referral-recent-list" class="mt-3 pt-3 border-t border-white/5 hidden">
+                <span class="text-slate-500 text-[0.55rem] font-bold uppercase tracking-widest block mb-2">Invitații recente</span>
+                <div id="referral-recent-items" class="flex flex-col gap-1.5"></div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- TOP-UP MODAL -->
 <div id="topup-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[100000] flex items-end sm:items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300" style="opacity:0;pointer-events:none">
@@ -1330,6 +1584,8 @@ window.onload = async () => {
 <style>
 #topup-modal.show { opacity: 1 !important; pointer-events: auto !important; }
 #topup-modal.show > div { transform: translateY(0) !important; }
+#referral-modal.show { opacity: 1 !important; pointer-events: auto !important; }
+#referral-modal.show > div { transform: translateY(0) !important; }
 
 </style>
 
