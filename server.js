@@ -37,6 +37,9 @@ const UserSchema = new mongoose.Schema({
     referredBy:         { type: String, default: null },
     referralCount:      { type: Number, default: 0 },
     referralCreditsEarned: { type: Number, default: 0 },
+    referralTier:       { type: Number, default: 0 },
+    referralBonusesClaimed: [{ type: Number }],  // tier indexes already claimed
+    registrationIp:     { type: String, default: null },
     createdAt:          { type: Date, default: Date.now }
 });
 const User = mongoose.models.User || mongoose.model('User', UserSchema);
@@ -60,6 +63,44 @@ const TOPUP = {
     [process.env.STRIPE_PRICE_TOPUP_150]: 150,
     [process.env.STRIPE_PRICE_TOPUP_400]: 400,
 };
+
+// ══════════════════════════════════════════════════════════════
+// ██ REFERRAL TIER SYSTEM — 8 niveluri, bonusuri progresive
+// ══════════════════════════════════════════════════════════════
+const REFERRAL_TIERS = [
+    // tier 0: start — fiecare invitație = 5 credite
+    { minReferrals: 0,   name: 'Începător',      icon: '🌱', perReferral: 5,  bonus: 0,    bonusVoice: 0,      badge: null },
+    // tier 1: 3 invitații — bonus 10 credite
+    { minReferrals: 3,   name: 'Promoter',        icon: '⚡', perReferral: 5,  bonus: 10,   bonusVoice: 2000,   badge: 'Promoter' },
+    // tier 2: 10 invitații — bonus 30 credite + 5k voice
+    { minReferrals: 10,  name: 'Influencer',      icon: '🔥', perReferral: 7,  bonus: 30,   bonusVoice: 5000,   badge: 'Influencer' },
+    // tier 3: 25 invitații — bonus 75 credite + 15k voice
+    { minReferrals: 25,  name: 'Ambassador',      icon: '💎', perReferral: 7,  bonus: 75,   bonusVoice: 15000,  badge: 'Ambassador' },
+    // tier 4: 50 invitații — bonus 150 credite + 30k voice
+    { minReferrals: 50,  name: 'Elite',           icon: '👑', perReferral: 10, bonus: 150,  bonusVoice: 30000,  badge: 'Elite' },
+    // tier 5: 100 invitații — bonus 400 credite + 80k voice
+    { minReferrals: 100, name: 'Legend',           icon: '🏆', perReferral: 10, bonus: 400,  bonusVoice: 80000,  badge: 'Legend' },
+    // tier 6: 250 invitații — bonus 1000 credite + 200k voice
+    { minReferrals: 250, name: 'Titan',            icon: '🚀', perReferral: 12, bonus: 1000, bonusVoice: 200000, badge: 'Titan' },
+    // tier 7: 500 invitații — bonus 2500 credite + 500k voice + badge permanent
+    { minReferrals: 500, name: 'Viralio Partner',  icon: '🌟', perReferral: 15, bonus: 2500, bonusVoice: 500000, badge: 'Partner' },
+];
+
+function getCurrentTier(count) {
+    let tier = 0;
+    for (let i = REFERRAL_TIERS.length - 1; i >= 0; i--) {
+        if (count >= REFERRAL_TIERS[i].minReferrals) { tier = i; break; }
+    }
+    return tier;
+}
+
+function getPerReferralCredits(count) {
+    return REFERRAL_TIERS[getCurrentTier(count)].perReferral;
+}
+
+// Anti-fraud: max referrals per IP in 24h
+const REFERRAL_IP_LIMIT = 3;
+const REFERRAL_IP_WINDOW_MS = 24 * 60 * 60 * 1000; // 24h
 
 console.log('📋 PLANS:', JSON.stringify(PLANS));
 console.log('📋 TOPUP:', JSON.stringify(TOPUP));
@@ -217,17 +258,57 @@ app.post('/api/auth/google', async (req, res) => {
                 ? payload.name.split(' ')[0].toLowerCase().replace(/[^a-z0-9]/g, '') + crypto.randomBytes(3).toString('hex')
                 : 'viralio' + crypto.randomBytes(4).toString('hex');
 
+            // ── ANTI-FRAUD: captează IP-ul real ──
+            const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim()
+                || req.headers['x-real-ip']
+                || req.connection?.remoteAddress
+                || 'unknown';
+
             // Bonusuri de bază
             let bonusCredits = 0;
             let referredByCode = req.body.referralCode || null;
+            let referralValid = false;
 
-            // Verifică dacă codul de referral există
+            // Verifică dacă codul de referral există + anti-fraud
             if (referredByCode) {
                 const referrer = await User.findOne({ referralCode: referredByCode });
                 if (!referrer || referrer.email === payload.email) {
                     referredByCode = null; // cod invalid sau auto-referral
                 } else {
-                    bonusCredits = 3; // noul user primește 3 credite bonus
+                    // ── ANTI-FRAUD CHECK 1: Același IP ──
+                    // Câți useri cu referral de la ORICINE s-au înregistrat de pe acest IP în ultimele 24h?
+                    const recentFromSameIp = await User.countDocuments({
+                        registrationIp: clientIp,
+                        referredBy: { $ne: null },
+                        createdAt: { $gte: new Date(Date.now() - REFERRAL_IP_WINDOW_MS) }
+                    });
+                    if (clientIp !== 'unknown' && recentFromSameIp >= REFERRAL_IP_LIMIT) {
+                        console.warn('🚫 ANTI-FRAUD: IP ' + clientIp + ' a depășit limita de referral (' + recentFromSameIp + ')');
+                        referredByCode = null; // nu mai acordă bonus, dar lasă contul să se creeze
+                    }
+
+                    // ── ANTI-FRAUD CHECK 2: Același domeniu email ──
+                    if (referredByCode) {
+                        const refDomain = referrer.email.split('@')[1];
+                        const newDomain = payload.email.split('@')[1];
+                        // Blochează doar domenii custom (nu gmail/yahoo/hotmail etc.)
+                        const commonDomains = ['gmail.com','googlemail.com','yahoo.com','hotmail.com','outlook.com','icloud.com','protonmail.com','live.com','mail.com','aol.com','proton.me'];
+                        if (refDomain === newDomain && !commonDomains.includes(refDomain)) {
+                            console.warn('🚫 ANTI-FRAUD: Același domeniu custom ' + refDomain);
+                            referredByCode = null;
+                        }
+                    }
+
+                    // ── ANTI-FRAUD CHECK 3: Referrerul își invită propriul IP ──
+                    if (referredByCode && referrer.registrationIp === clientIp && clientIp !== 'unknown') {
+                        console.warn('🚫 ANTI-FRAUD: Referrer IP identic cu noul user (' + clientIp + ')');
+                        referredByCode = null;
+                    }
+
+                    if (referredByCode) {
+                        bonusCredits = 3;
+                        referralValid = true;
+                    }
                 }
             }
 
@@ -237,17 +318,47 @@ app.post('/api/auth/google', async (req, res) => {
                 credits: 10 + bonusCredits, voice_characters: 3000,
                 referralCode: referralCode,
                 referredBy: referredByCode,
+                registrationIp: clientIp,
             });
             await user.save();
             isNewUser = true;
 
-            // Acordă credite referrerului
-            if (referredByCode) {
-                await User.findOneAndUpdate(
-                    { referralCode: referredByCode },
-                    { $inc: { credits: 5, referralCount: 1, referralCreditsEarned: 5 } }
-                );
-                console.log('🎁 REFERRAL: ' + payload.email + ' invitat de ' + referredByCode + ' (+5cr referrer, +3cr invitat)');
+            // Acordă credite referrerului — TIER-AWARE
+            if (referralValid && referredByCode) {
+                const referrer = await User.findOne({ referralCode: referredByCode });
+                if (referrer) {
+                    const newCount = (referrer.referralCount || 0) + 1;
+                    const creditsForThis = getPerReferralCredits(newCount);
+                    const newTier = getCurrentTier(newCount);
+
+                    // Calculează bonus de tier dacă tocmai a avansat
+                    let tierBonus = 0;
+                    let tierBonusVoice = 0;
+                    const claimed = referrer.referralBonusesClaimed || [];
+                    if (newTier > 0 && !claimed.includes(newTier)) {
+                        tierBonus = REFERRAL_TIERS[newTier].bonus;
+                        tierBonusVoice = REFERRAL_TIERS[newTier].bonusVoice;
+                    }
+
+                    const updateOps = {
+                        $inc: {
+                            credits: creditsForThis + tierBonus,
+                            referralCount: 1,
+                            referralCreditsEarned: creditsForThis + tierBonus,
+                            voice_characters: tierBonusVoice,
+                        },
+                        referralTier: newTier,
+                    };
+                    if (tierBonus > 0) {
+                        updateOps.$addToSet = { referralBonusesClaimed: newTier };
+                    }
+
+                    await User.findOneAndUpdate({ referralCode: referredByCode }, updateOps);
+                    console.log('🎁 REFERRAL: ' + payload.email + ' invitat de ' + referredByCode
+                        + ' | +' + creditsForThis + 'cr'
+                        + (tierBonus ? ' + TIER BONUS +' + tierBonus + 'cr +' + tierBonusVoice + 'voice' : '')
+                        + ' | tier=' + newTier + ' count=' + newCount);
+                }
             }
         }
 
@@ -262,7 +373,7 @@ app.post('/api/auth/google', async (req, res) => {
                     await user.save();
                     break;
                 } catch (e) {
-                    if (e.code === 11000 && attempt < 2) continue; // duplicate key, retry
+                    if (e.code === 11000 && attempt < 2) continue;
                     console.error('⚠️ Eroare generare referralCode:', e.message);
                     break;
                 }
@@ -449,21 +560,39 @@ app.get('/api/referral/info', authenticate, async (req, res) => {
         await user.save();
     }
 
-    // IMPORTANT: doar caută invitații dacă referralCode e valid (non-null)
+    const count = user.referralCount || 0;
+    const currentTier = getCurrentTier(count);
+    const nextTierIdx = currentTier < REFERRAL_TIERS.length - 1 ? currentTier + 1 : null;
+    const claimed = user.referralBonusesClaimed || [];
+
+    // IMPORTANT: doar caută invitații dacă referralCode e valid
     let referredUsers = [];
     if (user.referralCode) {
         referredUsers = await User.find({ referredBy: user.referralCode })
             .select('name picture createdAt')
             .sort({ createdAt: -1 })
-            .limit(10)
+            .limit(20)
             .lean();
     }
 
     res.json({
         referralCode: user.referralCode,
         referralLink: process.env.APP_URL + '/?ref=' + user.referralCode,
-        referralCount: user.referralCount || 0,
+        referralCount: count,
         referralCreditsEarned: user.referralCreditsEarned || 0,
+        // Tier system
+        currentTier,
+        currentTierData: REFERRAL_TIERS[currentTier],
+        nextTier: nextTierIdx !== null ? REFERRAL_TIERS[nextTierIdx] : null,
+        nextTierIndex: nextTierIdx,
+        remainingForNext: nextTierIdx !== null ? REFERRAL_TIERS[nextTierIdx].minReferrals - count : 0,
+        allTiers: REFERRAL_TIERS.map((t, i) => ({
+            ...t,
+            index: i,
+            reached: count >= t.minReferrals,
+            bonusClaimed: claimed.includes(i),
+            current: i === currentTier,
+        })),
         recentReferrals: referredUsers.map(u => ({
             name: u.name,
             picture: u.picture,
