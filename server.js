@@ -253,11 +253,20 @@ app.post('/api/auth/google', async (req, res) => {
 
         // Dacă userul existent nu are referralCode, generează-i unul
         if (!user.referralCode) {
-            const referralCode = user.name
-                ? user.name.split(' ')[0].toLowerCase().replace(/[^a-z0-9]/g, '') + crypto.randomBytes(3).toString('hex')
-                : 'viralio' + crypto.randomBytes(4).toString('hex');
-            user.referralCode = referralCode;
-            await user.save();
+            for (let attempt = 0; attempt < 3; attempt++) {
+                try {
+                    const referralCode = user.name
+                        ? user.name.split(' ')[0].toLowerCase().replace(/[^a-z0-9]/g, '') + crypto.randomBytes(3).toString('hex')
+                        : 'viralio' + crypto.randomBytes(4).toString('hex');
+                    user.referralCode = referralCode;
+                    await user.save();
+                    break;
+                } catch (e) {
+                    if (e.code === 11000 && attempt < 2) continue; // duplicate key, retry
+                    console.error('⚠️ Eroare generare referralCode:', e.message);
+                    break;
+                }
+            }
         }
 
         const sessionToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
@@ -396,16 +405,59 @@ app.post('/api/internal/user-info', authenticateInternal, async (req, res) => {
 // ══════════════════════════════════════════════════════════════
 // ██ REFERRAL SYSTEM
 // ══════════════════════════════════════════════════════════════
+
+// Migration: generează referralCode pentru toți userii existenți care nu au
+// Apelează o singură dată: POST /api/internal/migrate-referral-codes
+app.post('/api/internal/migrate-referral-codes', authenticateInternal, async (req, res) => {
+    try {
+        const usersWithout = await User.find({ $or: [{ referralCode: null }, { referralCode: { $exists: false } }] });
+        let updated = 0;
+        for (const u of usersWithout) {
+            for (let attempt = 0; attempt < 3; attempt++) {
+                try {
+                    const code = u.name
+                        ? u.name.split(' ')[0].toLowerCase().replace(/[^a-z0-9]/g, '') + crypto.randomBytes(3).toString('hex')
+                        : 'viralio' + crypto.randomBytes(4).toString('hex');
+                    u.referralCode = code;
+                    await u.save();
+                    updated++;
+                    break;
+                } catch (e) {
+                    if (e.code === 11000 && attempt < 2) continue;
+                    console.error('⚠️ Migration skip ' + u.email + ':', e.message);
+                    break;
+                }
+            }
+        }
+        res.json({ message: `Migration completă. ${updated}/${usersWithout.length} useri actualizați.` });
+    } catch (e) {
+        console.error('❌ Migration error:', e);
+        res.status(500).json({ error: e.message });
+    }
+});
+
 app.get('/api/referral/info', authenticate, async (req, res) => {
     const user = await User.findById(req.userId);
     if (!user) return res.status(404).json({ error: 'User inexistent.' });
 
-    // Găsește ultimii 10 useri invitați
-    const referredUsers = await User.find({ referredBy: user.referralCode })
-        .select('name picture createdAt')
-        .sort({ createdAt: -1 })
-        .limit(10)
-        .lean();
+    // Dacă userul nu are referralCode, generează-i unul acum
+    if (!user.referralCode) {
+        const code = user.name
+            ? user.name.split(' ')[0].toLowerCase().replace(/[^a-z0-9]/g, '') + crypto.randomBytes(3).toString('hex')
+            : 'viralio' + crypto.randomBytes(4).toString('hex');
+        user.referralCode = code;
+        await user.save();
+    }
+
+    // IMPORTANT: doar caută invitații dacă referralCode e valid (non-null)
+    let referredUsers = [];
+    if (user.referralCode) {
+        referredUsers = await User.find({ referredBy: user.referralCode })
+            .select('name picture createdAt')
+            .sort({ createdAt: -1 })
+            .limit(10)
+            .lean();
+    }
 
     res.json({
         referralCode: user.referralCode,
