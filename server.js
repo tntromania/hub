@@ -5,6 +5,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const { OAuth2Client } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 
 const app = express();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
@@ -32,6 +33,10 @@ const UserSchema = new mongoose.Schema({
     subscriptionPlan:   { type: String, enum: ['none','starter','creator','agency'], default: 'none' },
     subscriptionStatus: { type: String, default: 'inactive' },
     currentPeriodEnd:   { type: Date, default: null },
+    referralCode:       { type: String, unique: true, sparse: true },
+    referredBy:         { type: String, default: null },
+    referralCount:      { type: Number, default: 0 },
+    referralCreditsEarned: { type: Number, default: 0 },
     createdAt:          { type: Date, default: Date.now }
 });
 const User = mongoose.models.User || mongoose.model('User', UserSchema);
@@ -193,6 +198,7 @@ app.post('/api/auth/google', async (req, res) => {
         });
         const payload = ticket.getPayload();
         let user = await User.findOne({ googleId: payload.sub });
+        let isNewUser = false;
 
         if (!user) {
             const userCount = await User.countDocuments();
@@ -205,22 +211,65 @@ app.post('/api/auth/google', async (req, res) => {
                     discordLink: 'https://discord.gg/h8Ah6VKDzm'
                 });
             }
+
+            // Generează cod referral unic
+            const referralCode = payload.name
+                ? payload.name.split(' ')[0].toLowerCase().replace(/[^a-z0-9]/g, '') + crypto.randomBytes(3).toString('hex')
+                : 'viralio' + crypto.randomBytes(4).toString('hex');
+
+            // Bonusuri de bază
+            let bonusCredits = 0;
+            let referredByCode = req.body.referralCode || null;
+
+            // Verifică dacă codul de referral există
+            if (referredByCode) {
+                const referrer = await User.findOne({ referralCode: referredByCode });
+                if (!referrer || referrer.email === payload.email) {
+                    referredByCode = null; // cod invalid sau auto-referral
+                } else {
+                    bonusCredits = 3; // noul user primește 3 credite bonus
+                }
+            }
+
             user = new User({
                 googleId: payload.sub, email: payload.email,
                 name: payload.name, picture: payload.picture,
-                credits: 10, voice_characters: 3000
+                credits: 10 + bonusCredits, voice_characters: 3000,
+                referralCode: referralCode,
+                referredBy: referredByCode,
             });
+            await user.save();
+            isNewUser = true;
+
+            // Acordă credite referrerului
+            if (referredByCode) {
+                await User.findOneAndUpdate(
+                    { referralCode: referredByCode },
+                    { $inc: { credits: 5, referralCount: 1, referralCreditsEarned: 5 } }
+                );
+                console.log('🎁 REFERRAL: ' + payload.email + ' invitat de ' + referredByCode + ' (+5cr referrer, +3cr invitat)');
+            }
+        }
+
+        // Dacă userul existent nu are referralCode, generează-i unul
+        if (!user.referralCode) {
+            const referralCode = user.name
+                ? user.name.split(' ')[0].toLowerCase().replace(/[^a-z0-9]/g, '') + crypto.randomBytes(3).toString('hex')
+                : 'viralio' + crypto.randomBytes(4).toString('hex');
+            user.referralCode = referralCode;
             await user.save();
         }
 
         const sessionToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
         res.json({
             token: sessionToken,
+            isNewUser,
             user: {
                 name: user.name, picture: user.picture,
                 credits: user.credits, voice_characters: user.voice_characters,
                 email: user.email, subscriptionPlan: user.subscriptionPlan,
                 subscriptionStatus: user.subscriptionStatus,
+                referralCode: user.referralCode,
             }
         });
     } catch (error) {
@@ -239,6 +288,7 @@ app.get('/api/auth/me', authenticate, async (req, res) => {
             email: user.email, subscriptionPlan: user.subscriptionPlan,
             subscriptionStatus: user.subscriptionStatus,
             currentPeriodEnd: user.currentPeriodEnd,
+            referralCode: user.referralCode,
         }
     });
 });
@@ -338,7 +388,35 @@ app.post('/api/internal/user-info', authenticateInternal, async (req, res) => {
             email: user.email, subscriptionPlan: user.subscriptionPlan,
             subscriptionStatus: user.subscriptionStatus,
             currentPeriodEnd: user.currentPeriodEnd,
+            referralCode: user.referralCode,
         }
+    });
+});
+
+// ══════════════════════════════════════════════════════════════
+// ██ REFERRAL SYSTEM
+// ══════════════════════════════════════════════════════════════
+app.get('/api/referral/info', authenticate, async (req, res) => {
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ error: 'User inexistent.' });
+
+    // Găsește ultimii 10 useri invitați
+    const referredUsers = await User.find({ referredBy: user.referralCode })
+        .select('name picture createdAt')
+        .sort({ createdAt: -1 })
+        .limit(10)
+        .lean();
+
+    res.json({
+        referralCode: user.referralCode,
+        referralLink: process.env.APP_URL + '/?ref=' + user.referralCode,
+        referralCount: user.referralCount || 0,
+        referralCreditsEarned: user.referralCreditsEarned || 0,
+        recentReferrals: referredUsers.map(u => ({
+            name: u.name,
+            picture: u.picture,
+            date: u.createdAt,
+        })),
     });
 });
 
