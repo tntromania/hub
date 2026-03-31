@@ -40,7 +40,8 @@ const UserSchema = new mongoose.Schema({
     referralTier:       { type: Number, default: 0 },
     referralBonusesClaimed: [{ type: Number }],  // tier indexes already claimed
     registrationIp:     { type: String, default: null },
-    createdAt:          { type: Date, default: Date.now }
+    createdAt:          { type: Date, default: Date.now },
+    earlyAccess:        { type: Boolean, default: false }
 });
 const User = mongoose.models.User || mongoose.model('User', UserSchema);
 
