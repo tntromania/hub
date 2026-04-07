@@ -330,6 +330,41 @@
     <div class="cancel-glass" id="cancel-glass">
         <button onclick="closeCancelModal()" class="cancel-close-btn"><i class="fa-solid fa-xmark"></i></button>
 
+        <!-- ── STEP 0: Already canceled — reactivate dashboard ── -->
+        <div id="cs0" class="cancel-step">
+            <div class="cancel-hero-icon cancel-hero-icon--slate">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+            </div>
+            <h2 class="cancel-title">Abonament anulat</h2>
+            <p class="cancel-sub" id="cs0-sub">Ai acces la beneficii până la expirare.</p>
+
+            <div class="cancel-lose-grid" style="margin:20px 0;">
+                <div class="cancel-lose-item" style="opacity:0.5;text-decoration:line-through;">
+                    <div class="cancel-lose-icon"><i class="fa-solid fa-bolt"></i></div>
+                    <span id="cs0-credits">Credite / lună</span>
+                </div>
+                <div class="cancel-lose-item" style="opacity:0.5;text-decoration:line-through;">
+                    <div class="cancel-lose-icon"><i class="fa-solid fa-microphone-lines"></i></div>
+                    <span id="cs0-voice">Caractere voice / lună</span>
+                </div>
+                <div class="cancel-lose-item" style="opacity:0.5;text-decoration:line-through;">
+                    <div class="cancel-lose-icon"><i class="fa-solid fa-layer-group"></i></div>
+                    <span>Acces la tot ecosistemul Viralio</span>
+                </div>
+                <div class="cancel-lose-item" style="opacity:0.5;text-decoration:line-through;">
+                    <div class="cancel-lose-icon"><i class="fa-solid fa-rocket"></i></div>
+                    <span>Acces prioritar funcții noi</span>
+                </div>
+            </div>
+
+            <div class="cancel-actions">
+                <button onclick="reactivateSubscription()" id="cs0-reactivate-btn" class="cancel-btn-primary">
+                    <i class="fa-solid fa-rotate-right text-xs"></i> Reactivează abonamentul
+                </button>
+                <button onclick="closeCancelModal()" class="cancel-skip-btn">Închide</button>
+            </div>
+        </div>
+
         <!-- ── STEP 1: Why leaving ── -->
         <div id="cs1" class="cancel-step cancel-step--active">
             <div class="cancel-hero-icon cancel-hero-icon--purple">
@@ -2070,7 +2105,30 @@ window.onload = async () => {
             s.classList.remove('cancel-step--active');
             s.classList.remove('cancel-step--exit');
         });
-        document.getElementById('cs1').classList.add('cancel-step--active');
+
+        // If already canceling, show the reactivate dashboard (cs0) instead of reasons flow
+        if (currentUserStatus === 'canceling' || currentUserStatus === 'canceled') {
+            // Update cs0 content with plan details
+            const cs0credits = document.getElementById('cs0-credits');
+            const cs0voice = document.getElementById('cs0-voice');
+            if (cs0credits) cs0credits.textContent = p.cr + ' credite / lună';
+            if (cs0voice) cs0voice.textContent = p.vc + ' caractere voice / lună';
+            // Update subtitle with period end date
+            const cs0sub = document.getElementById('cs0-sub');
+            if (cs0sub && window._cancelAtDate) {
+                const d = new Date(window._cancelAtDate);
+                const dateStr = d.toLocaleDateString('ro-RO', { day: 'numeric', month: 'long', year: 'numeric' });
+                cs0sub.textContent = 'Ai acces la beneficii până pe ' + dateStr + '.';
+            }
+            // Hide reactivate button for fully expired subscriptions
+            const reactivateBtn = document.getElementById('cs0-reactivate-btn');
+            if (reactivateBtn) {
+                reactivateBtn.style.display = currentUserStatus === 'canceled' ? 'none' : '';
+            }
+            document.getElementById('cs0').classList.add('cancel-step--active');
+        } else {
+            document.getElementById('cs1').classList.add('cancel-step--active');
+        }
 
         const m = document.getElementById('cancel-modal');
         m.classList.add('cancel-visible');
@@ -2123,7 +2181,7 @@ window.onload = async () => {
     };
 
     window.cancelStepGo = function(n) {
-        const steps = ['cs1','cs2','cs3','cs4','cs5'];
+        const steps = ['cs0','cs1','cs2','cs3','cs4','cs5'];
         const current = steps.find(s => document.getElementById(s).classList.contains('cancel-step--active'));
         if (current) animateStep(current, 'cs' + n);
     };
@@ -2192,6 +2250,12 @@ window.onload = async () => {
             if (data.success) {
                 const d = new Date(data.cancelAt);
                 document.getElementById('cancel-until').textContent = d.toLocaleDateString('ro-RO', { day: 'numeric', month: 'long', year: 'numeric' });
+                // Update local state so modal won't allow re-canceling
+                currentUserStatus = 'canceling';
+                window._cancelAtDate = data.cancelAt;
+                // Update the "Gestionează Abonament" button label to reflect state
+                const manageBtn = document.querySelector('[onclick="openCancelModal(); closeUserMenu();"] .text-slate-400');
+                if (manageBtn) manageBtn.textContent = 'Activ până la expirare';
                 animateStep('cs3', 'cs4');
             } else {
                 showToast(data.error || 'Eroare.', 'error');
@@ -2204,6 +2268,61 @@ window.onload = async () => {
             btn.innerHTML = 'Anulează definitiv abonamentul';
         }
     };
+
+    // Hook into updateUI to store cancelAt and update manage button subtitle
+    const _origUpdateUIForCancel = window.updateUI;
+    window.updateUI = function(user) {
+        _origUpdateUIForCancel(user);
+        // currentPeriodEnd = data până la care accesul e valabil (atât la cancel cât și canceling)
+        if (user.currentPeriodEnd) window._cancelAtDate = user.currentPeriodEnd;
+        const manageSubtitle = document.querySelector('[onclick="openCancelModal(); closeUserMenu();"] .text-slate-400');
+        if (manageSubtitle) {
+            if (user.subscriptionStatus === 'canceling') {
+                manageSubtitle.textContent = 'Activ până la expirare · Reactivează';
+            } else if (user.subscriptionStatus === 'canceled') {
+                manageSubtitle.textContent = 'Abonament expirat';
+            } else {
+                manageSubtitle.textContent = 'Facturi, anulare, upgrade';
+            }
+        }
+    };
+
+    window.reactivateSubscription = async function() {
+        const btn = document.getElementById('cs0-reactivate-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Se procesează...';
+        try {
+            const token = getToken();
+            const resp = await fetch('/api/stripe/reactivate-subscription', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }
+            });
+            const data = await resp.json();
+            if (data.success) {
+                currentUserStatus = 'active';
+                window._cancelAtDate = null;
+                showToast('🎉 Abonament reactivat cu succes!', 'success');
+                closeCancelModal();
+                // Update manage button subtitle back
+                const manageSubtitle = document.querySelector('[onclick="openCancelModal(); closeUserMenu();"] .text-slate-400');
+                if (manageSubtitle) manageSubtitle.textContent = 'Facturi, anulare, upgrade';
+                try {
+                    const me = await fetch('/api/auth/me', { headers: { Authorization: 'Bearer ' + token } });
+                    const meData = await me.json();
+                    if (meData.user) updateUI(meData.user);
+                } catch(e) {}
+            } else {
+                showToast(data.error || 'Eroare la reactivare.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-rotate-right text-xs"></i> Reactivează abonamentul';
+            }
+        } catch (e) {
+            showToast('Eroare de rețea.', 'error');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-rotate-right text-xs"></i> Reactivează abonamentul';
+        }
+    };
+
 })();
 </script>
 </body>
