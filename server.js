@@ -39,6 +39,7 @@ const UserSchema = new mongoose.Schema({
     referralCreditsEarned: { type: Number, default: 0 },
     referralTier:       { type: Number, default: 0 },
     referralBonusesClaimed: [{ type: Number }],  // tier indexes already claimed
+    retentionOfferUsed:    { type: Date, default: null },  // anti-abuse: o singură ofertă de retenție
     registrationIp:     { type: String, default: null },
     createdAt:          { type: Date, default: Date.now },
     earlyAccess:        { type: Boolean, default: false }
@@ -410,6 +411,7 @@ app.get('/api/auth/me', authenticate, async (req, res) => {
             subscriptionStatus: user.subscriptionStatus,
             currentPeriodEnd: user.currentPeriodEnd,
             referralCode: user.referralCode,
+            retentionOfferUsed: !!user.retentionOfferUsed,
         }
     });
 });
@@ -668,6 +670,98 @@ app.post('/api/stripe/topup', authenticate, async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Eroare Stripe' });
+    }
+});
+
+// ══════════════════════════════════════════════════════════════
+// ██ CANCEL SUBSCRIPTION (in-app, fără Stripe portal)
+// ══════════════════════════════════════════════════════════════
+app.post('/api/stripe/cancel-subscription', authenticate, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId);
+        if (!user || !user.subscriptionId) return res.status(400).json({ error: 'Nu ai un abonament activ.' });
+
+        // Cancel at period end (nu imediat)
+        const sub = await stripe.subscriptions.update(user.subscriptionId, {
+            cancel_at_period_end: true
+        });
+
+        await User.findByIdAndUpdate(req.userId, {
+            subscriptionStatus: 'canceling',
+            currentPeriodEnd: new Date(sub.current_period_end * 1000)
+        });
+
+        res.json({
+            success: true,
+            cancelAt: new Date(sub.current_period_end * 1000)
+        });
+    } catch (err) {
+        console.error('❌ Cancel error:', err.message);
+        res.status(500).json({ error: 'Eroare la anulare.' });
+    }
+});
+
+// Retention offer — aplică discount sau bonus credits (O SINGURĂ DATĂ)
+app.post('/api/stripe/retention-offer', authenticate, async (req, res) => {
+    const { action, reason } = req.body;
+    const user = await User.findById(req.userId);
+    if (!user || !user.subscriptionId) return res.status(400).json({ error: 'Nu ai un abonament activ.' });
+
+    // ── ANTI-ABUSE: o singură ofertă de retenție per user ──
+    if (user.retentionOfferUsed) {
+        return res.status(403).json({ error: 'Ai beneficiat deja de o ofertă de retenție. Această ofertă este disponibilă o singură dată.' });
+    }
+
+    try {
+        if (action === 'discount' || action === 'discount_plus') {
+            // Aplică 25% reducere pe următoarea factură via Stripe coupon
+            const coupon = await stripe.coupons.create({
+                percent_off: 25,
+                duration: 'once',
+                name: 'Retention 25% off - ' + reason
+            });
+
+            await stripe.subscriptions.update(user.subscriptionId, {
+                coupon: coupon.id
+            });
+
+            let bonusMsg = 'Reducerea de 25% a fost aplicată pe următoarea factură.';
+            let title = 'Reducere 25% aplicată!';
+
+            // discount_plus = discount + 15 credite bonus
+            if (action === 'discount_plus') {
+                await User.findByIdAndUpdate(req.userId, {
+                    $inc: { credits: 15 },
+                    retentionOfferUsed: new Date()
+                });
+                bonusMsg = 'Reducere 25% aplicată + 15 credite bonus adăugate!';
+                title = 'Reducere + credite aplicate!';
+            } else {
+                await User.findByIdAndUpdate(req.userId, { retentionOfferUsed: new Date() });
+            }
+
+            console.log('🎯 RETENTION (' + reason + '): ' + user.email + ' → ' + action);
+            return res.json({ success: true, title, message: bonusMsg });
+        }
+
+        if (action === 'bonus') {
+            // +20 credite bonus (nu 50, rezonabil)
+            await User.findByIdAndUpdate(req.userId, {
+                $inc: { credits: 20 },
+                retentionOfferUsed: new Date()
+            });
+            console.log('🎯 RETENTION (' + reason + '): ' + user.email + ' → +20 credite');
+            return res.json({
+                success: true,
+                title: '+20 credite adăugate!',
+                message: 'Ai primit 20 de credite bonus. Bucură-te de Viralio!'
+            });
+        }
+
+        return res.status(400).json({ error: 'Acțiune invalidă.' });
+    } catch (err) {
+        console.error('❌ Retention error:', err.message);
+        res.status(500).json({ error: 'Eroare la aplicarea ofertei.' });
     }
 });
 
