@@ -392,8 +392,8 @@
                     <span id="cl-voice">50K caractere voice / lună</span>
                 </div>
                 <div class="cancel-lose-item">
-                    <div class="cancel-lose-icon"><i class="fa-solid fa-tag"></i></div>
-                    <span>10% reducere top-up</span>
+                    <div class="cancel-lose-icon"><i class="fa-solid fa-layer-group"></i></div>
+                    <span>Acces la tot ecosistemul Viralio</span>
                 </div>
                 <div class="cancel-lose-item">
                     <div class="cancel-lose-icon"><i class="fa-solid fa-rocket"></i></div>
@@ -2000,13 +2000,18 @@ window.onload = async () => {
     // Offers per reason — one killer offer each, not a buffet
     function getOffer(reason, plan) {
         const p = PL[plan] || PL.starter;
+        const allPlans = '<div style="display:flex;flex-direction:column;gap:4px;margin:8px 0 4px">'
+            + '<span style="font-size:0.7rem;opacity:0.6">Starter: <s>49,90</s> → <strong style="color:#c4b5fd">37,43 RON</strong></span>'
+            + '<span style="font-size:0.7rem;opacity:0.6">Creator: <s>99,90</s> → <strong style="color:#c4b5fd">74,93 RON</strong></span>'
+            + '<span style="font-size:0.7rem;opacity:0.6">Agency: <s>249,90</s> → <strong style="color:#c4b5fd">187,43 RON</strong></span>'
+            + '</div>';
         const offers = {
             'expensive': {
                 tag: 'OFERTĂ EXCLUSIVĂ',
                 tagColor: '#f59e0b',
                 icon: '🔥',
                 title: '25% reducere luna viitoare',
-                desc: 'Rămâi cu toate beneficiile tale — ' + p.cr + ' credite, ' + p.vc + ' caractere voice — la doar <strong>' + p.discount + ' RON</strong> în loc de ' + p.price + ' RON.',
+                desc: 'Rămâi cu toate beneficiile tale — <strong>25% reducere</strong> pe orice abonament:' + allPlans,
                 cta: 'Aplică reducerea 25%',
                 action: 'discount'
             },
@@ -2033,7 +2038,7 @@ window.onload = async () => {
                 tagColor: '#ef4444',
                 icon: '💎',
                 title: '25% reducere + 15 credite cadou',
-                desc: 'Primești <strong>25% reducere</strong> luna viitoare (' + p.discount + ' RON) + <strong>15 credite bonus</strong> pe loc. Tot în Viralio: Video, Voice, Captions, Audio.',
+                desc: 'Primești <strong>25% reducere</strong> pe orice abonament + <strong>15 credite bonus</strong> pe loc:' + allPlans,
                 cta: 'Vreau reducere + credite',
                 action: 'discount_plus'
             },
@@ -2042,7 +2047,7 @@ window.onload = async () => {
                 tagColor: '#6366f1',
                 icon: '✨',
                 title: '25% reducere la următoarea factură',
-                desc: 'Înainte să pleci — <strong>' + p.discount + ' RON</strong> în loc de ' + p.price + ' RON luna viitoare. Toate beneficiile, preț redus.',
+                desc: 'Înainte să pleci — <strong>25% reducere</strong> pe orice abonament:' + allPlans,
                 cta: 'Aplică reducerea 25%',
                 action: 'discount'
             }
@@ -2138,7 +2143,7 @@ window.onload = async () => {
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Se aplică...';
 
         try {
-            const token = localStorage.getItem('token');
+            const token = getToken();
             const resp = await fetch('/api/stripe/retention-offer', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
@@ -2178,7 +2183,7 @@ window.onload = async () => {
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Se procesează...';
 
         try {
-            const token = localStorage.getItem('token');
+            const token = getToken();
             const resp = await fetch('/api/stripe/cancel-subscription', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }
