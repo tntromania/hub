@@ -220,7 +220,7 @@
                             </div>
                         </button>
 
-                        <a href="https://billing.stripe.com/p/login/dRm00k1hTdQS6fxfbO1Nu00" target="_blank" onclick="closeUserMenu()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-indigo-50 transition-colors group text-left">
+                        <button onclick="openCancelModal(); closeUserMenu();" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-indigo-50 transition-colors group text-left">
                             <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-500 flex items-center justify-center shrink-0 group-hover:bg-indigo-500 group-hover:text-white transition-all">
                                 <i class="fa-solid fa-credit-card text-xs"></i>
                             </div>
@@ -228,7 +228,7 @@
                                 <div class="text-slate-800 font-bold text-sm">Gestionează Abonament</div>
                                 <div class="text-slate-400 text-[0.65rem] font-medium">Facturi, anulare, upgrade</div>
                             </div>
-                        </a>
+                        </button>
 
                         <div class="h-px bg-slate-100 mx-1 my-1"></div>
 
@@ -319,6 +319,119 @@
                 <i class="fa-brands fa-discord text-xl"></i> Intră pe Discord
             </a>
             <button onclick="document.getElementById('early-access-modal').classList.remove('show'); setTimeout(()=>document.getElementById('early-access-modal').style.display='none',300);" class="w-full py-3 rounded-xl bg-slate-50 text-slate-500 font-bold text-sm hover:bg-slate-100 hover:text-slate-700 transition-all">Am înțeles</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- ██ CANCEL FLOW v2 — INSPIRED BY SPOTIFY/ADOBE/SUPERHUMAN   -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="cancel-modal" class="cancel-overlay">
+    <div class="cancel-glass" id="cancel-glass">
+        <button onclick="closeCancelModal()" class="cancel-close-btn"><i class="fa-solid fa-xmark"></i></button>
+
+        <!-- ── STEP 1: Why leaving ── -->
+        <div id="cs1" class="cancel-step cancel-step--active">
+            <div class="cancel-hero-icon cancel-hero-icon--purple">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><line x1="12" y1="13" x2="12" y2="17"/><line x1="10" y1="15" x2="14" y2="15"/></svg>
+            </div>
+            <h2 class="cancel-title">Ce te-a făcut să te gândești la anulare?</h2>
+            <p class="cancel-sub">Răspunsul tău ne ajută să devenim mai buni.</p>
+
+            <div class="cancel-reasons">
+                <button class="cancel-reason" onclick="pickReason('expensive')">
+                    <span class="cancel-reason-emoji">💸</span>
+                    <span class="cancel-reason-label">E prea scump</span>
+                </button>
+                <button class="cancel-reason" onclick="pickReason('no-time')">
+                    <span class="cancel-reason-emoji">⏰</span>
+                    <span class="cancel-reason-label">Nu am timp să-l folosesc</span>
+                </button>
+                <button class="cancel-reason" onclick="pickReason('features')">
+                    <span class="cancel-reason-emoji">🧩</span>
+                    <span class="cancel-reason-label">Îi lipsesc funcționalități</span>
+                </button>
+                <button class="cancel-reason" onclick="pickReason('alternative')">
+                    <span class="cancel-reason-emoji">🔄</span>
+                    <span class="cancel-reason-label">Am găsit altă soluție</span>
+                </button>
+                <button class="cancel-reason" onclick="pickReason('other')">
+                    <span class="cancel-reason-emoji">💬</span>
+                    <span class="cancel-reason-label">Alt motiv</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ── STEP 2: The Offer ── -->
+        <div id="cs2" class="cancel-step">
+            <div class="cancel-hero-icon cancel-hero-icon--gold" id="cs2-icon">
+                <i class="fa-solid fa-gift text-2xl"></i>
+            </div>
+            <h2 class="cancel-title" id="cs2-title">Avem ceva special pentru tine</h2>
+            <p class="cancel-sub" id="cs2-sub">O ofertă exclusivă, doar pentru tine:</p>
+
+            <div id="cs2-offer-card" class="cancel-offer"></div>
+
+            <button onclick="cancelStepGo(3)" class="cancel-skip-btn">Nu, mulțumesc</button>
+        </div>
+
+        <!-- ── STEP 3: What you lose ── -->
+        <div id="cs3" class="cancel-step">
+            <div class="cancel-hero-icon cancel-hero-icon--red">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+            </div>
+            <h2 class="cancel-title">Vei pierde acces la:</h2>
+
+            <div class="cancel-lose-grid">
+                <div class="cancel-lose-item">
+                    <div class="cancel-lose-icon"><i class="fa-solid fa-bolt"></i></div>
+                    <span id="cl-credits">150 credite / lună</span>
+                </div>
+                <div class="cancel-lose-item">
+                    <div class="cancel-lose-icon"><i class="fa-solid fa-microphone-lines"></i></div>
+                    <span id="cl-voice">50K caractere voice / lună</span>
+                </div>
+                <div class="cancel-lose-item">
+                    <div class="cancel-lose-icon"><i class="fa-solid fa-tag"></i></div>
+                    <span>10% reducere top-up</span>
+                </div>
+                <div class="cancel-lose-item">
+                    <div class="cancel-lose-icon"><i class="fa-solid fa-rocket"></i></div>
+                    <span>Acces prioritar funcții noi</span>
+                </div>
+            </div>
+
+            <div class="cancel-actions">
+                <button onclick="step3GoBack()" id="cs3-primary" class="cancel-btn-primary">
+                    <i class="fa-solid fa-arrow-left text-xs"></i> Vreau oferta, mă răzgândesc
+                </button>
+                <button onclick="doCancel()" id="cancel-final-btn" class="cancel-btn-danger">
+                    Anulează definitiv abonamentul
+                </button>
+            </div>
+        </div>
+
+        <!-- ── STEP 4: Done ── -->
+        <div id="cs4" class="cancel-step">
+            <div class="cancel-hero-icon cancel-hero-icon--slate">
+                <i class="fa-solid fa-check text-2xl"></i>
+            </div>
+            <h2 class="cancel-title">Abonament anulat</h2>
+            <p class="cancel-sub">Ai acces la beneficii până pe <strong id="cancel-until"></strong>.</p>
+            <p class="cancel-sub" style="margin-top:2px;font-size:0.7rem;opacity:0.5">Poți reactiva oricând din secțiunea de prețuri.</p>
+            <button onclick="closeCancelModal()" class="cancel-btn-primary" style="margin-top:24px;">Am înțeles</button>
+        </div>
+
+        <!-- ── STEP 5: Offer accepted ── -->
+        <div id="cs5" class="cancel-step">
+            <div class="cancel-hero-icon cancel-hero-icon--green">
+                <i class="fa-solid fa-check text-2xl"></i>
+            </div>
+            <h2 class="cancel-title" id="cs5-title">Ofertă aplicată cu succes!</h2>
+            <p class="cancel-sub" id="cs5-sub">Bucură-te în continuare de Viralio.</p>
+            <button onclick="closeCancelModal()" class="cancel-btn-primary" style="margin-top:24px;">
+                <i class="fa-solid fa-bolt text-xs"></i> Înapoi la Viralio
+            </button>
         </div>
     </div>
 </div>
@@ -879,9 +992,9 @@
 </div>
             <div class="flex flex-col gap-4"><h3 class="text-white font-black mb-2 text-xs uppercase tracking-widest">Companie</h3><a href="#pricing" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Credite & Prețuri</a><a href="#cum-functioneaza" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Cum funcționează</a><a href="/tutoriale/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors flex items-center gap-1.5"><i class="fa-solid fa-video text-indigo-400"></i> Tutoriale</a></div>
             <div class="flex flex-col gap-4 col-span-2 md:col-span-1"><h3 class="text-white font-black mb-2 text-xs uppercase tracking-widest">Legal</h3><a href="#" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Contact Suport</a><a href="#" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Termeni de utilizare</a>
-			<a href="https://billing.stripe.com/p/login/dRm00k1hTdQS6fxfbO1Nu00" target="_blank" class="text-slate-400 hover:text-white font-medium text-sm transition-colors flex items-center gap-1.5">
+			<button onclick="openCancelModal()" class="text-slate-400 hover:text-white font-medium text-sm transition-colors flex items-center gap-1.5">
     <i class="fa-solid fa-rotate text-slate-500"></i> Anulează abonament
-</a></div>
+</button></div>
         </div>
     </div>
     <div class="max-w-7xl mx-auto border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left relative z-10">
@@ -1143,6 +1256,7 @@ function removeToken(){ document.cookie = "viralio_token=; domain=.viralio.ro; p
         currentUserEmail = user.email;
         currentUserPlan = user.subscriptionPlan || 'none';
         currentUserStatus = user.subscriptionStatus || 'inactive';
+        window._retentionOfferUsed = !!user.retentionOfferUsed;
         if (user.referralCode) currentReferralCode = user.referralCode;
         // Show plan badge in nav
         const planBadge = document.getElementById('nav-plan-badge');
@@ -1867,6 +1981,223 @@ window.onload = async () => {
     window.updateUI = function(user) {
         _origUpdateUI(user);
         window.ViralioUpsell.onUserLoaded(user);
+    };
+})();
+</script>
+<script>
+// ═══════════════════════════════════════════════════════
+// CANCEL v2 — RETENTION FLOW (Spotify/Adobe/Superhuman)
+// ═══════════════════════════════════════════════════════
+(function() {
+    let _reason = '';
+    let _offerUsed = false;
+    const PL = {
+        starter: { cr: 150, vc: '50K', price: '49,90', discount: '37,43' },
+        creator: { cr: 400, vc: '150K', price: '99,90', discount: '74,93' },
+        agency:  { cr: 1500, vc: '500K', price: '249,90', discount: '187,43' }
+    };
+
+    // Offers per reason — one killer offer each, not a buffet
+    function getOffer(reason, plan) {
+        const p = PL[plan] || PL.starter;
+        const offers = {
+            'expensive': {
+                tag: 'OFERTĂ EXCLUSIVĂ',
+                tagColor: '#f59e0b',
+                icon: '🔥',
+                title: '25% reducere luna viitoare',
+                desc: 'Rămâi cu toate beneficiile tale — ' + p.cr + ' credite, ' + p.vc + ' caractere voice — la doar <strong>' + p.discount + ' RON</strong> în loc de ' + p.price + ' RON.',
+                cta: 'Aplică reducerea 25%',
+                action: 'discount'
+            },
+            'no-time': {
+                tag: 'CADOU DE BINE',
+                tagColor: '#6366f1',
+                icon: '🎁',
+                title: '+20 credite bonus gratuit',
+                desc: 'Îți adăugăm <strong>20 de credite extra</strong> pe loc. Folosește-le când ai timp — nu expiră la sfârșitul lunii.',
+                cta: 'Primește 20 credite gratuit',
+                action: 'bonus'
+            },
+            'features': {
+                tag: 'VINE ÎN CURÂND',
+                tagColor: '#8b5cf6',
+                icon: '🚀',
+                title: '+20 credite + acces Early Access',
+                desc: 'Primești <strong>20 credite bonus</strong> acum + acces la <strong>Auto Shorts, AI Thumbnails</strong> și Scheduler înainte de toată lumea.',
+                cta: 'Vreau Early Access + credite',
+                action: 'bonus'
+            },
+            'alternative': {
+                tag: 'LAST CHANCE',
+                tagColor: '#ef4444',
+                icon: '💎',
+                title: '25% reducere + 15 credite cadou',
+                desc: 'Primești <strong>25% reducere</strong> luna viitoare (' + p.discount + ' RON) + <strong>15 credite bonus</strong> pe loc. Tot în Viralio: Video, Voice, Captions, Audio.',
+                cta: 'Vreau reducere + credite',
+                action: 'discount_plus'
+            },
+            'other': {
+                tag: 'OFERTĂ SPECIALĂ',
+                tagColor: '#6366f1',
+                icon: '✨',
+                title: '25% reducere la următoarea factură',
+                desc: 'Înainte să pleci — <strong>' + p.discount + ' RON</strong> în loc de ' + p.price + ' RON luna viitoare. Toate beneficiile, preț redus.',
+                cta: 'Aplică reducerea 25%',
+                action: 'discount'
+            }
+        };
+        return offers[reason] || offers.other;
+    }
+
+    window.openCancelModal = function() {
+        if (!currentUserPlan || currentUserPlan === 'none') {
+            showToast('Nu ai un abonament activ.', 'error');
+            return;
+        }
+        _reason = '';
+        const p = PL[currentUserPlan] || PL.starter;
+        document.getElementById('cl-credits').textContent = p.cr + ' credite / lună';
+        document.getElementById('cl-voice').textContent = p.vc + ' caractere voice / lună';
+
+        // Reset steps
+        document.querySelectorAll('#cancel-modal .cancel-step').forEach(s => {
+            s.classList.remove('cancel-step--active');
+            s.classList.remove('cancel-step--exit');
+        });
+        document.getElementById('cs1').classList.add('cancel-step--active');
+
+        const m = document.getElementById('cancel-modal');
+        m.classList.add('cancel-visible');
+        document.body.style.overflow = 'hidden';
+    };
+
+    window.closeCancelModal = function() {
+        const m = document.getElementById('cancel-modal');
+        m.classList.remove('cancel-visible');
+        document.body.style.overflow = '';
+    };
+
+    document.getElementById('cancel-modal')?.addEventListener('click', function(e) {
+        if (e.target === this) closeCancelModal();
+    });
+
+    function animateStep(from, to) {
+        const f = document.getElementById(from);
+        const t = document.getElementById(to);
+        f.classList.add('cancel-step--exit');
+        f.classList.remove('cancel-step--active');
+        setTimeout(() => {
+            f.classList.remove('cancel-step--exit');
+            t.classList.add('cancel-step--active');
+        }, 280);
+    }
+
+    window.pickReason = function(reason) {
+        _reason = reason;
+
+        // Dacă oferta a fost deja folosită, skip direct la ce pierzi
+        if (window._retentionOfferUsed) {
+            document.getElementById('cs3-primary').innerHTML = '<i class="fa-solid fa-heart text-xs"></i> Mă răzgândesc, rămân abonat';
+            animateStep('cs1', 'cs3');
+            return;
+        }
+
+        document.getElementById('cs3-primary').innerHTML = '<i class="fa-solid fa-arrow-left text-xs"></i> Vreau oferta, mă răzgândesc';
+        const offer = getOffer(reason, currentUserPlan);
+
+        // Build offer card
+        document.getElementById('cs2-offer-card').innerHTML = `
+            <div class="cancel-offer-tag" style="background:${offer.tagColor}">${offer.tag}</div>
+            <div class="cancel-offer-emoji">${offer.icon}</div>
+            <div class="cancel-offer-title">${offer.title}</div>
+            <div class="cancel-offer-desc">${offer.desc}</div>
+            <button class="cancel-offer-cta" onclick="acceptOffer('${offer.action}')">${offer.cta}</button>
+        `;
+        animateStep('cs1', 'cs2');
+    };
+
+    window.cancelStepGo = function(n) {
+        const steps = ['cs1','cs2','cs3','cs4','cs5'];
+        const current = steps.find(s => document.getElementById(s).classList.contains('cancel-step--active'));
+        if (current) animateStep(current, 'cs' + n);
+    };
+
+    window.step3GoBack = function() {
+        if (window._retentionOfferUsed) {
+            closeCancelModal();
+            showToast('🎉 Super! Bucură-te de Viralio!', 'success');
+        } else {
+            cancelStepGo(2);
+        }
+    };
+
+    window.acceptOffer = async function(action) {
+        const btn = document.querySelector('#cs2-offer-card .cancel-offer-cta');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Se aplică...';
+
+        try {
+            const token = localStorage.getItem('token');
+            const resp = await fetch('/api/stripe/retention-offer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+                body: JSON.stringify({ action, reason: _reason })
+            });
+            const data = await resp.json();
+            if (resp.status === 403) {
+                showToast(data.error || 'Ai folosit deja oferta de retenție.', 'error');
+                animateStep('cs2', 'cs3');
+                return;
+            }
+            if (data.success) {
+                document.getElementById('cs5-title').textContent = data.title || 'Ofertă aplicată cu succes!';
+                document.getElementById('cs5-sub').textContent = data.message || 'Bucură-te în continuare de Viralio.';
+                animateStep('cs2', 'cs5');
+                // Refresh user data
+                try {
+                    const me = await fetch('/api/auth/me', { headers: { Authorization: 'Bearer ' + token } });
+                    const meData = await me.json();
+                    if (meData.user) updateUI(meData.user);
+                } catch(e) {}
+            } else {
+                showToast(data.error || 'Eroare.', 'error');
+                btn.disabled = false;
+                btn.textContent = 'Reîncearcă';
+            }
+        } catch (e) {
+            showToast('Eroare de rețea.', 'error');
+            btn.disabled = false;
+            btn.textContent = 'Reîncearcă';
+        }
+    };
+
+    window.doCancel = async function() {
+        const btn = document.getElementById('cancel-final-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Se procesează...';
+
+        try {
+            const token = localStorage.getItem('token');
+            const resp = await fetch('/api/stripe/cancel-subscription', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }
+            });
+            const data = await resp.json();
+            if (data.success) {
+                const d = new Date(data.cancelAt);
+                document.getElementById('cancel-until').textContent = d.toLocaleDateString('ro-RO', { day: 'numeric', month: 'long', year: 'numeric' });
+                animateStep('cs3', 'cs4');
+            } else {
+                showToast(data.error || 'Eroare.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = 'Anulează definitiv abonamentul';
+            }
+        } catch (e) {
+            showToast('Eroare de rețea.', 'error');
+            btn.disabled = false;
+            btn.innerHTML = 'Anulează definitiv abonamentul';
+        }
     };
 })();
 </script>
