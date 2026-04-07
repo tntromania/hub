@@ -410,6 +410,7 @@ app.get('/api/auth/me', authenticate, async (req, res) => {
             email: user.email, subscriptionPlan: user.subscriptionPlan,
             subscriptionStatus: user.subscriptionStatus,
             currentPeriodEnd: user.currentPeriodEnd,
+            cancelAt: user.subscriptionStatus === 'canceling' ? user.currentPeriodEnd : null,
             referralCode: user.referralCode,
             retentionOfferUsed: !!user.retentionOfferUsed,
         }
@@ -698,6 +699,36 @@ app.post('/api/stripe/cancel-subscription', authenticate, async (req, res) => {
     } catch (err) {
         console.error('❌ Cancel error:', err.message);
         res.status(500).json({ error: 'Eroare la anulare.' });
+    }
+});
+
+// ══════════════════════════════════════════════════════════════
+// ██ REACTIVATE SUBSCRIPTION (anulat cancel_at_period_end)
+// ══════════════════════════════════════════════════════════════
+app.post('/api/stripe/reactivate-subscription', authenticate, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId);
+        if (!user || !user.subscriptionId) {
+            return res.status(400).json({ error: 'Nu ai un abonament de reactivat.' });
+        }
+        if (user.subscriptionStatus !== 'canceling') {
+            return res.status(400).json({ error: 'Abonamentul nu este în curs de anulare.' });
+        }
+
+        // Anulează cancel_at_period_end
+        await stripe.subscriptions.update(user.subscriptionId, {
+            cancel_at_period_end: false
+        });
+
+        await User.findByIdAndUpdate(req.userId, {
+            subscriptionStatus: 'active'
+        });
+
+        console.log('♻️ REACTIVAT: ' + user.email);
+        res.json({ success: true });
+    } catch (err) {
+        console.error('❌ Reactivate error:', err.message);
+        res.status(500).json({ error: 'Eroare la reactivare.' });
     }
 });
 
