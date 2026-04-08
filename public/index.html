@@ -220,13 +220,13 @@
                             </div>
                         </button>
 
-                        <button onclick="openSubsModal(); closeUserMenu();" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-indigo-50 transition-colors group text-left">
+                        <button onclick="handleManageSubscription(); closeUserMenu();" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-indigo-50 transition-colors group text-left">
                             <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-500 flex items-center justify-center shrink-0 group-hover:bg-indigo-500 group-hover:text-white transition-all">
                                 <i class="fa-solid fa-credit-card text-xs"></i>
                             </div>
                             <div>
                                 <div class="text-slate-800 font-bold text-sm">Gestionează Abonament</div>
-                                <div class="text-slate-400 text-[0.65rem] font-medium">Facturi, anulare, upgrade</div>
+                                <div class="text-slate-400 text-[0.65rem] font-medium" id="manage-sub-subtitle">Facturi, anulare, upgrade</div>
                             </div>
                         </button>
 
@@ -361,6 +361,9 @@
                 <button onclick="reactivateSubscription()" id="cs0-reactivate-btn" class="cancel-btn-primary">
                     <i class="fa-solid fa-rotate-right text-xs"></i> Reactivează abonamentul
                 </button>
+                <button onclick="openStripePortal()" class="cancel-btn-secondary" style="background:rgba(99,102,241,0.12);border-color:rgba(99,102,241,0.25);color:#a5b4fc;">
+                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> Vezi facturi &amp; abonamente pe Stripe
+                </button>
                 <button onclick="closeCancelModal()" class="cancel-skip-btn">Închide</button>
             </div>
         </div>
@@ -393,6 +396,11 @@
                 <button class="cancel-reason" onclick="pickReason('other')">
                     <span class="cancel-reason-emoji">💬</span>
                     <span class="cancel-reason-label">Alt motiv</span>
+                </button>
+            </div>
+            <div style="margin-top:16px;text-align:center;">
+                <button onclick="openStripePortal()" style="background:none;border:none;color:rgba(148,163,184,0.5);font-size:0.7rem;font-weight:600;cursor:pointer;text-decoration:underline;padding:4px 8px;" onmouseover="this.style.color='rgba(148,163,184,0.9)'" onmouseout="this.style.color='rgba(148,163,184,0.5)'">
+                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.6rem;margin-right:4px;"></i>Vezi facturile &amp; abonamentele pe Stripe
                 </button>
             </div>
         </div>
@@ -2133,6 +2141,15 @@ async function handleCredentialResponse(response) {
 
     function logout() { removeToken(); location.reload(); }
 
+    // Gestionează abonament — dacă are abonament deschide popupul, altfel trimite la pricing
+    function handleManageSubscription() {
+        if (['active', 'canceling'].includes(currentUserStatus) && currentUserPlan !== 'none') {
+            openCancelModal();
+        } else {
+            document.getElementById('pricing').scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
     // ── REFERRAL SYSTEM ──
     let currentReferralCode = null;
     let currentReferralLink = null;
@@ -2859,7 +2876,7 @@ window.onload = async () => {
                 currentUserStatus = 'canceling';
                 window._cancelAtDate = data.cancelAt;
                 // Update the "Gestionează Abonament" button label to reflect state
-                const manageBtn = document.querySelector('[onclick="openCancelModal(); closeUserMenu();"] .text-slate-400');
+                const manageBtn = document.getElementById('manage-sub-subtitle');
                 if (manageBtn) manageBtn.textContent = 'Activ până la expirare';
                 animateStep('cs3', 'cs4');
             } else {
@@ -2878,9 +2895,8 @@ window.onload = async () => {
     const _origUpdateUIForCancel = window.updateUI;
     window.updateUI = function(user) {
         _origUpdateUIForCancel(user);
-        // currentPeriodEnd = data până la care accesul e valabil (atât la cancel cât și canceling)
         if (user.currentPeriodEnd) window._cancelAtDate = user.currentPeriodEnd;
-        const manageSubtitle = document.querySelector('[onclick="openCancelModal(); closeUserMenu();"] .text-slate-400');
+        const manageSubtitle = document.getElementById('manage-sub-subtitle');
         if (manageSubtitle) {
             if (user.subscriptionStatus === 'canceling') {
                 manageSubtitle.textContent = 'Activ până la expirare · Reactivează';
@@ -2909,7 +2925,7 @@ window.onload = async () => {
                 showToast('🎉 Abonament reactivat cu succes!', 'success');
                 closeCancelModal();
                 // Update manage button subtitle back
-                const manageSubtitle = document.querySelector('[onclick="openCancelModal(); closeUserMenu();"] .text-slate-400');
+                const manageSubtitle = document.getElementById('manage-sub-subtitle');
                 if (manageSubtitle) manageSubtitle.textContent = 'Facturi, anulare, upgrade';
                 try {
                     const me = await fetch('/api/auth/me', { headers: { Authorization: 'Bearer ' + token } });
