@@ -641,6 +641,109 @@ app.post('/api/stripe/subscribe', authenticate, async (req, res) => {
     }
 });
 
+// ══════════════════════════════════════════════════════════════
+// ██ SUBSCRIPTIONS DASHBOARD — toate abonamentele unui user
+// ══════════════════════════════════════════════════════════════
+app.get('/api/stripe/subscriptions', authenticate, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId);
+        if (!user || !user.stripeCustomerId) {
+            return res.json({ subscriptions: [], invoices: [] });
+        }
+
+        const stripeSubscriptions = await stripe.subscriptions.list({
+            customer: user.stripeCustomerId,
+            limit: 10,
+            expand: ['data.items.data.price.product'],
+        });
+
+        const stripeInvoices = await stripe.invoices.list({
+            customer: user.stripeCustomerId,
+            limit: 5,
+        });
+
+        const PLAN_NAMES = {
+            [process.env.STRIPE_PRICE_STARTER]:        'Starter',
+            [process.env.STRIPE_PRICE_CREATOR]:        'Creator',
+            [process.env.STRIPE_PRICE_AGENCY]:         'Agency',
+            [process.env.STRIPE_PRICE_STARTER_YEARLY]: 'Starter Anual',
+            [process.env.STRIPE_PRICE_CREATOR_YEARLY]: 'Creator Anual',
+            [process.env.STRIPE_PRICE_AGENCY_YEARLY]:  'Agency Anual',
+        };
+
+        const subscriptions = stripeSubscriptions.data.map(sub => {
+            const priceId = sub.items.data[0]?.price?.id;
+            const price   = sub.items.data[0]?.price;
+            const product = price?.product;
+            return {
+                id: sub.id,
+                planName: PLAN_NAMES[priceId] || product?.name || 'Plan necunoscut',
+                status: sub.status,
+                cancelAtPeriodEnd: sub.cancel_at_period_end,
+                currentPeriodStart: new Date(sub.current_period_start * 1000),
+                currentPeriodEnd:   new Date(sub.current_period_end * 1000),
+                cancelAt: sub.cancel_at ? new Date(sub.cancel_at * 1000) : null,
+                amount:   price?.unit_amount ? price.unit_amount / 100 : 0,
+                currency: price?.currency?.toUpperCase() || 'RON',
+                interval: price?.recurring?.interval || 'month',
+                isPrimary: sub.id === user.subscriptionId,
+            };
+        });
+
+        const invoices = stripeInvoices.data.map(inv => ({
+            id: inv.id,
+            number: inv.number,
+            amount: inv.amount_paid / 100,
+            currency: inv.currency?.toUpperCase() || 'RON',
+            status:  inv.status,
+            date:    new Date(inv.created * 1000),
+            pdfUrl:  inv.invoice_pdf,
+            hostedUrl: inv.hosted_invoice_url,
+        }));
+
+        res.json({ subscriptions, invoices });
+    } catch (err) {
+        console.error('❌ Subscriptions dashboard error:', err.message);
+        res.status(500).json({ error: 'Eroare la încărcarea abonamentelor.' });
+    }
+});
+
+// ── Cancel a specific subscription by ID ──
+app.post('/api/stripe/cancel-subscription-id', authenticate, async (req, res) => {
+    try {
+        const { subscriptionId } = req.body;
+        if (!subscriptionId) return res.status(400).json({ error: 'ID lipsă.' });
+
+        const user = await User.findById(req.userId);
+        const sub  = await stripe.subscriptions.retrieve(subscriptionId);
+
+        if (sub.customer !== user.stripeCustomerId) {
+            return res.status(403).json({ error: 'Acces interzis.' });
+        }
+
+        const updated = await stripe.subscriptions.update(subscriptionId, {
+            cancel_at_period_end: true,
+        });
+
+        if (subscriptionId === user.subscriptionId) {
+            await User.findByIdAndUpdate(req.userId, {
+                subscriptionStatus: 'canceling',
+                currentPeriodEnd: new Date(updated.current_period_end * 1000),
+            });
+        }
+
+        res.json({ success: true, cancelAt: new Date(updated.current_period_end * 1000) });
+    } catch (err) {
+        console.error('❌ Cancel-by-ID error:', err.message);
+        res.status(500).json({ error: 'Eroare la anulare.' });
+    }
+});
+
+// ── Stripe Customer Portal ──
+app.post('/api/stripe/portal', authenticate, async (req, res) => {
+    res.json({ url: 'https://billing.stripe.com/p/login/dRm00k1hTdQS6fxfbO1Nu00' });
+});
+
 app.post('/api/stripe/topup', authenticate, async (req, res) => {
     const { package: pkg } = req.body;
     const topupMap = {
