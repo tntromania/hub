@@ -647,18 +647,32 @@ app.post('/api/stripe/subscribe', authenticate, async (req, res) => {
 app.get('/api/stripe/subscriptions', authenticate, async (req, res) => {
     try {
         const user = await User.findById(req.userId);
-        if (!user || !user.stripeCustomerId) {
+        if (!user) return res.status(404).json({ error: 'User negăsit.' });
+
+        let customerId = user.stripeCustomerId;
+
+        // Dacă nu avem stripeCustomerId în DB, căutăm după email în Stripe
+        if (!customerId) {
+            const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+            if (customers.data.length > 0) {
+                customerId = customers.data[0].id;
+                // Salvăm în DB ca să nu mai căutăm data viitoare
+                await User.findByIdAndUpdate(req.userId, { stripeCustomerId: customerId });
+            }
+        }
+
+        if (!customerId) {
             return res.json({ subscriptions: [], invoices: [] });
         }
 
         const stripeSubscriptions = await stripe.subscriptions.list({
-            customer: user.stripeCustomerId,
+            customer: customerId,
             limit: 10,
             expand: ['data.items.data.price.product'],
         });
 
         const stripeInvoices = await stripe.invoices.list({
-            customer: user.stripeCustomerId,
+            customer: customerId,
             limit: 5,
         });
 
