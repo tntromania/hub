@@ -802,6 +802,28 @@
         document.getElementById('subs-subtitle').textContent = 'Se sincronizează cu Stripe...';
         closeSubsConfirm();
 
+        // Helper: construieste card din datele din DB (fallback când Stripe pică)
+        function buildFallbackFromDB() {
+            if (!currentUserPlan || currentUserPlan === 'none') return null;
+            if (!['active', 'canceling', 'past_due'].includes(currentUserStatus)) return null;
+            const PLAN_LABELS = { starter: 'Starter', creator: 'Creator', agency: 'Agency' };
+            const isCanceling = currentUserStatus === 'canceling';
+            return [{
+                id: 'db-fallback',
+                planName: PLAN_LABELS[currentUserPlan] || currentUserPlan,
+                status: isCanceling ? 'active' : currentUserStatus,
+                cancelAtPeriodEnd: isCanceling,
+                currentPeriodStart: window._cancelAtDate ? new Date(new Date(window._cancelAtDate) - 30*24*60*60*1000) : new Date(),
+                currentPeriodEnd: window._cancelAtDate ? new Date(window._cancelAtDate) : new Date(),
+                cancelAt: isCanceling && window._cancelAtDate ? new Date(window._cancelAtDate) : null,
+                amount: 0,
+                currency: 'RON',
+                interval: 'month',
+                isPrimary: true,
+                fromDB: true,
+            }];
+        }
+
         try {
             const resp = await fetch('/api/stripe/subscriptions', {
                 headers: { Authorization: 'Bearer ' + token }
@@ -809,8 +831,17 @@
             const data = await resp.json();
             if (!resp.ok) throw new Error(data.error || 'Eroare server');
 
-            const { subscriptions, invoices } = data;
+            let { subscriptions, invoices } = data;
             document.getElementById('subs-loading').style.display = 'none';
+
+            // Dacă Stripe nu returnează nimic dar DB zice că avem abonament — folosim datele din DB
+            if ((!subscriptions || subscriptions.length === 0) && ['active','canceling'].includes(currentUserStatus)) {
+                const fallback = buildFallbackFromDB();
+                if (fallback) {
+                    subscriptions = fallback;
+                    invoices = [];
+                }
+            }
 
             if (!subscriptions || subscriptions.length === 0) {
                 document.getElementById('subs-empty').style.display = 'block';
@@ -818,7 +849,7 @@
                 return;
             }
 
-            const activeCount = subscriptions.filter(s => s.status === 'active' || s.status === 'trialing').length;
+            const activeCount = subscriptions.filter(s => s.status === 'active' || s.status === 'trialing' || s.cancelAtPeriodEnd).length;
             document.getElementById('subs-subtitle').textContent =
                 activeCount > 0
                     ? activeCount + ' abonament' + (activeCount > 1 ? 'e active' : ' activ')
@@ -830,9 +861,19 @@
 
         } catch (err) {
             document.getElementById('subs-loading').style.display = 'none';
-            document.getElementById('subs-empty').style.display = 'block';
-            document.getElementById('subs-subtitle').textContent = 'Eroare la încărcare';
             console.error(err);
+            // Fallback complet din DB — nu mai arătăm eroare dacă avem date
+            const fallback = buildFallbackFromDB();
+            if (fallback) {
+                const activeCount = fallback.filter(s => s.status === 'active' || s.cancelAtPeriodEnd).length;
+                document.getElementById('subs-subtitle').textContent = activeCount + ' abonament activ';
+                renderSubsList(fallback);
+                renderInvoicesList([]);
+                document.getElementById('subs-content').style.display = 'block';
+            } else {
+                document.getElementById('subs-empty').style.display = 'block';
+                document.getElementById('subs-subtitle').textContent = 'Eroare la încărcare';
+            }
         }
     };
 
@@ -1957,6 +1998,11 @@ async function handleCredentialResponse(response) {
 
     async function buyPackage(plan, interval) {
         if (!getToken()) { openLoginModal(); return; }
+        // Blochează cumpărarea aceluiași plan dacă ești deja abonat/canceling
+        if (['active', 'canceling'].includes(currentUserStatus) && currentUserPlan === plan) {
+            showToast('Ești deja abonat la acest plan.', 'error');
+            return;
+        }
         const billing = interval || currentBilling;
         try {
             const res = await fetch('/api/stripe/subscribe', {
