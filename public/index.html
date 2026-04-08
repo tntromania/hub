@@ -1848,7 +1848,7 @@ function removeToken(){ document.cookie = "viralio_token=; domain=.viralio.ro; p
         // Show plan badge in nav
         const planBadge = document.getElementById('nav-plan-badge');
         if (planBadge) {
-            if (currentUserStatus === 'active' && currentUserPlan !== 'none') {
+            if (['active', 'canceling'].includes(currentUserStatus) && currentUserPlan !== 'none') {
                 const labels = { starter: 'Starter', creator: 'Creator PRO', agency: 'Agency' };
                 planBadge.textContent = labels[currentUserPlan] || '';
                 planBadge.style.display = 'inline-flex';
@@ -1869,7 +1869,7 @@ function removeToken(){ document.cookie = "viralio_token=; domain=.viralio.ro; p
         // Update dropdown plan badge
         const dpb = document.getElementById('dropdown-plan-badge');
         if (dpb) {
-            if (currentUserStatus === 'active' && currentUserPlan !== 'none') {
+            if (['active', 'canceling'].includes(currentUserStatus) && currentUserPlan !== 'none') {
                 const labels = { starter: 'Starter', creator: 'Creator PRO', agency: 'Agency' };
                 dpb.textContent = labels[currentUserPlan] || '';
                 dpb.classList.remove('hidden');
@@ -1972,7 +1972,7 @@ async function handleCredentialResponse(response) {
 
     function handlePlanClick(plan) {
         if (!getToken()) { openLoginModal(); return; }
-        if (currentUserStatus === 'active' && currentUserPlan === plan) return;
+        if (['active', 'canceling'].includes(currentUserStatus) && currentUserPlan === plan) return;
         buyPackage(plan);
     }
 
@@ -1982,8 +1982,11 @@ async function handleCredentialResponse(response) {
         plans.forEach(plan => {
             const btn = document.getElementById('btn-' + plan);
             if (!btn) return;
-            if (currentUserStatus === 'active' && currentUserPlan === plan) {
-                btn.innerHTML = '<i class="fa-solid fa-check mr-1.5"></i> Plan Activ';
+            if (['active', 'canceling'].includes(currentUserStatus) && currentUserPlan === plan) {
+                const label = currentUserStatus === 'canceling'
+                    ? '<i class="fa-solid fa-clock mr-1.5"></i> Activ până la expirare'
+                    : '<i class="fa-solid fa-check mr-1.5"></i> Plan Activ';
+                btn.innerHTML = label;
                 btn.disabled = true;
                 btn.style.opacity = '0.5';
                 btn.style.cursor = 'not-allowed';
@@ -2644,6 +2647,10 @@ window.onload = async () => {
 
     window.openCancelModal = function() {
         if (!currentUserPlan || currentUserPlan === 'none') {
+            showToast('Nu ai un abonament activ.', 'error');
+            return;
+        }
+        if (!['active', 'canceling'].includes(currentUserStatus)) {
             showToast('Nu ai un abonament activ.', 'error');
             return;
         }
