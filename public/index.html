@@ -1341,10 +1341,25 @@
     </script>
 </div>
         </a>
-        <div class="group flex flex-col bg-slate-50 border border-slate-200/80 border-dashed rounded-[1.8rem] md:rounded-[2rem] overflow-hidden opacity-60 grayscale cursor-not-allowed">
-            <div class="p-5 pb-4 flex flex-col flex-1 relative z-20"><h3 class="text-[1.15rem] font-black text-slate-500 mb-1 tracking-tight">No Watermark</h3><p class="text-[0.8rem] text-slate-400 font-medium leading-relaxed mb-4 line-clamp-2 pr-2">Descarcă de pe TikTok sau IG fără logo-uri. Calitate originală, perfectă.</p><div class="flex items-center justify-between mt-auto"><span class="text-[0.6rem] font-bold text-slate-400 bg-white border border-slate-200 px-2.5 py-1 rounded-md uppercase tracking-widest">DIN SURSĂ</span><span class="font-bold text-slate-400 text-xs flex items-center gap-1.5"><i class="fa-solid fa-clock"></i> ÎN LUCRU</span></div></div>
-            <div class="relative w-full h-[180px] md:h-[220px] border-t border-slate-200 overflow-hidden z-10 bg-black flex justify-center items-center"><video src="/watermarkMobile.mp4" autoplay loop muted playsinline class="w-full h-full object-cover opacity-30"></video></div>
-        </div>
+        <a href="https://pipeline.viralio.ro/" onclick="handleProtectedAction(event, this.href)" class="group flex flex-col bg-slate-900 border border-white/10 rounded-[1.8rem] md:rounded-[2rem] overflow-hidden hover:-translate-y-2 transition-all duration-500 shadow-lg hover:shadow-[0_15px_40px_rgba(168,85,247,0.3)]">
+            <div class="p-5 pb-4 flex flex-col flex-1 relative z-20">
+                <h3 class="text-[1.15rem] font-black text-white mb-1 tracking-tight">Auto Pipeline <span class="text-purple-400">AI</span></h3>
+                <p class="text-[0.8rem] text-slate-400 font-medium leading-relaxed mb-4 line-clamp-2 pr-2">Download 1080p · Transcriere · Voice-over AI · Smart Cut. Tot procesul, complet automat.</p>
+                <div class="flex items-center justify-between mt-auto">
+                    <span class="text-[0.6rem] font-bold text-purple-400 bg-purple-400/10 border border-purple-400/20 px-2.5 py-1 rounded-md uppercase tracking-widest">Full Pipeline</span>
+                    <span class="font-black text-amber-400 text-xs flex items-center gap-1.5"><i class="fa-solid fa-coins"></i> 2 + 0.5 Credite</span>
+                </div>
+            </div>
+            <!-- PIPELINE ANIMATION AREA -->
+            <div class="relative w-full h-[180px] md:h-[220px] border-t border-white/10 overflow-hidden z-10 bg-[#050505] flex flex-col p-4 font-mono">
+                <div class="w-full bg-white/5 border border-white/10 rounded-lg p-2.5 flex items-center gap-2 mb-3 shadow-inner shrink-0">
+                    <i class="fa-brands fa-youtube text-red-500 text-sm"></i>
+                    <span id="pl-url" class="text-slate-300 text-[0.7rem] truncate flex-1"></span>
+                    <span id="pl-cursor" class="w-1.5 h-3 bg-purple-500 animate-pulse shrink-0"></span>
+                </div>
+                <div id="pl-steps" class="flex-1 flex flex-col justify-center gap-1.5"></div>
+            </div>
+        </a>
         <div class="group flex flex-col bg-slate-50 border border-slate-200/80 border-dashed rounded-[1.8rem] md:rounded-[2rem] overflow-hidden opacity-60 grayscale cursor-not-allowed">
             <div class="p-5 pb-4 flex flex-col flex-1 relative z-20"><h3 class="text-[1.15rem] font-black text-slate-500 mb-1 tracking-tight">Video Scaler 4K</h3><p class="text-[0.8rem] text-slate-400 font-medium leading-relaxed mb-4 line-clamp-2 pr-2">Mărește claritatea clipurilor pixelate. AI-ul reface detaliile ochiului uman.</p><div class="flex items-center justify-between mt-auto"><span class="text-[0.6rem] font-bold text-slate-400 bg-white border border-slate-200 px-2.5 py-1 rounded-md uppercase tracking-widest">Premium AI</span><span class="font-bold text-slate-400 text-xs flex items-center gap-1.5"><i class="fa-solid fa-clock"></i> ÎN LUCRU</span></div></div>
             <div class="relative w-full h-[180px] md:h-[220px] border-t border-slate-200 overflow-hidden z-10 bg-black flex justify-center items-center"><video src="/ai-upscaler.mp4" autoplay loop muted playsinline class="w-full h-full object-cover opacity-30"></video></div>
@@ -1800,6 +1815,98 @@ window.addEventListener('scroll', () => {
         type();
     }
     document.addEventListener("DOMContentLoaded", () => { setTimeout(initYTAnim, 500); });
+
+    // PIPELINE ANIMATION
+    function initPipelineAnim() {
+        const urlEl   = document.getElementById('pl-url');
+        const cursorEl= document.getElementById('pl-cursor');
+        const stepsEl = document.getElementById('pl-steps');
+        if (!urlEl || !stepsEl) return;
+
+        const urlStr = 'youtube.com/watch?v=viral';
+        const steps = [
+            { icon:'fa-download',         label:'Download 1080p',  color:'#ef4444', glow:'rgba(239,68,68,0.5)',   textCls:'text-red-400',     bgCls:'bg-red-500/10',     bdCls:'border-red-500/20'     },
+            { icon:'fa-closed-captioning',label:'Transcriere AI',  color:'#6366f1', glow:'rgba(99,102,241,0.5)',  textCls:'text-indigo-400',  bgCls:'bg-indigo-500/10',  bdCls:'border-indigo-500/20'  },
+            { icon:'fa-microphone-lines', label:'Voice-over AI',   color:'#a855f7', glow:'rgba(168,85,247,0.5)',  textCls:'text-purple-400',  bgCls:'bg-purple-500/10',  bdCls:'border-purple-500/20'  },
+            { icon:'fa-scissors',         label:'Smart Cut',       color:'#10b981', glow:'rgba(16,185,129,0.5)',  textCls:'text-emerald-400', bgCls:'bg-emerald-500/10', bdCls:'border-emerald-500/20' },
+        ];
+
+        let charIdx = 0;
+
+        function type() {
+            urlEl.textContent = '';
+            stepsEl.innerHTML = '';
+            cursorEl.style.display = 'inline-block';
+            charIdx = 0;
+            const t = setInterval(() => {
+                urlEl.textContent += urlStr[charIdx++];
+                if (charIdx >= urlStr.length) { clearInterval(t); setTimeout(runSteps, 500); }
+            }, 55);
+        }
+
+        function runSteps() {
+            cursorEl.style.display = 'none';
+            stepsEl.innerHTML = steps.map((s, i) => `
+                <div id="pl-step-${i}" class="flex items-center gap-2 opacity-20 transition-all duration-400">
+                    <div class="w-4 h-4 rounded-md ${s.bgCls} border ${s.bdCls} flex items-center justify-center shrink-0">
+                        <i class="fa-solid ${s.icon} ${s.textCls}" style="font-size:0.4rem"></i>
+                    </div>
+                    <span class="text-[0.58rem] ${s.textCls} font-bold uppercase tracking-wide flex-1 truncate">${s.label}</span>
+                    <div class="w-14 h-[3px] bg-white/5 rounded-full overflow-hidden shrink-0">
+                        <div id="pl-bar-${i}" class="h-full rounded-full transition-all" style="width:0%;background:${s.color};box-shadow:0 0 6px ${s.glow}"></div>
+                    </div>
+                    <span id="pl-chk-${i}" class="text-[0.55rem] ${s.textCls} font-black w-4 text-right shrink-0 opacity-0">✓</span>
+                </div>
+            `).join('');
+            activateStep(0);
+        }
+
+        function activateStep(i) {
+            if (i >= steps.length) { setTimeout(showDone, 500); return; }
+            const stepEl = document.getElementById('pl-step-' + i);
+            const barEl  = document.getElementById('pl-bar-'  + i);
+            const chkEl  = document.getElementById('pl-chk-'  + i);
+            if (!stepEl) return;
+            stepEl.style.opacity = '1';
+            let w = 0;
+            const t = setInterval(() => {
+                w += 5 + Math.random() * 10;
+                if (w >= 100) { w = 100; }
+                barEl.style.width = w + '%';
+                if (w >= 100) {
+                    clearInterval(t);
+                    chkEl.style.opacity = '1';
+                    setTimeout(() => activateStep(i + 1), 180);
+                }
+            }, 40);
+        }
+
+        function showDone() {
+            stepsEl.innerHTML = `
+                <div class="animate-slide-up w-full grid grid-cols-3 gap-1.5">
+                    <div class="bg-red-500/10 border border-red-500/20 rounded-xl flex flex-col items-center justify-center py-2.5 gap-1">
+                        <i class="fa-solid fa-film text-red-400 text-xl"></i>
+                        <span class="text-[0.52rem] text-white font-black uppercase tracking-wide">MP4 HD</span>
+                    </div>
+                    <div class="bg-purple-500/10 border border-purple-500/20 rounded-xl flex flex-col items-center justify-center py-2.5 gap-1">
+                        <i class="fa-solid fa-microphone-lines text-purple-400 text-xl"></i>
+                        <span class="text-[0.52rem] text-white font-black uppercase tracking-wide">Voice AI</span>
+                    </div>
+                    <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex flex-col items-center justify-center py-2.5 gap-1">
+                        <i class="fa-solid fa-scissors text-emerald-400 text-xl"></i>
+                        <span class="text-[0.52rem] text-white font-black uppercase tracking-wide">Smart Cut</span>
+                    </div>
+                </div>
+                <div class="text-center mt-0.5">
+                    <span class="text-[0.52rem] font-black tracking-widest uppercase" style="background:linear-gradient(90deg,#a855f7,#6366f1,#10b981);-webkit-background-clip:text;-webkit-text-fill-color:transparent">✦ Pipeline Complet ✦</span>
+                </div>
+            `;
+            setTimeout(type, 3500);
+        }
+
+        type();
+    }
+    document.addEventListener('DOMContentLoaded', () => { setTimeout(initPipelineAnim, 900); });
 
     // WORKFLOW
     let activeFeatureIndex = 0;
