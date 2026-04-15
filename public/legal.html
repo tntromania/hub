@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ro" class="scroll-smooth">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Politică de Confidențialitate – Viralio</title>
+    <meta name="description" content="Politica de confidențialitate și protecția datelor cu caracter personal pe platforma Viralio.ro, în conformitate cu GDPR.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://viralio.ro/legal/">
+    <meta name="theme-color" content="#09090b">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        viralio: { 50: '#eef2ff', 100: '#e0e7ff', 500: '#6366f1', 600: '#4f46e5', 900: '#09090b', accent: '#ec4899' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #FAFAFA; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+        .text-gradient { background: linear-gradient(135deg, #4f46e5 0%, #ec4899 50%, #f59e0b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .bg-gradient-viralio { background: linear-gradient(135deg, #4f46e5 0%, #ec4899 100%); }
+
+        @keyframes boltPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(99,102,241,0); } 50% { box-shadow: 0 0 0 6px rgba(99,102,241,0.15); } }
+        .logo-icon { animation: boltPulse 3s ease-in-out infinite; }
+
+        @keyframes wordmarkShimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+        .logo-wordmark { background: linear-gradient(90deg, #0f172a 30%, #6366f1 45%, #ec4899 55%, #0f172a 70%); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: wordmarkShimmer 5s linear infinite; }
+
+        .nav-link-pill { position: relative; padding: 6px 12px; border-radius: 999px; transition: color 0.25s ease; }
+        .nav-link-pill::before { content: ''; position: absolute; inset: 0; border-radius: 999px; background: rgba(99,102,241,0.08); opacity: 0; transform: scale(0.85); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .nav-link-pill:hover::before { opacity: 1; transform: scale(1); }
+        .nav-link-pill:hover { color: #4f46e5 !important; }
+
+        .section-card { background: white; border: 1px solid rgba(226,232,240,0.8); border-radius: 1.5rem; padding: 2rem 2.5rem; box-shadow: 0 4px 24px rgba(0,0,0,0.04); transition: box-shadow 0.3s ease; }
+        .section-card:hover { box-shadow: 0 8px 40px rgba(99,102,241,0.08); }
+
+        .toc-link { display: flex; align-items: center; gap: 0.5rem; padding: 0.625rem 0.875rem; border-radius: 0.75rem; color: #64748b; font-size: 0.875rem; font-weight: 600; transition: all 0.2s; text-decoration: none; }
+        .toc-link:hover { background: rgba(99,102,241,0.07); color: #4f46e5; }
+
+        .article-num { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; background: linear-gradient(135deg, #4f46e5, #ec4899); border-radius: 0.625rem; color: white; font-size: 0.75rem; font-weight: 800; flex-shrink: 0; margin-right: 0.75rem; }
+
+        .rights-card { display: flex; align-items: flex-start; gap: 1rem; padding: 1.25rem; background: rgba(99,102,241,0.04); border: 1px solid rgba(99,102,241,0.12); border-radius: 1rem; }
+
+        .noise-texture::before { content: ''; position: absolute; inset: 0; opacity: 0.03; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); pointer-events: none; }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-up { animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards; }
+        .fade-up-delay { animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
+
+        .gdpr-badge { display: inline-flex; align-items: center; gap: 0.375rem; background: linear-gradient(135deg, #eef2ff, #fdf2f8); border: 1px solid rgba(99,102,241,0.2); color: #4f46e5; padding: 0.375rem 0.875rem; border-radius: 999px; font-size: 0.75rem; font-weight: 800; }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<div class="fixed top-4 inset-x-0 z-50 flex justify-center px-4 pointer-events-none">
+    <nav class="pointer-events-auto w-full max-w-6xl rounded-[2rem] border border-white/60 bg-white/70 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] px-4 md:px-8 py-3 flex justify-between items-center transition-all duration-500 hover:bg-white/90">
+        <a class="flex items-center font-black text-xl md:text-2xl tracking-tight text-slate-900 group" href="/">
+            <div class="logo-icon w-8 h-8 md:w-9 md:h-9 rounded-xl bg-gradient-viralio flex items-center justify-center text-white mr-2 md:mr-3 shadow-lg shadow-indigo-500/30 group-hover:scale-110 transition-transform duration-300">
+                <i class="fa-solid fa-bolt text-xs md:text-sm"></i>
+            </div>
+            <span class="logo-wordmark">Viralio</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1 text-[0.95rem] font-bold text-slate-500">
+            <a class="nav-link-pill" href="/#features">Ecosistem</a>
+            <a class="nav-link-pill" href="/#pricing">Acces</a>
+            <a class="nav-link-pill text-indigo-500 flex items-center gap-1.5" href="/tutoriale/">
+                <i class="fa-solid fa-graduation-cap text-sm"></i> Tutoriale
+            </a>
+        </div>
+        <a href="/" class="flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-slate-700 transition-all">
+            <i class="fa-solid fa-house text-xs"></i> Acasă
+        </a>
+    </nav>
+</div>
+
+<!-- HERO -->
+<section class="pt-36 pb-16 px-6 relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-indigo-50/60 via-white to-pink-50/40 pointer-events-none"></div>
+    <div class="absolute top-20 right-1/4 w-64 h-64 bg-indigo-400/10 rounded-full blur-[80px] pointer-events-none"></div>
+    <div class="absolute top-32 left-1/3 w-48 h-48 bg-pink-400/10 rounded-full blur-[60px] pointer-events-none"></div>
+    <div class="max-w-4xl mx-auto text-center relative z-10">
+        <div class="flex items-center justify-center gap-2 mb-6 fade-up">
+            <div class="inline-flex items-center gap-2 bg-white border border-indigo-100 text-indigo-600 px-4 py-2 rounded-full text-xs font-bold shadow-sm">
+                <i class="fa-solid fa-shield-halved text-xs"></i>
+                Actualizat: 15 aprilie 2026
+            </div>
+            <div class="gdpr-badge">
+                <i class="fa-solid fa-eu text-xs"></i>
+                Conformă GDPR
+            </div>
+        </div>
+        <h1 class="fade-up text-4xl md:text-6xl font-black text-slate-900 mb-4 tracking-tight leading-tight">
+            Politică de <span class="text-gradient">Confidențialitate</span>
+        </h1>
+        <p class="fade-up-delay text-lg md:text-xl text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed">
+            Respectăm confidențialitatea ta și ne angajăm să protejăm datele tale cu caracter personal în conformitate cu Regulamentul (UE) 2016/679 (GDPR) și legislația română aplicabilă.
+        </p>
+    </div>
+</section>
+
+<!-- OPERATOR INFO BANNER -->
+<section class="pb-8 px-6">
+    <div class="max-w-6xl mx-auto">
+        <div class="bg-gradient-to-r from-indigo-50 to-pink-50 border border-indigo-100 rounded-2xl p-6 flex flex-col md:flex-row items-start md:items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-pink-500 flex items-center justify-center text-white flex-shrink-0 shadow-lg">
+                <i class="fa-solid fa-building text-lg"></i>
+            </div>
+            <div>
+                <p class="text-slate-900 font-black text-sm mb-0.5">Operator de date cu caracter personal:</p>
+                <p class="text-slate-600 text-sm font-medium"><strong>CABA FAMILY SRL</strong> · sediu social în România · contact@viralio.ro</p>
+                <p class="text-slate-500 text-xs mt-1">Responsabil cu protecția datelor (DPO): contact@viralio.ro</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTENT -->
+<section class="pb-24 px-6">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex flex-col lg:flex-row gap-8">
+
+            <!-- TOC Sidebar -->
+            <aside class="lg:w-64 flex-shrink-0">
+                <div class="lg:sticky lg:top-28">
+                    <div class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm">
+                        <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-3 px-2">Navigare Rapidă</p>
+                        <nav class="flex flex-col gap-0.5">
+                            <a href="#date-colectate" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">01</span> Date Colectate</a>
+                            <a href="#utilizare-date" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">02</span> Cum Folosim Datele</a>
+                            <a href="#temei" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">03</span> Temeiul Legal</a>
+                            <a href="#partajare" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">04</span> Partajarea Datelor</a>
+                            <a href="#continut-tau" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">05</span> Conținutul Tău</a>
+                            <a href="#retentie" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">06</span> Retenția Datelor</a>
+                            <a href="#cookies" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">07</span> Cookie-uri</a>
+                            <a href="#securitate" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">08</span> Securitate</a>
+                            <a href="#drepturi" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">09</span> Drepturile Tale</a>
+                            <a href="#transferuri" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">10</span> Transferuri Internaționale</a>
+                            <a href="#copii" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">11</span> Protecția Minorilor</a>
+                            <a href="#modificari-pp" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">12</span> Modificări</a>
+                            <a href="#contact-pp" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">13</span> Contact</a>
+                        </nav>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="flex-1 flex flex-col gap-5">
+
+                <div id="date-colectate" class="section-card">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">01</span> Datele cu Caracter Personal Colectate
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base mb-4">Colectăm date cu caracter personal în trei moduri:</p>
+                    <div class="flex flex-col gap-3">
+                        <div class="flex items-start gap-3 p-4 bg-slate-50 rounded-xl">
+                            <i class="fa-solid fa-user-pen text-indigo-400 mt-0.5 flex-shrink-0"></i>
+                            <div>
+                                <p class="font-bold text-slate-800 text-sm mb-1">Date furnizate direct de tine</p>
+                                <p class="text-slate-500 text-sm">Adresă de email, nume, date de facturare (prin Stripe), conținut media încărcat în platformă, mesaje trimise echipei de suport.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-4 bg-slate-50 rounded-xl">
+                            <i class="fa-solid fa-chart-line text-indigo-400 mt-0.5 flex-shrink-0"></i>
+                            <div>
+                                <p class="font-bold text-slate-800 text-sm mb-1">Date colectate automat</p>
+                                <p class="text-slate-500 text-sm">Date de utilizare și comportament în aplicație, adresă IP (anonimizată după 90 de zile), tip de dispozitiv și browser, date de sesiune și cookie-uri tehnice.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-4 bg-slate-50 rounded-xl">
+                            <i class="fa-solid fa-link text-indigo-400 mt-0.5 flex-shrink-0"></i>
+                            <div>
+                                <p class="font-bold text-slate-800 text-sm mb-1">Date de la terți</p>
+                                <p class="text-slate-500 text-sm">Informații de profil de la furnizori de autentificare (ex. Google OAuth) — doar dacă alegi să te conectezi prin aceștia.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="utilizare-date" class="section-card">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">02</span> Cum Utilizăm Datele Tale
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base mb-3">Utilizăm datele cu caracter personal pentru:</p>
+                    <ul class="list-none flex flex-col gap-2">
+                        <li class="flex items-start gap-2 text-slate-600 text-sm"><i class="fa-solid fa-circle-check text-indigo-400 mt-0.5 flex-shrink-0"></i> Furnizarea, operarea și menținerea platformei Viralio;</li>
+                        <li class="flex items-start gap-2 text-slate-600 text-sm"><i class="fa-solid fa-circle-check text-indigo-400 mt-0.5 flex-shrink-0"></i> Procesarea tranzacțiilor și gestionarea abonamentelor;</li>
+                        <li class="flex items-start gap-2 text-slate-600 text-sm"><i class="fa-solid fa-circle-check text-indigo-400 mt-0.5 flex-shrink-0"></i> Comunicarea cu tine (notificări tehnice, suport, răspunsuri la întrebări);</li>
+                        <li class="flex items-start gap-2 text-slate-600 text-sm"><i class="fa-solid fa-circle-check text-indigo-400 mt-0.5 flex-shrink-0"></i> Îmbunătățirea funcționalităților prin analiza anonimizată a datelor de utilizare;</li>
+                        <li class="flex items-start gap-2 text-slate-600 text-sm"><i class="fa-solid fa-circle-check text-indigo-400 mt-0.5 flex-shrink-0"></i> Transmiterea de comunicări de marketing (cu consimțământul tău explicit, revocabil oricând);</li>
+                        <li class="flex items-start gap-2 text-slate-600 text-sm"><i class="fa-solid fa-circle-check text-indigo-400 mt-0.5 flex-shrink-0"></i> Prevenirea fraudei, asigurarea securității și respectarea obligațiilor legale.</li>
+                    </ul>
+                </div>
+
+                <div id="temei" class="section-card">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">03</span> Temeiul Legal al Prelucrării (Art. 6 GDPR)
+                    </h2>
+                    <div class="flex flex-col gap-3">
+                        <div class="rights-card">
+                            <i class="fa-solid fa-file-signature text-indigo-500 mt-0.5 flex-shrink-0 text-lg"></i>
+                            <div>
+                                <p class="font-bold text-slate-800 text-sm mb-1">Executarea contractului <span class="text-xs text-slate-400 font-normal ml-1">Art. 6(1)(b)</span></p>
+                                <p class="text-slate-500 text-sm">Prelucrarea necesară pentru furnizarea serviciilor contractate (cont, abonament, credite).</p>
+                            </div>
+                        </div>
+                        <div class="rights-card">
+                            <i class="fa-solid fa-check-circle text-green-500 mt-0.5 flex-shrink-0 text-lg"></i>
+                            <div>
+                                <p class="font-bold text-slate-800 text-sm mb-1">Consimțământ <span class="text-xs text-slate-400 font-normal ml-1">Art. 6(1)(a)</span></p>
+                                <p class="text-slate-500 text-sm">Comunicări de marketing, cookie-uri analitice și de marketing — revocabil oricând.</p>
+                            </div>
+                        </div>
+                        <div class="rights-card">
+                            <i class="fa-solid fa-balance-scale text-amber-500 mt-0.5 flex-shrink-0 text-lg"></i>
+                            <div>
+                                <p class="font-bold text-slate-800 text-sm mb-1">Interes legitim <span class="text-xs text-slate-400 font-normal ml-1">Art. 6(1)(f)</span></p>
+                                <p class="text-slate-500 text-sm">Securitate, prevenirea fraudei, analiza anonimizată pentru îmbunătățirea produsului.</p>
+                            </div>
+                        </div>
+                        <div class="rights-card">
+                            <i class="fa-solid fa-gavel text-slate-500 mt-0.5 flex-shrink-0 text-lg"></i>
+                            <div>
+                                <p class="font-bold text-slate-800 text-sm mb-1">Obligație legală <span class="text-xs text-slate-400 font-normal ml-1">Art. 6(1)(c)</span></p>
+                                <p class="text-slate-500 text-sm">Respectarea cerințelor fiscale, contabile și de raportare prevăzute de legislația română.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="partajare" class="section-card">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">04</span> Partajarea Datelor cu Caracter Personal
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base mb-3"><strong>Nu vindem datele tale cu caracter personal.</strong> Putem partaja date cu:</p>
+                    <ul class="list-none flex flex-col gap-2">
+                        <li class="flex items-start gap-2 text-slate-600 text-sm"><i class="fa-solid fa-server text-indigo-400 mt-0.5 flex-shrink-0"></i> <span><strong>Furnizori de servicii (împuterniciți):</strong> găzduire cloud, procesare plăți (Stripe), analiză anonimizată, furnizori AI — legați de obligații de confidențialitate și securitate;</span></li>
+                        <li class="flex items-start gap-2 text-slate-600 text-sm"><i class="fa-solid fa-landmark text-indigo-400 mt-0.5 flex-shrink-0"></i> <span><strong>Autorități publice:</strong> exclusiv în baza unei obligații legale sau a unui ordin judecătoresc;</span></li>
+                        <li class="flex items-start gap-2 text-slate-600 text-sm"><i class="fa-solid fa-handshake text-indigo-400 mt-0.5 flex-shrink-0"></i> <span><strong>Succesori în afaceri:</strong> în cazul unui transfer de active, fuziuni sau achiziții, cu notificarea prealabilă a utilizatorilor.</span></li>
+                    </ul>
+                </div>
+
+                <div id="continut-tau" class="section-card">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">05</span> Conținutul Tău și Datele Media
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base">Videoclipurile, imaginile, fișierele audio și orice alt conținut pe care îl încarci în Viralio rămân proprietatea ta. Le procesăm exclusiv pentru a furniza serviciul solicitat. Conținutul tău nu este utilizat pentru antrenarea modelelor AI proprii fără consimțământul tău explicit. Conținutul este stocat temporar pe durata necesară procesării și poate fi șters de tine oricând din contul de utilizator.</p>
+                </div>
+
+                <div id="retentie" class="section-card">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">06</span> Retenția Datelor
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base mb-3">Păstrăm datele cu caracter personal atât timp cât este necesar pentru scopurile descrise în această politică:</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="p-3 bg-slate-50 rounded-xl">
+                            <p class="font-bold text-slate-800 text-xs uppercase tracking-wide mb-1">Date de cont</p>
+                            <p class="text-slate-500 text-sm">Pe durata existenței contului + 30 de zile după ștergere</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl">
+                            <p class="font-bold text-slate-800 text-xs uppercase tracking-wide mb-1">Date de facturare</p>
+                            <p class="text-slate-500 text-sm">10 ani — obligație legală conform Codului Fiscal</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl">
+                            <p class="font-bold text-slate-800 text-xs uppercase tracking-wide mb-1">Conținut media</p>
+                            <p class="text-slate-500 text-sm">Până la procesare + maxim 24 de ore, dacă nu se specifică altfel</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl">
+                            <p class="font-bold text-slate-800 text-xs uppercase tracking-wide mb-1">Date analitice</p>
+                            <p class="text-slate-500 text-sm">Maximum 26 de luni (anonimizate după 90 de zile)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="cookies" class="section-card">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">07</span> Cookie-uri și Tehnologii Similare
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base mb-3">Utilizăm cookie-uri în conformitate cu Legea nr. 506/2004 (transpunerea Directivei ePrivacy) și GDPR:</p>
+                    <ul class="list-none flex flex-col gap-2">
+                        <li class="flex items-start gap-2 text-slate-600 text-sm"><i class="fa-solid fa-cookie text-amber-400 mt-0.5 flex-shrink-0"></i> <span><strong>Cookie-uri strict necesare:</strong> autentificare, securitate sesiune — nu necesită consimțământ;</span></li>
+                        <li class="flex items-start gap-2 text-slate-600 text-sm"><i class="fa-solid fa-cookie-bite text-blue-400 mt-0.5 flex-shrink-0"></i> <span><strong>Cookie-uri analitice:</strong> înțelegerea comportamentului utilizatorilor — necesită consimțământ;</span></li>
+                        <li class="flex items-start gap-2 text-slate-600 text-sm"><i class="fa-solid fa-cookie-bite text-pink-400 mt-0.5 flex-shrink-0"></i> <span><strong>Cookie-uri de marketing:</strong> personalizarea comunicărilor — necesită consimțământ.</span></li>
+                    </ul>
+                    <p class="text-slate-500 text-xs mt-3">Poți gestiona preferințele de cookie-uri din setările browserului sau din panoul de consimțământ disponibil în platformă.</p>
+                </div>
+
+                <div id="securitate" class="section-card">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">08</span> Securitatea Datelor
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base">Implementăm măsuri tehnice și organizatorice adecvate pentru protejarea datelor tale: criptare TLS în tranzit, criptare la repaus, control strict al accesului, monitorizare continuă și teste de securitate periodice. Deși depunem toate eforturile rezonabile, nicio metodă de transmisie sau stocare electronică nu este 100% sigură. În caz de incident de securitate care afectează datele tale, vom notifica autoritatea competentă (ANSPDCP) în 72 de ore și te vom informa direct, în conformitate cu Art. 33-34 GDPR.</p>
+                </div>
+
+                <div id="drepturi" class="section-card">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">09</span> Drepturile Tale (GDPR Art. 15-22)
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base mb-4">În calitate de persoană vizată, beneficiezi de următoarele drepturi:</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="rights-card"><i class="fa-solid fa-eye text-indigo-400 text-lg flex-shrink-0"></i><div><p class="font-bold text-slate-800 text-sm">Dreptul de acces</p><p class="text-slate-500 text-xs">Obținerea unei copii a datelor pe care le deținem despre tine</p></div></div>
+                        <div class="rights-card"><i class="fa-solid fa-pen text-indigo-400 text-lg flex-shrink-0"></i><div><p class="font-bold text-slate-800 text-sm">Dreptul la rectificare</p><p class="text-slate-500 text-xs">Corectarea datelor inexacte sau incomplete</p></div></div>
+                        <div class="rights-card"><i class="fa-solid fa-trash text-indigo-400 text-lg flex-shrink-0"></i><div><p class="font-bold text-slate-800 text-sm">Dreptul la ștergere</p><p class="text-slate-500 text-xs">„Dreptul de a fi uitat" — ștergerea datelor când nu mai sunt necesare</p></div></div>
+                        <div class="rights-card"><i class="fa-solid fa-hand text-indigo-400 text-lg flex-shrink-0"></i><div><p class="font-bold text-slate-800 text-sm">Dreptul la restricție</p><p class="text-slate-500 text-xs">Limitarea prelucrării în anumite circumstanțe</p></div></div>
+                        <div class="rights-card"><i class="fa-solid fa-download text-indigo-400 text-lg flex-shrink-0"></i><div><p class="font-bold text-slate-800 text-sm">Dreptul la portabilitate</p><p class="text-slate-500 text-xs">Primirea datelor într-un format structurat, uzual și lizibil automat</p></div></div>
+                        <div class="rights-card"><i class="fa-solid fa-ban text-indigo-400 text-lg flex-shrink-0"></i><div><p class="font-bold text-slate-800 text-sm">Dreptul la opoziție</p><p class="text-slate-500 text-xs">Opunerea față de prelucrarea pe baza interesului legitim sau marketing</p></div></div>
+                    </div>
+                    <div class="mt-4 p-4 bg-indigo-50 rounded-xl border border-indigo-100">
+                        <p class="text-sm text-slate-700 font-medium">Pentru exercitarea oricăruia dintre aceste drepturi, contactează-ne la <a href="mailto:contact@viralio.ro" class="text-indigo-500 font-bold hover:underline">contact@viralio.ro</a>. Vom răspunde în termen de <strong>30 de zile calendaristice</strong> conform Art. 12 GDPR. Dacă consideri că drepturile tale nu au fost respectate, ai dreptul de a depune o plângere la <strong>ANSPDCP</strong> — <a href="https://www.dataprotection.ro" class="text-indigo-500 font-semibold hover:underline" target="_blank">dataprotection.ro</a>.</p>
+                    </div>
+                </div>
+
+                <div id="transferuri" class="section-card">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">10</span> Transferuri Internaționale de Date
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base">Unii dintre furnizorii noștri de servicii pot procesa date în afara Spațiului Economic European (SEE). În astfel de cazuri, ne asigurăm că sunt implementate garanții adecvate conform Cap. V GDPR: clauze contractuale standard aprobate de Comisia Europeană, decizii de adecvare sau alte mecanisme legale echivalente.</p>
+                </div>
+
+                <div id="copii" class="section-card">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">11</span> Protecția Minorilor
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base">Platforma Viralio nu este destinată persoanelor cu vârsta sub 16 ani (vârsta minimă de consimțământ digital conform Art. 8 GDPR și legislației române). Nu colectăm intenționat date cu caracter personal de la minori sub această vârstă. Dacă ai cunoștință că un minor ne-a furnizat date fără acordul părintesc, te rugăm să ne contactezi pentru ștergerea imediată a acestor date.</p>
+                </div>
+
+                <div id="modificari-pp" class="section-card">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">12</span> Modificări ale Politicii de Confidențialitate
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base">Putem actualiza această politică periodic pentru a reflecta modificări legislative, tehnologice sau operaționale. Modificările semnificative vor fi comunicate prin notificare în aplicație sau prin email, cu cel puțin 14 zile înainte de intrarea în vigoare. Data actualizării este indicată în antetul paginii. Continuarea utilizării platformei după intrarea în vigoare a modificărilor constituie acceptarea politicii actualizate.</p>
+                </div>
+
+                <div id="contact-pp" class="section-card border-indigo-100" style="background: linear-gradient(135deg, #eef2ff 0%, #fdf2f8 100%);">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">13</span> Contact și DPO
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base mb-4">Pentru orice întrebare legată de această politică sau de prelucrarea datelor tale personale, contactează Responsabilul nostru cu Protecția Datelor:</p>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <a href="mailto:contact@viralio.ro" class="inline-flex items-center gap-2 bg-white border border-indigo-100 text-indigo-600 px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-indigo-50 transition-all shadow-sm">
+                            <i class="fa-solid fa-envelope"></i> contact@viralio.ro
+                        </a>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-4">Autoritate de supraveghere: <a href="https://www.dataprotection.ro" class="text-indigo-400 hover:underline" target="_blank">ANSPDCP — dataprotection.ro</a> · Platforma SOL (UE): <a href="https://consumer-redress.ec.europa.eu/index_ro" class="text-indigo-400 hover:underline" target="_blank">ec.europa.eu/consumers/odr</a></p>
+                </div>
+
+            </main>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="w-full bg-[#09090b] text-white border-t border-slate-800 pt-16 pb-8 px-6 relative overflow-hidden noise-texture">
+    <div class="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent"></div>
+    <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between gap-12 mb-16 relative z-10">
+        <div class="lg:w-1/3">
+            <a class="flex w-fit items-center font-black text-2xl tracking-tight text-white mb-4 group" href="/">
+                <div class="logo-icon w-9 h-9 rounded-xl bg-gradient-viralio flex items-center justify-center text-white mr-3 shadow-[0_0_15px_rgba(99,102,241,0.5)] group-hover:scale-105 transition-all"><i class="fa-solid fa-bolt text-lg"></i></div>
+                Viralio
+            </a>
+            <p class="text-slate-400 font-medium text-sm leading-relaxed max-w-sm">Infrastructura de inteligență artificială creată special pentru liderii din digital media.</p>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-8 lg:w-2/3">
+            <div class="flex flex-col gap-3">
+                <h3 class="text-white font-black mb-1 text-xs uppercase tracking-widest">Ecosistem</h3>
+                <a href="https://downloader.viralio.ro/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors"><i class="fa-brands fa-youtube text-red-500 mr-2"></i>YT Downloader</a>
+                <a href="https://captions.viralio.ro/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Caption Eraser</a>
+                <a href="https://audiocut.viralio.ro/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Audio Slicer AI</a>
+                <a href="https://voice.viralio.ro/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Voice Studio PRO</a>
+                <a href="https://video.viralio.ro/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Media Studio PRO</a>
+            </div>
+            <div class="flex flex-col gap-3">
+                <h3 class="text-white font-black mb-1 text-xs uppercase tracking-widest">Companie</h3>
+                <a href="/#pricing" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Credite & Prețuri</a>
+                <a href="/#cum-functioneaza" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Cum funcționează</a>
+                <a href="/tutoriale/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Tutoriale</a>
+            </div>
+            <div class="flex flex-col gap-3 col-span-2 md:col-span-1">
+                <h3 class="text-white font-black mb-1 text-xs uppercase tracking-widest">Legal</h3>
+                <a href="/contact/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Contact Suport</a>
+                <a href="/termeni/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Termeni de utilizare</a>
+                <a href="/legal/" class="text-white font-bold text-sm transition-colors">Politică Confidențialitate</a>
+            </div>
+        </div>
+    </div>
+    <div class="max-w-7xl mx-auto border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 relative z-10">
+        <div class="text-xs font-medium text-slate-400">© 2026 Viralio. Dezvoltat în România <i class="fa-solid fa-heart text-red-500/80 mx-1"></i></div>
+        <div class="text-xs text-slate-600">contact@viralio.ro</div>
+    </div>
+</footer>
+
+</body>
+</html>

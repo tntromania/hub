@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ro" class="scroll-smooth">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Contact & Suport – Viralio</title>
+    <meta name="description" content="Contactează echipa Viralio pentru suport tehnic, întrebări despre abonamente sau orice altă nelămurire.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://viralio.ro/contact/">
+    <meta name="theme-color" content="#09090b">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        viralio: { 50: '#eef2ff', 100: '#e0e7ff', 500: '#6366f1', 600: '#4f46e5', 900: '#09090b', accent: '#ec4899' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #FAFAFA; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+        .text-gradient { background: linear-gradient(135deg, #4f46e5 0%, #ec4899 50%, #f59e0b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .bg-gradient-viralio { background: linear-gradient(135deg, #4f46e5 0%, #ec4899 100%); }
+
+        @keyframes boltPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(99,102,241,0); } 50% { box-shadow: 0 0 0 6px rgba(99,102,241,0.15); } }
+        .logo-icon { animation: boltPulse 3s ease-in-out infinite; }
+
+        @keyframes wordmarkShimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+        .logo-wordmark { background: linear-gradient(90deg, #0f172a 30%, #6366f1 45%, #ec4899 55%, #0f172a 70%); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: wordmarkShimmer 5s linear infinite; }
+
+        .nav-link-pill { position: relative; padding: 6px 12px; border-radius: 999px; transition: color 0.25s ease; }
+        .nav-link-pill::before { content: ''; position: absolute; inset: 0; border-radius: 999px; background: rgba(99,102,241,0.08); opacity: 0; transform: scale(0.85); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .nav-link-pill:hover::before { opacity: 1; transform: scale(1); }
+        .nav-link-pill:hover { color: #4f46e5 !important; }
+
+        .contact-card { background: white; border: 1px solid rgba(226,232,240,0.8); border-radius: 1.5rem; padding: 2rem; box-shadow: 0 4px 24px rgba(0,0,0,0.04); transition: all 0.3s ease; cursor: pointer; text-decoration: none; display: block; }
+        .contact-card:hover { box-shadow: 0 12px 40px rgba(99,102,241,0.12); transform: translateY(-2px); border-color: rgba(99,102,241,0.2); }
+
+        .faq-item { background: white; border: 1px solid rgba(226,232,240,0.8); border-radius: 1.25rem; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.03); }
+        .faq-question { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 1.5rem; cursor: pointer; font-weight: 700; color: #1e293b; font-size: 0.9375rem; gap: 1rem; }
+        .faq-question:hover { background: rgba(99,102,241,0.03); }
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.16,1,0.3,1), padding 0.3s ease; }
+        .faq-answer.open { max-height: 400px; }
+        .faq-answer-inner { padding: 0 1.5rem 1.25rem; color: #64748b; font-size: 0.875rem; line-height: 1.7; }
+        .faq-icon { width: 1.5rem; height: 1.5rem; display: flex; align-items: center; justify-content: center; background: rgba(99,102,241,0.08); border-radius: 50%; color: #6366f1; flex-shrink: 0; transition: transform 0.3s ease; }
+        .faq-item.open .faq-icon { transform: rotate(45deg); }
+
+        .form-input { width: 100%; background: white; border: 1.5px solid rgba(226,232,240,0.9); border-radius: 0.875rem; padding: 0.875rem 1.125rem; font-size: 0.9375rem; font-weight: 500; color: #1e293b; font-family: 'Inter', sans-serif; transition: all 0.2s; outline: none; }
+        .form-input:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+        .form-input::placeholder { color: #94a3b8; font-weight: 400; }
+        textarea.form-input { resize: vertical; min-height: 140px; }
+        select.form-input { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%2394a3b8'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1.25rem; padding-right: 3rem; }
+
+        .noise-texture::before { content: ''; position: absolute; inset: 0; opacity: 0.03; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); pointer-events: none; }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-up { animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards; }
+        .fade-up-delay { animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
+        .fade-up-delay2 { animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s both; }
+
+        @keyframes shimmer { 0% { background-position: -400% 0; } 100% { background-position: 400% 0; } }
+        .btn-shimmer { background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 30%, #ec4899 50%, #7c3aed 70%, #4f46e5 100%); background-size: 400% 100%; animation: shimmer 4s linear infinite; }
+
+        .success-toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px); background: #1e293b; color: white; padding: 1rem 1.5rem; border-radius: 1rem; font-weight: 700; font-size: 0.875rem; z-index: 9999; transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.4s; opacity: 0; display: flex; align-items: center; gap: 0.625rem; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+        .success-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        .label { display: block; font-size: 0.8125rem; font-weight: 700; color: #475569; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    </style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div id="toast" class="success-toast">
+    <i class="fa-solid fa-circle-check text-green-400"></i>
+    <span id="toast-msg">Mesaj trimis cu succes! Îți răspundem în 24 de ore.</span>
+</div>
+
+<!-- NAV -->
+<div class="fixed top-4 inset-x-0 z-50 flex justify-center px-4 pointer-events-none">
+    <nav class="pointer-events-auto w-full max-w-6xl rounded-[2rem] border border-white/60 bg-white/70 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] px-4 md:px-8 py-3 flex justify-between items-center transition-all duration-500 hover:bg-white/90">
+        <a class="flex items-center font-black text-xl md:text-2xl tracking-tight text-slate-900 group" href="https://viralio.ro/">
+            <div class="logo-icon w-8 h-8 md:w-9 md:h-9 rounded-xl bg-gradient-viralio flex items-center justify-center text-white mr-2 md:mr-3 shadow-lg shadow-indigo-500/30 group-hover:scale-110 transition-transform duration-300">
+                <i class="fa-solid fa-bolt text-xs md:text-sm"></i>
+            </div>
+            <span class="logo-wordmark">Viralio</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1 text-[0.95rem] font-bold text-slate-500">
+            <a class="nav-link-pill" href="https://viralio.ro/#features">Ecosistem</a>
+            <a class="nav-link-pill" href="https://viralio.ro/#pricing">Acces</a>
+            <a class="nav-link-pill text-indigo-500 flex items-center gap-1.5" href="https://viralio.ro/tutoriale/">
+                <i class="fa-solid fa-graduation-cap text-sm"></i> Tutoriale
+            </a>
+        </div>
+        <a href="https://viralio.ro/" class="flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-slate-700 transition-all">
+            <i class="fa-solid fa-house text-xs"></i> Acasă
+        </a>
+    </nav>
+</div>
+
+<!-- HERO -->
+<section class="pt-36 pb-12 px-6 relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-indigo-50/60 via-white to-pink-50/40 pointer-events-none"></div>
+    <div class="absolute top-20 right-1/4 w-64 h-64 bg-indigo-400/10 rounded-full blur-[80px] pointer-events-none"></div>
+    <div class="max-w-4xl mx-auto text-center relative z-10">
+        <div class="inline-flex items-center gap-2 bg-white border border-indigo-100 text-indigo-600 px-4 py-2 rounded-full text-xs font-bold mb-6 shadow-sm fade-up">
+            <i class="fa-solid fa-headset text-xs"></i>
+            Răspundem în maxim 24 de ore
+        </div>
+        <h1 class="fade-up text-4xl md:text-6xl font-black text-slate-900 mb-4 tracking-tight leading-tight">
+            Suntem aici <span class="text-gradient">pentru tine</span>
+        </h1>
+        <p class="fade-up-delay text-lg md:text-xl text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed">
+            Ai o problemă tehnică, o întrebare despre abonament sau o idee de îmbunătățit? Echipa Viralio e la un mesaj distanță.
+        </p>
+    </div>
+</section>
+
+<!-- QUICK CONTACT CARDS -->
+<section class="pb-12 px-6">
+    <div class="max-w-5xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 fade-up-delay2">
+
+            <a href="mailto:contact@viralio.ro" class="contact-card group">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center text-white mb-4 shadow-lg shadow-indigo-500/30 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-envelope text-lg"></i>
+                </div>
+                <h3 class="font-black text-slate-900 text-base mb-1">Email Direct</h3>
+                <p class="text-slate-500 text-sm font-medium mb-3">Răspuns în 24 de ore lucrătoare</p>
+                <span class="text-indigo-500 font-bold text-sm flex items-center gap-1.5">
+                    contact@viralio.ro <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                </span>
+            </a>
+
+            <a href="https://viralio.ro/#pricing" class="contact-card group">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white mb-4 shadow-lg shadow-amber-500/30 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-bolt text-lg"></i>
+                </div>
+                <h3 class="font-black text-slate-900 text-base mb-1">Credite & Abonamente</h3>
+                <p class="text-slate-500 text-sm font-medium mb-3">Întrebări despre prețuri sau facturare</p>
+                <span class="text-amber-500 font-bold text-sm flex items-center gap-1.5">
+                    Vezi planurile <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                </span>
+            </a>
+
+            <a href="https://viralio.ro/tutoriale/" class="contact-card group">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center text-white mb-4 shadow-lg shadow-pink-500/30 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-graduation-cap text-lg"></i>
+                </div>
+                <h3 class="font-black text-slate-900 text-base mb-1">Tutoriale Video</h3>
+                <p class="text-slate-500 text-sm font-medium mb-3">Ghiduri pas cu pas pentru fiecare unealtă</p>
+                <span class="text-pink-500 font-bold text-sm flex items-center gap-1.5">
+                    Vezi tutorialele <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                </span>
+            </a>
+
+        </div>
+    </div>
+</section>
+
+<!-- MAIN CONTENT: FORM + FAQ -->
+<section class="pb-24 px-6">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex flex-col lg:flex-row gap-8">
+
+            <!-- CONTACT FORM -->
+            <div class="lg:w-3/5">
+                <div class="bg-white border border-slate-100 rounded-2xl p-6 md:p-8 shadow-sm">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-pink-500 flex items-center justify-center text-white shadow-md">
+                            <i class="fa-solid fa-paper-plane text-sm"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-black text-slate-900 text-xl">Trimite un Mesaj</h2>
+                            <p class="text-slate-400 text-xs font-medium">Completează formularul și te contactăm rapid</p>
+                        </div>
+                    </div>
+
+                    <div id="contact-form" class="flex flex-col gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="label">Numele tău *</label>
+                                <input type="text" id="cf-name" class="form-input" placeholder="Ion Popescu">
+                            </div>
+                            <div>
+                                <label class="label">Adresa de email *</label>
+                                <input type="email" id="cf-email" class="form-input" placeholder="tu@exemplu.ro">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="label">Subiect *</label>
+                            <select id="cf-subject" class="form-input">
+                                <option value="" disabled selected>Alege categoria</option>
+                                <option value="tehnic">🔧 Problemă tehnică</option>
+                                <option value="abonament">💳 Abonament & facturare</option>
+                                <option value="credite">⚡ Credite & utilizare</option>
+                                <option value="cont">👤 Cont & autentificare</option>
+                                <option value="feature">💡 Sugestie de funcționalitate</option>
+                                <option value="parteneriat">🤝 Parteneriat & afiliați</option>
+                                <option value="gdpr">🛡️ Date personale (GDPR)</option>
+                                <option value="altele">💬 Altele</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="label">Mesajul tău *</label>
+                            <textarea id="cf-message" class="form-input" placeholder="Descrie problema sau întrebarea ta cât mai detaliat. Include pașii urmați, eroarea primită și ce ai fi așteptat să se întâmple..."></textarea>
+                        </div>
+
+                        <div class="flex items-start gap-3 p-4 bg-slate-50 rounded-xl">
+                            <input type="checkbox" id="cf-consent" class="mt-0.5 w-4 h-4 accent-indigo-500 flex-shrink-0 cursor-pointer">
+                            <label for="cf-consent" class="text-slate-600 text-sm font-medium cursor-pointer leading-relaxed">
+                                Sunt de acord ca Viralio să proceseze datele mele cu caracter personal pentru a răspunde acestui mesaj, conform <a href="/legal/" class="text-indigo-500 hover:underline font-bold">Politicii de Confidențialitate</a>. *
+                            </label>
+                        </div>
+
+                        <button onclick="submitForm()" id="submit-btn" class="btn-shimmer w-full text-white py-3.5 rounded-xl font-black text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-opacity shadow-lg shadow-indigo-500/25">
+                            <i class="fa-solid fa-paper-plane"></i> Trimite Mesajul
+                        </button>
+
+                        <p class="text-center text-xs text-slate-400">Sau scrie direct la <a href="mailto:contact@viralio.ro" class="text-indigo-500 font-bold hover:underline">contact@viralio.ro</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ -->
+            <div class="lg:w-2/5">
+                <h2 class="font-black text-slate-900 text-xl mb-5 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-question text-indigo-400"></i>
+                    Întrebări Frecvente
+                </h2>
+                <div class="flex flex-col gap-3" id="faq-container">
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>Cum funcționează creditele Viralio?</span>
+                            <div class="faq-icon"><i class="fa-solid fa-plus text-xs"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">Creditele sunt moneda virtuală a platformei, folosite pentru a accesa funcționalitățile AI (descărcări, editare, voice etc.). Primești 10 credite gratuit la înregistrare. Creditele suplimentare se obțin prin abonament lunar. Nu au valoare monetară și nu pot fi transferate.</div>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>Pot anula abonamentul oricând?</span>
+                            <div class="faq-icon"><i class="fa-solid fa-plus text-xs"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">Da! Poți anula abonamentul oricând direct din contul tău, fără penalități. Accesul rămâne activ până la sfârșitul perioadei plătite. Conform OG nr. 34/2014, beneficiezi și de dreptul de retragere de 14 zile dacă nu ai utilizat serviciul.</div>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>Nu m-am putut autentifica în cont. Ce fac?</span>
+                            <div class="faq-icon"><i class="fa-solid fa-plus text-xs"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">Încearcă resetarea parolei de pe pagina de login. Dacă ai creat contul cu Google, folosește același buton „Continuă cu Google". Dacă problema persistă, trimite-ne un email la contact@viralio.ro cu adresa de email a contului.</div>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>Creditele mele au expirat. Se recuperează?</span>
+                            <div class="faq-icon"><i class="fa-solid fa-plus text-xs"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">Creditele alocate prin abonament sunt valabile pe durata perioadei de facturare și nu se reportează automat. Creditele neutilizate nu sunt rambursabile monetar. Contactează-ne dacă crezi că a apărut o eroare în contabilizarea creditelor tale.</div>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>Cum pot solicita ștergerea datelor mele?</span>
+                            <div class="faq-icon"><i class="fa-solid fa-plus text-xs"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">Conform GDPR, ai dreptul la ștergerea datelor cu caracter personal. Trimite o solicitare la contact@viralio.ro cu subiectul „Ștergere date GDPR". Vom procesa cererea în termen de 30 de zile calendaristice. Reține că ștergerea contului implică pierderea irevocabilă a creditelor și istoricului.</div>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>Cum funcționează programul de afiliere?</span>
+                            <div class="faq-icon"><i class="fa-solid fa-plus text-xs"></i></div>
+                        </div>
+                        <div class="faq-answer">
+                            <div class="faq-answer-inner">Programul de afiliere Viralio îți permite să câștigați comisioane pentru fiecare utilizator nou pe care îl aduci. Contactează-ne la contact@viralio.ro pentru detalii complete despre structura de comisioane și termenii programului.</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Response time info -->
+                <div class="mt-6 p-4 bg-gradient-to-r from-indigo-50 to-pink-50 border border-indigo-100 rounded-2xl">
+                    <p class="font-black text-slate-800 text-sm mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-clock text-indigo-400"></i>
+                        Timp de răspuns
+                    </p>
+                    <div class="flex flex-col gap-1.5">
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-slate-600 font-medium">Probleme tehnice urgente</span>
+                            <span class="text-green-600 font-bold bg-green-50 px-2 py-0.5 rounded-full">2–4 ore</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-slate-600 font-medium">Abonamente & facturare</span>
+                            <span class="text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded-full">4–8 ore</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-slate-600 font-medium">Întrebări generale</span>
+                            <span class="text-slate-600 font-bold bg-slate-100 px-2 py-0.5 rounded-full">24 ore</span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-2">Luni – Vineri, 09:00 – 18:00 (ora României)</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="w-full bg-[#09090b] text-white border-t border-slate-800 pt-16 pb-8 px-6 relative overflow-hidden noise-texture">
+    <div class="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent"></div>
+    <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between gap-12 mb-16 relative z-10">
+        <div class="lg:w-1/3">
+            <a class="flex w-fit items-center font-black text-2xl tracking-tight text-white mb-4 group" href="/">
+                <div class="logo-icon w-9 h-9 rounded-xl bg-gradient-viralio flex items-center justify-center text-white mr-3 shadow-[0_0_15px_rgba(99,102,241,0.5)] group-hover:scale-105 transition-all"><i class="fa-solid fa-bolt text-lg"></i></div>
+                Viralio
+            </a>
+            <p class="text-slate-400 font-medium text-sm leading-relaxed max-w-sm">Infrastructura de inteligență artificială creată special pentru liderii din digital media.</p>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-8 lg:w-2/3">
+            <div class="flex flex-col gap-3">
+                <h3 class="text-white font-black mb-1 text-xs uppercase tracking-widest">Ecosistem</h3>
+                <a href="https://downloader.viralio.ro/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors"><i class="fa-brands fa-youtube text-red-500 mr-2"></i>YT Downloader</a>
+                <a href="https://captions.viralio.ro/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Caption Eraser</a>
+                <a href="https://audiocut.viralio.ro/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Audio Slicer AI</a>
+                <a href="https://voice.viralio.ro/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Voice Studio PRO</a>
+                <a href="https://video.viralio.ro/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Media Studio PRO</a>
+            </div>
+            <div class="flex flex-col gap-3">
+                <h3 class="text-white font-black mb-1 text-xs uppercase tracking-widest">Companie</h3>
+                <a href="/#pricing" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Credite & Prețuri</a>
+                <a href="/#cum-functioneaza" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Cum funcționează</a>
+                <a href="/tutoriale/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Tutoriale</a>
+            </div>
+            <div class="flex flex-col gap-3 col-span-2 md:col-span-1">
+                <h3 class="text-white font-black mb-1 text-xs uppercase tracking-widest">Legal</h3>
+                <a href="/contact/" class="text-white font-bold text-sm transition-colors">Contact Suport</a>
+                <a href="/termeni/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Termeni de utilizare</a>
+                <a href="/legal/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Politică Confidențialitate</a>
+            </div>
+        </div>
+    </div>
+    <div class="max-w-7xl mx-auto border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 relative z-10">
+        <div class="text-xs font-medium text-slate-400">© 2026 Viralio. Dezvoltat în România <i class="fa-solid fa-heart text-red-500/80 mx-1"></i></div>
+        <div class="text-xs text-slate-600">contact@viralio.ro</div>
+    </div>
+</footer>
+
+<script>
+    // FAQ toggle
+    function toggleFaq(el) {
+        const item = el.parentElement;
+        const answer = item.querySelector('.faq-answer');
+        const isOpen = item.classList.contains('open');
+        // Close all
+        document.querySelectorAll('.faq-item.open').forEach(i => {
+            i.classList.remove('open');
+            i.querySelector('.faq-answer').classList.remove('open');
+        });
+        if (!isOpen) {
+            item.classList.add('open');
+            answer.classList.add('open');
+        }
+    }
+
+    // Toast helper
+    function showToast(msg, isError) {
+        const toast = document.getElementById('toast');
+        const msgEl = document.getElementById('toast-msg');
+        const icon = toast.querySelector('i');
+        msgEl.textContent = msg;
+        icon.className = isError ? 'fa-solid fa-circle-xmark text-red-400' : 'fa-solid fa-circle-check text-green-400';
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 4000);
+    }
+
+    // Form submit — trimite ca mailto cu datele completate
+    function submitForm() {
+        const name = document.getElementById('cf-name').value.trim();
+        const email = document.getElementById('cf-email').value.trim();
+        const subject = document.getElementById('cf-subject').value;
+        const message = document.getElementById('cf-message').value.trim();
+        const consent = document.getElementById('cf-consent').checked;
+
+        if (!name || !email || !subject || !message) {
+            showToast('Te rugăm să completezi toate câmpurile obligatorii.', true);
+            return;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            showToast('Adresa de email nu este validă.', true);
+            return;
+        }
+        if (!consent) {
+            showToast('Este necesar acordul tău pentru procesarea datelor.', true);
+            return;
+        }
+
+        const subjectLabels = {
+            tehnic: 'Problemă tehnică', abonament: 'Abonament & facturare',
+            credite: 'Credite & utilizare', cont: 'Cont & autentificare',
+            feature: 'Sugestie funcționalitate', parteneriat: 'Parteneriat & afiliați',
+            gdpr: 'Date personale (GDPR)', altele: 'Altele'
+        };
+
+        const mailSubject = encodeURIComponent('[Viralio Suport] ' + (subjectLabels[subject] || subject));
+        const mailBody = encodeURIComponent(
+            'Nume: ' + name + '\n' +
+            'Email: ' + email + '\n' +
+            'Categorie: ' + (subjectLabels[subject] || subject) + '\n\n' +
+            'Mesaj:\n' + message + '\n\n' +
+            '---\nTrimis din formularul de contact viralio.ro'
+        );
+
+        const btn = document.getElementById('submit-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Se trimite...';
+
+        // Deschide clientul de email al utilizatorului
+        window.location.href = 'mailto:contact@viralio.ro?subject=' + mailSubject + '&body=' + mailBody;
+
+        setTimeout(() => {
+            showToast('Se deschide clientul de email. Dacă nu s-a deschis, scrie direct la contact@viralio.ro', false);
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Trimite Mesajul';
+        }, 1000);
+    }
+</script>
+</body>
+</html>

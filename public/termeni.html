@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ro" class="scroll-smooth">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Termeni și Condiții – Viralio</title>
+    <meta name="description" content="Termenii și condițiile de utilizare a platformei Viralio.ro">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://viralio.ro/termeni/">
+    <meta name="theme-color" content="#09090b">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        viralio: { 50: '#eef2ff', 100: '#e0e7ff', 500: '#6366f1', 600: '#4f46e5', 900: '#09090b', accent: '#ec4899' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #FAFAFA; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+        .text-gradient { background: linear-gradient(135deg, #4f46e5 0%, #ec4899 50%, #f59e0b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .bg-gradient-viralio { background: linear-gradient(135deg, #4f46e5 0%, #ec4899 100%); }
+
+        @keyframes boltPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(99,102,241,0); } 50% { box-shadow: 0 0 0 6px rgba(99,102,241,0.15); } }
+        .logo-icon { animation: boltPulse 3s ease-in-out infinite; }
+
+        @keyframes wordmarkShimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+        .logo-wordmark { background: linear-gradient(90deg, #0f172a 30%, #6366f1 45%, #ec4899 55%, #0f172a 70%); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: wordmarkShimmer 5s linear infinite; }
+
+        .nav-link-pill { position: relative; padding: 6px 12px; border-radius: 999px; transition: color 0.25s ease; }
+        .nav-link-pill::before { content: ''; position: absolute; inset: 0; border-radius: 999px; background: rgba(99,102,241,0.08); opacity: 0; transform: scale(0.85); transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .nav-link-pill:hover::before { opacity: 1; transform: scale(1); }
+        .nav-link-pill:hover { color: #4f46e5 !important; }
+
+        .section-card { background: white; border: 1px solid rgba(226,232,240,0.8); border-radius: 1.5rem; padding: 2rem 2.5rem; box-shadow: 0 4px 24px rgba(0,0,0,0.04); transition: box-shadow 0.3s ease; }
+        .section-card:hover { box-shadow: 0 8px 40px rgba(99,102,241,0.08); }
+
+        .toc-link { display: flex; align-items: center; gap: 0.5rem; padding: 0.625rem 0.875rem; border-radius: 0.75rem; color: #64748b; font-size: 0.875rem; font-weight: 600; transition: all 0.2s; text-decoration: none; }
+        .toc-link:hover { background: rgba(99,102,241,0.07); color: #4f46e5; }
+        .toc-link.active { background: rgba(99,102,241,0.1); color: #4f46e5; }
+
+        .article-num { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; background: linear-gradient(135deg, #4f46e5, #ec4899); border-radius: 0.625rem; color: white; font-size: 0.75rem; font-weight: 800; flex-shrink: 0; margin-right: 0.75rem; }
+
+        .noise-texture::before { content: ''; position: absolute; inset: 0; opacity: 0.03; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); pointer-events: none; }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-up { animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards; }
+        .fade-up-delay { animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<div class="fixed top-4 inset-x-0 z-50 flex justify-center px-4 pointer-events-none">
+    <nav class="pointer-events-auto w-full max-w-6xl rounded-[2rem] border border-white/60 bg-white/70 backdrop-blur-2xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] px-4 md:px-8 py-3 flex justify-between items-center transition-all duration-500 hover:bg-white/90">
+        <a class="flex items-center font-black text-xl md:text-2xl tracking-tight text-slate-900 group" href="/">
+            <div class="logo-icon w-8 h-8 md:w-9 md:h-9 rounded-xl bg-gradient-viralio flex items-center justify-center text-white mr-2 md:mr-3 shadow-lg shadow-indigo-500/30 group-hover:scale-110 transition-transform duration-300">
+                <i class="fa-solid fa-bolt text-xs md:text-sm"></i>
+            </div>
+            <span class="logo-wordmark">Viralio</span>
+        </a>
+        <div class="hidden md:flex items-center space-x-1 text-[0.95rem] font-bold text-slate-500">
+            <a class="nav-link-pill" href="/#features">Ecosistem</a>
+            <a class="nav-link-pill" href="/#pricing">Acces</a>
+            <a class="nav-link-pill text-indigo-500 flex items-center gap-1.5" href="/tutoriale/">
+                <i class="fa-solid fa-graduation-cap text-sm"></i> Tutoriale
+            </a>
+        </div>
+        <a href="/" class="flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-slate-700 transition-all">
+            <i class="fa-solid fa-house text-xs"></i> Acasă
+        </a>
+    </nav>
+</div>
+
+<!-- HERO -->
+<section class="pt-36 pb-16 px-6 relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-indigo-50/60 via-white to-pink-50/40 pointer-events-none"></div>
+    <div class="absolute top-20 right-1/4 w-64 h-64 bg-indigo-400/10 rounded-full blur-[80px] pointer-events-none"></div>
+    <div class="absolute top-32 left-1/3 w-48 h-48 bg-pink-400/10 rounded-full blur-[60px] pointer-events-none"></div>
+    <div class="max-w-4xl mx-auto text-center relative z-10">
+        <div class="inline-flex items-center gap-2 bg-white border border-indigo-100 text-indigo-600 px-4 py-2 rounded-full text-xs font-bold mb-6 shadow-sm fade-up">
+            <i class="fa-solid fa-file-contract text-xs"></i>
+            Actualizat: 15 aprilie 2026
+        </div>
+        <h1 class="fade-up text-4xl md:text-6xl font-black text-slate-900 mb-4 tracking-tight leading-tight">
+            Termeni și <span class="text-gradient">Condiții</span>
+        </h1>
+        <p class="fade-up-delay text-lg md:text-xl text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed">
+            Te rugăm să citești cu atenție acești termeni înainte de a folosi platforma Viralio. Prin accesarea serviciilor, ești de acord cu prevederile de mai jos.
+        </p>
+    </div>
+</section>
+
+<!-- CONTENT -->
+<section class="pb-24 px-6">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex flex-col lg:flex-row gap-8">
+
+            <!-- TOC Sidebar -->
+            <aside class="lg:w-64 flex-shrink-0">
+                <div class="lg:sticky lg:top-28">
+                    <div class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm">
+                        <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-3 px-2">Navigare Rapidă</p>
+                        <nav class="flex flex-col gap-0.5">
+                            <a href="#acceptare" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">01</span> Acceptarea Termenilor</a>
+                            <a href="#eligibilitate" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">02</span> Eligibilitate și Cont</a>
+                            <a href="#utilizare" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">03</span> Utilizare Acceptabilă</a>
+                            <a href="#continut" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">04</span> Conținutul Tău</a>
+                            <a href="#abonamente" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">05</span> Abonamente și Plăți</a>
+                            <a href="#credite" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">06</span> Credite și Retururi</a>
+                            <a href="#terti" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">07</span> Servicii Terțe</a>
+                            <a href="#modificari" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">08</span> Modificări</a>
+                            <a href="#suspendare" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">09</span> Suspendare și Reziliere</a>
+                            <a href="#raspundere" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">10</span> Limitarea Răspunderii</a>
+                            <a href="#despagubire" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">11</span> Despăgubire</a>
+                            <a href="#drept" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">12</span> Drept Aplicabil</a>
+                            <a href="#contact-tc" class="toc-link"><span class="text-indigo-400 font-black text-xs w-5">13</span> Contact</a>
+                        </nav>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="flex-1 flex flex-col gap-5">
+
+                <div id="acceptare" class="section-card">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">01</span> Acceptarea Termenilor
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base">Prin accesarea sau utilizarea platformei Viralio (disponibilă la <strong>viralio.ro</strong> și sub-domeniile sale), ești de acord să respecți acești Termeni și Condiții și <a href="/legal/" class="text-indigo-500 font-semibold hover:underline">Politica noastră de Confidențialitate</a>. Dacă nu ești de acord cu acești termeni, te rugăm să nu utilizezi serviciile noastre. Acești termeni constituie un acord juridic valabil între tine și CABA FAMILY SRL, conform legislației române și europene în vigoare.</p>
+                </div>
+
+                <div id="eligibilitate" class="section-card">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">02</span> Eligibilitate și Cont
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base mb-3">Pentru a utiliza Viralio, trebuie să ai cel puțin <strong>16 ani</strong> (vârsta minimă de consimțământ digital conform GDPR în România) sau vârsta minimă de consimțământ digital din jurisdicția ta. Persoanele juridice pot utiliza platforma prin reprezentanții lor autorizați.</p>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base mb-3">Ești responsabil pentru:</p>
+                    <ul class="list-none flex flex-col gap-2">
+                        <li class="flex items-start gap-2 text-slate-600 text-sm md:text-base"><i class="fa-solid fa-circle-check text-indigo-400 mt-0.5 flex-shrink-0"></i> Menținerea confidențialității datelor de autentificare ale contului tău;</li>
+                        <li class="flex items-start gap-2 text-slate-600 text-sm md:text-base"><i class="fa-solid fa-circle-check text-indigo-400 mt-0.5 flex-shrink-0"></i> Toate activitățile desfășurate sub contul tău;</li>
+                        <li class="flex items-start gap-2 text-slate-600 text-sm md:text-base"><i class="fa-solid fa-circle-check text-indigo-400 mt-0.5 flex-shrink-0"></i> Notificarea imediată a Viralio la <a href="mailto:contact@viralio.ro" class="text-indigo-500 font-semibold">contact@viralio.ro</a> în cazul oricărei utilizări neautorizate a contului.</li>
+                    </ul>
+                </div>
+
+                <div id="utilizare" class="section-card">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">03</span> Utilizare Acceptabilă
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base mb-3">Te obligi să nu utilizezi platforma Viralio pentru:</p>
+                    <ul class="list-none flex flex-col gap-2">
+                        <li class="flex items-start gap-2 text-slate-600 text-sm md:text-base"><i class="fa-solid fa-circle-xmark text-red-400 mt-0.5 flex-shrink-0"></i> Activități ilegale sau care încalcă legislația română, europeană sau internațională aplicabilă;</li>
+                        <li class="flex items-start gap-2 text-slate-600 text-sm md:text-base"><i class="fa-solid fa-circle-xmark text-red-400 mt-0.5 flex-shrink-0"></i> Încălcarea drepturilor de proprietate intelectuală ale terților (drepturi de autor, mărci înregistrate, brevete);</li>
+                        <li class="flex items-start gap-2 text-slate-600 text-sm md:text-base"><i class="fa-solid fa-circle-xmark text-red-400 mt-0.5 flex-shrink-0"></i> Transmiterea sau stocarea de conținut malițios (viruși, troieni, malware);</li>
+                        <li class="flex items-start gap-2 text-slate-600 text-sm md:text-base"><i class="fa-solid fa-circle-xmark text-red-400 mt-0.5 flex-shrink-0"></i> Perturbarea sau compromiterea integrității, securității sau disponibilității platformei;</li>
+                        <li class="flex items-start gap-2 text-slate-600 text-sm md:text-base"><i class="fa-solid fa-circle-xmark text-red-400 mt-0.5 flex-shrink-0"></i> Tentativa de acces neautorizat la conturile altor utilizatori sau la sistemele interne;</li>
+                        <li class="flex items-start gap-2 text-slate-600 text-sm md:text-base"><i class="fa-solid fa-circle-xmark text-red-400 mt-0.5 flex-shrink-0"></i> Generarea de conținut care promovează ura, discriminarea sau violența;</li>
+                        <li class="flex items-start gap-2 text-slate-600 text-sm md:text-base"><i class="fa-solid fa-circle-xmark text-red-400 mt-0.5 flex-shrink-0"></i> Revânzarea sau redistribuirea serviciilor fără acordul scris al Viralio.</li>
+                    </ul>
+                </div>
+
+                <div id="continut" class="section-card">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">04</span> Conținutul Tău
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base mb-3">Îți păstrezi toate drepturile asupra conținutului pe care îl încarci sau îl creezi utilizând Viralio (<strong>„Conținutul Tău"</strong>). Declari și garantezi că deții toate drepturile necesare pentru a utiliza, procesa și distribui Conținutul Tău prin intermediul platformei noastre.</p>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base mb-3">Prin utilizarea platformei, ne acorzi o licență limitată, neexclusivă, netransferabilă, pentru a găzdui, procesa, transmite și afișa Conținutul Tău exclusiv în scopul furnizării și îmbunătățirii serviciilor. Această licență se încheie odată cu ștergerea conținutului sau închiderea contului.</p>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base">Ești singurul responsabil pentru Conținutul Tău. Viralio nu monitorizează sistematic conținutul utilizatorilor, dar își rezervă dreptul de a elimina orice conținut care încalcă acești termeni sau legislația aplicabilă.</p>
+                </div>
+
+                <div id="abonamente" class="section-card">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">05</span> Abonamente și Plăți
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base mb-3">Anumite funcționalități Viralio sunt disponibile prin abonament lunar cu plată. Tarifele sunt exprimate în RON și includ TVA acolo unde este aplicabil, conform Codului Fiscal român.</p>
+                    <ul class="list-none flex flex-col gap-2">
+                        <li class="flex items-start gap-2 text-slate-600 text-sm md:text-base"><i class="fa-solid fa-circle-check text-indigo-400 mt-0.5 flex-shrink-0"></i> Plățile se efectuează în avans la începutul fiecărei perioade de facturare;</li>
+                        <li class="flex items-start gap-2 text-slate-600 text-sm md:text-base"><i class="fa-solid fa-circle-check text-indigo-400 mt-0.5 flex-shrink-0"></i> Procesarea plăților este realizată prin Stripe — un furnizor de servicii de plată securizat;</li>
+                        <li class="flex items-start gap-2 text-slate-600 text-sm md:text-base"><i class="fa-solid fa-circle-check text-indigo-400 mt-0.5 flex-shrink-0"></i> Prețurile pot fi modificate cu un preaviz rezonabil de minimum 30 de zile;</li>
+                        <li class="flex items-start gap-2 text-slate-600 text-sm md:text-base"><i class="fa-solid fa-circle-check text-indigo-400 mt-0.5 flex-shrink-0"></i> În conformitate cu OG nr. 34/2014 privind drepturile consumatorilor în contractele la distanță, consumatorii beneficiază de dreptul de retragere de 14 zile calendaristice de la data încheierii contractului, cu excepția cazului în care au solicitat explicit și au beneficiat de furnizarea serviciului digital înainte de expirarea perioadei de retragere (caz în care dreptul de retragere se pierde).</li>
+                    </ul>
+                </div>
+
+                <div id="credite" class="section-card">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">06</span> Credite și Politica de Retur
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base mb-3">Creditele Viralio sunt unități virtuale utilizate pentru accesarea funcționalităților platformei. Acestea nu au valoare monetară și nu pot fi convertite în bani.</p>
+                    <ul class="list-none flex flex-col gap-2 mb-3">
+                        <li class="flex items-start gap-2 text-slate-600 text-sm md:text-base"><i class="fa-solid fa-bolt text-amber-400 mt-0.5 flex-shrink-0"></i> Creditele neutilizate nu se reportează după expirarea perioadei de abonament, dacă nu se specifică altfel;</li>
+                        <li class="flex items-start gap-2 text-slate-600 text-sm md:text-base"><i class="fa-solid fa-bolt text-amber-400 mt-0.5 flex-shrink-0"></i> Creditele gratuite acordate la înregistrare nu sunt rambursabile;</li>
+                        <li class="flex items-start gap-2 text-slate-600 text-sm md:text-base"><i class="fa-solid fa-bolt text-amber-400 mt-0.5 flex-shrink-0"></i> Rambursările pentru abonamente se acordă exclusiv în conformitate cu legislația aplicabilă privind drepturile consumatorilor sau în situații excepționale analizate de echipa noastră.</li>
+                    </ul>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base">Pentru solicitări de retur sau rambursare, contactează-ne la <a href="mailto:contact@viralio.ro" class="text-indigo-500 font-semibold hover:underline">contact@viralio.ro</a>.</p>
+                </div>
+
+                <div id="terti" class="section-card">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">07</span> Servicii Terțe
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base">Platforma Viralio poate integra sau depinde de servicii terțe (furnizori AI, procesatori de plăți, furnizori de stocare în cloud etc.). Utilizarea acestor servicii este supusă propriilor termeni și politici ale furnizorilor respectivi. Viralio nu este responsabilă pentru disponibilitatea, acuratețea sau securitatea serviciilor terțe și nu preia răspunderea pentru eventualele întreruperi ale acestora.</p>
+                </div>
+
+                <div id="modificari" class="section-card">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">08</span> Modificări ale Termenilor
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base">Viralio își rezervă dreptul de a modifica acești termeni în orice moment. Modificările semnificative vor fi comunicate prin notificare în aplicație sau prin email. Continuarea utilizării platformei după intrarea în vigoare a modificărilor constituie acceptarea noilor termeni. Data ultimei actualizări este indicată în partea de sus a acestei pagini.</p>
+                </div>
+
+                <div id="suspendare" class="section-card">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">09</span> Suspendare și Reziliere
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base mb-3">Viralio poate suspenda sau rezilia accesul tău la platformă în cazul:</p>
+                    <ul class="list-none flex flex-col gap-2">
+                        <li class="flex items-start gap-2 text-slate-600 text-sm md:text-base"><i class="fa-solid fa-triangle-exclamation text-amber-400 mt-0.5 flex-shrink-0"></i> Încălcării acestor termeni;</li>
+                        <li class="flex items-start gap-2 text-slate-600 text-sm md:text-base"><i class="fa-solid fa-triangle-exclamation text-amber-400 mt-0.5 flex-shrink-0"></i> Unor motive de securitate, operaționale sau legale;</li>
+                        <li class="flex items-start gap-2 text-slate-600 text-sm md:text-base"><i class="fa-solid fa-triangle-exclamation text-amber-400 mt-0.5 flex-shrink-0"></i> Neachitării tarifelor datorate.</li>
+                    </ul>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base mt-3">De asemenea, poți rezilia contul oricând din setările platformei sau contactând echipa noastră. La reziliere, dreptul tău de utilizare a serviciilor încetează, articolele 4, 10 și 11 rămânând aplicabile.</p>
+                </div>
+
+                <div id="raspundere" class="section-card">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">10</span> Limitarea Răspunderii
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base mb-3">Serviciile Viralio sunt furnizate <strong>„ca atare"</strong> și <strong>„după disponibilitate"</strong>, fără nicio garanție expresă sau implicită privind funcționarea neîntreruptă sau lipsa erorilor.</p>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base">În limita maximă permisă de lege, CABA FAMILY SRL și afiliații săi nu vor fi răspunzători pentru daune indirecte, incidentale, speciale, consecutive sau punitive, inclusiv pierderi de profit, venituri sau date. Răspunderea totală a Viralio față de tine nu va depăși suma plătită de tine pentru servicii în ultimele <strong>12 luni</strong> anterioare evenimentului care a generat prejudiciul. Drepturile consumatorilor prevăzute de legislația română și europeană nu sunt afectate de aceste limitări.</p>
+                </div>
+
+                <div id="despagubire" class="section-card">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">11</span> Despăgubire
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base">Ești de acord să aperi, să despăgubești și să exonerezi CABA FAMILY SRL, angajații, directorii și partenerii săi de orice pretenții, răspunderi, daune, pierderi și cheltuieli (inclusiv onorarii legale rezonabile) care decurg din Conținutul Tău sau din utilizarea serviciilor cu încălcarea acestor termeni sau a legislației aplicabile.</p>
+                </div>
+
+                <div id="drept" class="section-card">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">12</span> Drept Aplicabil și Soluționarea Disputelor
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base mb-3">Acești termeni sunt guvernați de legislația română și, acolo unde este aplicabil, de legislația Uniunii Europene. Orice dispută va fi soluționată pe cale amiabilă în primul rând. În cazul în care nu se ajunge la un acord, competența revine instanțelor judecătorești din România.</p>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base mb-3">Consumatorii au dreptul de a utiliza platforma europeană de soluționare online a litigiilor (SOL) disponibilă la <a href="https://consumer-redress.ec.europa.eu/index_ro" class="text-indigo-500 font-semibold hover:underline" target="_blank">ec.europa.eu/consumers/odr</a>.</p>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base">Plângerile privind protecția datelor cu caracter personal pot fi adresate <strong>Autorității Naționale de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP)</strong> la <a href="https://www.dataprotection.ro" class="text-indigo-500 font-semibold hover:underline" target="_blank">dataprotection.ro</a>.</p>
+                </div>
+
+                <div id="contact-tc" class="section-card border-indigo-100" style="background: linear-gradient(135deg, #eef2ff 0%, #fdf2f8 100%);">
+                    <h2 class="flex items-center text-xl font-black text-slate-900 mb-4">
+                        <span class="article-num">13</span> Contact
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base mb-4">Pentru întrebări sau nelămuriri legate de acești Termeni și Condiții, ne poți contacta:</p>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <a href="mailto:contact@viralio.ro" class="inline-flex items-center gap-2 bg-white border border-indigo-100 text-indigo-600 px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-indigo-50 transition-all shadow-sm">
+                            <i class="fa-solid fa-envelope"></i> contact@viralio.ro
+                        </a>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="w-full bg-[#09090b] text-white border-t border-slate-800 pt-16 pb-8 px-6 relative overflow-hidden noise-texture">
+    <div class="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent"></div>
+    <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between gap-12 mb-16 relative z-10">
+        <div class="lg:w-1/3">
+            <a class="flex w-fit items-center font-black text-2xl tracking-tight text-white mb-4 group" href="/">
+                <div class="logo-icon w-9 h-9 rounded-xl bg-gradient-viralio flex items-center justify-center text-white mr-3 shadow-[0_0_15px_rgba(99,102,241,0.5)] group-hover:scale-105 transition-all"><i class="fa-solid fa-bolt text-lg"></i></div>
+                Viralio
+            </a>
+            <p class="text-slate-400 font-medium text-sm leading-relaxed max-w-sm">Infrastructura de inteligență artificială creată special pentru liderii din digital media.</p>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-8 lg:w-2/3">
+            <div class="flex flex-col gap-3">
+                <h3 class="text-white font-black mb-1 text-xs uppercase tracking-widest">Ecosistem</h3>
+                <a href="https://downloader.viralio.ro/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors"><i class="fa-brands fa-youtube text-red-500 mr-2"></i>YT Downloader</a>
+                <a href="https://captions.viralio.ro/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Caption Eraser</a>
+                <a href="https://audiocut.viralio.ro/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Audio Slicer AI</a>
+                <a href="https://voice.viralio.ro/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Voice Studio PRO</a>
+                <a href="https://video.viralio.ro/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Media Studio PRO</a>
+            </div>
+            <div class="flex flex-col gap-3">
+                <h3 class="text-white font-black mb-1 text-xs uppercase tracking-widest">Companie</h3>
+                <a href="/#pricing" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Credite & Prețuri</a>
+                <a href="/#cum-functioneaza" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Cum funcționează</a>
+                <a href="/tutoriale/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Tutoriale</a>
+            </div>
+            <div class="flex flex-col gap-3 col-span-2 md:col-span-1">
+                <h3 class="text-white font-black mb-1 text-xs uppercase tracking-widest">Legal</h3>
+                <a href="/contact/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Contact Suport</a>
+                <a href="/termeni/" class="text-white font-bold text-sm transition-colors">Termeni de utilizare</a>
+                <a href="/legal/" class="text-slate-400 hover:text-white font-medium text-sm transition-colors">Politică Confidențialitate</a>
+            </div>
+        </div>
+    </div>
+    <div class="max-w-7xl mx-auto border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 relative z-10">
+        <div class="text-xs font-medium text-slate-400">© 2026 Viralio. Dezvoltat în România <i class="fa-solid fa-heart text-red-500/80 mx-1"></i></div>
+        <div class="text-xs text-slate-600">contact@viralio.ro</div>
+    </div>
+</footer>
+
+</body>
+</html>
