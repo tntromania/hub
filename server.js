@@ -39,6 +39,10 @@ const UserSchema = new mongoose.Schema({
     referralCreditsEarned: { type: Number, default: 0 },
     referralTier:       { type: Number, default: 0 },
     referralBonusesClaimed: [{ type: Number }],  // tier indexes already claimed
+    // ── REFERRAL SUBSCRIPTION TRACKING ──────────────────────────
+    referralConversions:          { type: Number, default: 0 },      // câți invitați au luat abonament
+    referralSubscriptionRewarded: { type: Boolean, default: false }, // a primit referrerul bonus pentru sub?
+    // ────────────────────────────────────────────────────────────
     retentionOfferUsed:    { type: Date, default: null },  // anti-abuse: o singură ofertă de retenție
     registrationIp:     { type: String, default: null },
     createdAt:          { type: Date, default: Date.now },
@@ -87,6 +91,13 @@ const REFERRAL_TIERS = [
     // tier 7: 500 invitații — bonus 2500 credite + 500k voice + badge permanent
     { minReferrals: 500, name: 'Viralio Partner',  icon: '🌟', perReferral: 15, bonus: 2500, bonusVoice: 500000, badge: 'Partner' },
 ];
+
+// Credite bonus acordate referrerului când invitatul ia abonament (prima dată)
+const REFERRAL_SUBSCRIPTION_BONUS = {
+    starter: 20,
+    creator: 50,
+    agency:  100,
+};
 
 function getCurrentTier(count) {
     let tier = 0;
@@ -156,6 +167,30 @@ app.post('/api/webhook/stripe', express.raw({ type: 'application/json' }), async
             );
             if (user) console.log('✅ SUCCES: ' + email + ' plan=' + planCfg.plan);
             else console.error('❌ USER NEGASIT pentru: ' + email);
+
+            // ── REFERRAL SUBSCRIPTION BONUS ──────────────────────────────
+            // Dacă userul a fost referit și e PRIMA lui plată cu abonament,
+            // recompensăm referrerul cu credite bonus (o singură dată, nu la reînnoire)
+            if (user && user.referredBy && !user.referralSubscriptionRewarded) {
+                const bonus = REFERRAL_SUBSCRIPTION_BONUS[planCfg.plan] || 0;
+                if (bonus > 0) {
+                    await User.findOneAndUpdate(
+                        { referralCode: user.referredBy },
+                        {
+                            $inc: {
+                                credits: bonus,
+                                referralCreditsEarned: bonus,
+                                referralConversions: 1,
+                            }
+                        }
+                    );
+                    // Marcăm că bonus-ul a fost acordat — nu se mai repetă la reînnoire
+                    await User.findByIdAndUpdate(user._id, { referralSubscriptionRewarded: true });
+                    console.log('🎁 REFERRAL SUB BONUS: ' + email + ' (' + planCfg.plan + ')'
+                        + ' → referrer ' + user.referredBy + ' +' + bonus + 'cr');
+                }
+            }
+            // ─────────────────────────────────────────────────────────────
         }
 
         else if (event.type === 'checkout.session.completed') {
@@ -574,7 +609,8 @@ app.get('/api/referral/info', authenticate, async (req, res) => {
     let referredUsers = [];
     if (user.referralCode) {
         referredUsers = await User.find({ referredBy: user.referralCode })
-            .select('name picture createdAt')
+            // ── acum includem și subscriptionPlan + subscriptionStatus ──
+            .select('name picture createdAt subscriptionPlan subscriptionStatus')
             .sort({ createdAt: -1 })
             .limit(20)
             .lean();
@@ -585,6 +621,7 @@ app.get('/api/referral/info', authenticate, async (req, res) => {
         referralLink: process.env.APP_URL + '/?ref=' + user.referralCode,
         referralCount: count,
         referralCreditsEarned: user.referralCreditsEarned || 0,
+        referralConversions: user.referralConversions || 0, // câți invitați au luat abonament
         // Tier system
         currentTier,
         currentTierData: REFERRAL_TIERS[currentTier],
@@ -598,11 +635,16 @@ app.get('/api/referral/info', authenticate, async (req, res) => {
             bonusClaimed: claimed.includes(i),
             current: i === currentTier,
         })),
+        // ── recentReferrals include acum și info despre abonament ──
         recentReferrals: referredUsers.map(u => ({
             name: u.name,
             picture: u.picture,
             date: u.createdAt,
+            subscriptionPlan: u.subscriptionPlan || 'none',
+            hasSubscription: u.subscriptionStatus === 'active' || u.subscriptionStatus === 'canceling',
         })),
+        // Bonusuri disponibile per plan (util pentru UI)
+        subscriptionBonusInfo: REFERRAL_SUBSCRIPTION_BONUS,
     });
 });
 
