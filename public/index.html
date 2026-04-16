@@ -1565,41 +1565,6 @@
     </section>
 </div>
 
-<!-- REFERRAL PROMO SECTION — ULTRA MODERN -->
-<div id="referral-promo-section" class="hidden py-16 md:py-20 bg-slate-50 border-t border-slate-200 relative overflow-hidden" style="display:none">
-    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-r from-emerald-500/10 via-indigo-500/10 to-pink-500/10 blur-[100px] rounded-full pointer-events-none"></div>
-    <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
-        <div class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-600 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-6 border border-emerald-100 shadow-sm">
-            <i class="fa-solid fa-gift"></i> Program de Referral
-        </div>
-        <h2 class="text-3xl md:text-[2.8rem] font-black text-slate-900 tracking-tight mb-4 leading-tight">Invită prieteni.<br class="hidden md:block"> Primește credite.</h2>
-        <p class="text-slate-500 font-medium text-base md:text-lg max-w-2xl mx-auto mb-10">Pentru fiecare prieten care se înscrie prin linkul tău, primești <strong class="text-emerald-600">5 credite gratuite</strong>. Prietenul tău primește <strong class="text-indigo-600">3 credite bonus</strong>. Fără limită de invitații.</p>
-        
-        <!-- Visual reward cards -->
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mb-10">
-            <div class="flex items-center gap-4 bg-white rounded-2xl px-6 py-4 shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-slate-100 hover:-translate-y-1 transition-all">
-                <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center text-xl"><i class="fa-solid fa-arrow-up"></i></div>
-                <div class="text-left">
-                    <div class="text-2xl font-black text-slate-900">+5</div>
-                    <div class="text-slate-500 text-xs font-bold">credite pentru tine</div>
-                </div>
-            </div>
-            <div class="text-slate-300 text-2xl hidden sm:block"><i class="fa-solid fa-plus"></i></div>
-            <div class="flex items-center gap-4 bg-white rounded-2xl px-6 py-4 shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-slate-100 hover:-translate-y-1 transition-all">
-                <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-500 flex items-center justify-center text-xl"><i class="fa-solid fa-user-plus"></i></div>
-                <div class="text-left">
-                    <div class="text-2xl font-black text-slate-900">+3</div>
-                    <div class="text-slate-500 text-xs font-bold">credite bonus prieten</div>
-                </div>
-            </div>
-        </div>
-
-        <button onclick="openReferralModal()" class="inline-flex items-center gap-2.5 bg-slate-900 text-white px-8 py-4 rounded-xl font-black text-sm hover:bg-slate-800 hover:scale-105 transition-all shadow-lg hover:shadow-xl group">
-            <i class="fa-solid fa-link group-hover:rotate-12 transition-transform"></i> Deschide panoul de invitații
-        </button>
-    </div>
-</div>
-
 <div class="flex justify-center px-4 pt-12 pb-24 reveal bg-slate-50">
     <div class="relative w-full max-w-4xl bg-slate-900 rounded-[2rem] p-8 md:p-12 flex flex-col md:flex-row items-center justify-between shadow-[0_30px_60px_rgba(0,0,0,0.15)] border border-slate-800 overflow-hidden group">
         <div class="absolute -left-32 -top-32 w-64 h-64 bg-indigo-500/30 blur-[80px] rounded-full group-hover:bg-indigo-500/50 transition-colors duration-700 pointer-events-none"></div>
@@ -2360,9 +2325,21 @@ async function handleCredentialResponse(response) {
                     const avatarHtml = r.picture 
                         ? `<img src="${r.picture}" alt="" class="w-7 h-7 rounded-full border border-white/10 shrink-0">`
                         : `<div class="w-7 h-7 rounded-full bg-gradient-to-br ${colorClass} flex items-center justify-center text-white text-[0.6rem] font-black shrink-0">${initial}</div>`;
+                    const planLabels = { starter: 'Starter', creator: 'Creator', agency: 'Agency' };
+                    const planColors = {
+                        starter: 'bg-sky-500/15 text-sky-300 border border-sky-500/20',
+                        creator: 'bg-indigo-500/15 text-indigo-300 border border-indigo-500/20',
+                        agency:  'bg-amber-500/15 text-amber-300 border border-amber-500/20',
+                    };
+                    const subBadge = r.hasSubscription && r.subscriptionPlan && r.subscriptionPlan !== 'none'
+                        ? `<span class="flex items-center gap-1 text-[0.5rem] font-black px-1.5 py-0.5 rounded-md ${planColors[r.subscriptionPlan] || 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/20'} uppercase tracking-wide leading-none shrink-0">
+                               <i class="fa-solid fa-check-circle" style="font-size:0.45rem"></i> ${planLabels[r.subscriptionPlan] || r.subscriptionPlan}
+                           </span>`
+                        : `<span class="text-slate-600 text-[0.55rem] shrink-0">—</span>`;
                     return `<div class="flex items-center gap-2.5 py-1.5 px-2 rounded-xl hover:bg-white/[0.03] transition-colors" style="animation: slideUp 0.3s ease ${i * 0.05}s both">
                         ${avatarHtml}
                         <span class="text-slate-300 text-xs font-medium flex-1 truncate">${r.name || 'Anonim'}</span>
+                        ${subBadge}
                         <span class="text-emerald-400 text-[0.6rem] font-bold bg-emerald-500/10 px-2 py-0.5 rounded-md">+5 cr</span>
                         <span class="text-slate-600 text-[0.55rem] font-medium">${dateStr}</span>
                     </div>`;
