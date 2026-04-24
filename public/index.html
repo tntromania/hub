@@ -371,6 +371,57 @@
             </div>
         </div>
 
+        <!-- ── STEP 6: Dashboard abonament activ ── -->
+        <div id="cs6" class="cancel-step">
+            <div class="cancel-hero-icon cancel-hero-icon--purple">
+                <i class="fa-solid fa-layer-group text-2xl"></i>
+            </div>
+            <h2 class="cancel-title">Abonamentul meu</h2>
+            <p class="cancel-sub" id="cs6-plan-label">Pachet Starter · Lunar</p>
+
+            <div style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:20px 18px;margin:18px 0;display:flex;flex-direction:column;gap:14px;">
+                <!-- Status -->
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:0.75rem;color:rgba(148,163,184,0.7);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Status</span>
+                    <span id="cs6-status-badge" style="font-size:0.7rem;font-weight:800;padding:3px 10px;border-radius:20px;background:rgba(34,197,94,0.15);color:#4ade80;border:1px solid rgba(34,197,94,0.25);">Activ</span>
+                </div>
+                <!-- Separator -->
+                <div style="height:1px;background:rgba(255,255,255,0.06);"></div>
+                <!-- Expira -->
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:0.75rem;color:rgba(148,163,184,0.7);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Reînnoire</span>
+                    <span id="cs6-expire-date" style="font-size:0.8rem;font-weight:700;color:#f1f5f9;">—</span>
+                </div>
+                <!-- Separator -->
+                <div style="height:1px;background:rgba(255,255,255,0.06);"></div>
+                <!-- Zile ramase -->
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:0.75rem;color:rgba(148,163,184,0.7);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Zile rămase</span>
+                    <span id="cs6-days-left" style="font-size:0.8rem;font-weight:700;color:#4ade80;">—</span>
+                </div>
+                <!-- Progress bar -->
+                <div style="height:6px;background:rgba(255,255,255,0.06);border-radius:99px;overflow:hidden;margin-top:2px;">
+                    <div id="cs6-progress" style="height:100%;background:linear-gradient(90deg,#6366f1,#a855f7);border-radius:99px;width:50%;transition:width 0.5s ease;"></div>
+                </div>
+                <!-- Separator -->
+                <div style="height:1px;background:rgba(255,255,255,0.06);"></div>
+                <!-- Credite -->
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:0.75rem;color:rgba(148,163,184,0.7);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Credite rămase</span>
+                    <span style="font-size:0.8rem;font-weight:700;color:#fbbf24;"><i class="fa-solid fa-bolt text-xs"></i> <span id="cs6-credits">0</span></span>
+                </div>
+            </div>
+
+            <div class="cancel-actions">
+                <button onclick="closeCancelModal()" class="cancel-btn-primary">
+                    <i class="fa-solid fa-check text-xs"></i> Totul e bine, închide
+                </button>
+                <button onclick="animateStep('cs6','cs1')" class="cancel-btn-danger" style="background:transparent;border:1px solid rgba(239,68,68,0.25);color:rgba(239,68,68,0.7);font-size:0.78rem;padding:10px 18px;" onmouseover="this.style.background='rgba(239,68,68,0.1)';this.style.color='#f87171'" onmouseout="this.style.background='transparent';this.style.color='rgba(239,68,68,0.7)'">
+                    <i class="fa-solid fa-xmark text-xs"></i> Vreau să anulez abonamentul
+                </button>
+            </div>
+        </div>
+
         <!-- ── STEP 1: Why leaving ── -->
         <div id="cs1" class="cancel-step cancel-step--active">
             <div class="cancel-hero-icon cancel-hero-icon--purple">
@@ -996,28 +1047,16 @@ ${cancelingChip}
                 <div class="subs-period-bar">
                     <div class="subs-period-bar-fill" style="width:${pct}%"></div>
                 </div>
-<div class="subs-card-details">
-    <div class="subs-detail">
-        <div class="subs-detail-label">Perioadă curentă</div>
-        <div class="subs-detail-value">${fmtDate(periodStart)}</div>
-    </div>
-    <div class="subs-detail">
-        <div class="subs-detail-label">${isCanceling ? 'Expiră la' : 'Reînnoire'}</div>
-        <div class="subs-detail-value">${fmtDate(periodEnd)}</div>
-    </div>
-    <div class="subs-detail">
-        <div class="subs-detail-label">Zile rămase</div>
-        <div class="subs-detail-value" style="color:${Math.max(0, Math.ceil((periodEnd - now) / 86400000)) <= 5 ? '#f87171' : Math.max(0, Math.ceil((periodEnd - now) / 86400000)) <= 10 ? '#fbbf24' : '#4ade80'}">
-            ${isCanceled ? '—' : Math.max(0, Math.ceil((periodEnd - now) / 86400000)) + ' zile'}
-        </div>
-    </div>
-    <div class="subs-detail">
-        <div class="subs-detail-label">Status</div>
-        <div class="subs-detail-value">
-            <span class="subs-badge ${statusCls}" style="font-size:0.6rem;">${statusLabel}</span>
-        </div>
-    </div>
-</div>
+                <div class="subs-card-details">
+                    <div class="subs-detail">
+                        <div class="subs-detail-label">Perioadă curentă</div>
+                        <div class="subs-detail-value">${fmtDate(periodStart)}</div>
+                    </div>
+                    <div class="subs-detail">
+                        <div class="subs-detail-label">${isCanceling ? 'Expiră la' : 'Reînnoire'}</div>
+                        <div class="subs-detail-value">${fmtDate(periodEnd)}</div>
+                    </div>
+                </div>
                 ${actionsHtml}
             `;
             list.appendChild(card);
@@ -1089,17 +1128,11 @@ ${cancelingChip}
         };
     };
 
-window.closeSubsConfirm = function() {
-    document.getElementById('subs-confirm').style.display = 'none';
-    _pendingCancelSubId = null;
-    // ADAUGĂ ASTA:
-    const btn = document.getElementById('subs-confirm-yes');
-    if (btn) {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-xmark text-xs"></i> Da, anulează';
-        btn.onclick = null;
-    }
-};
+    window.closeSubsConfirm = function() {
+        const c = document.getElementById('subs-confirm');
+        if (c) c.style.display = 'none';
+        _pendingCancelSubId = null;
+    };
 
     window.openStripePortal = function() {
         const token = getToken ? getToken() : localStorage.getItem('viralio_token');
@@ -2011,16 +2044,13 @@ function removeToken(){ document.cookie = "viralio_token=; domain=.viralio.ro; p
         window._retentionOfferUsed = !!user.retentionOfferUsed;
         if (user.referralCode) currentReferralCode = user.referralCode;
         // Show plan badge in nav
-const planBadge = document.getElementById('nav-plan-badge');
-if (planBadge) {
-    if (['active', 'canceling', 'past_due', 'unpaid'].includes(currentUserStatus) && currentUserPlan !== 'none') {
-        const labels = { starter: 'Starter', creator: 'Creator PRO', agency: 'Agency' };
-        planBadge.textContent = labels[currentUserPlan] || currentUserPlan;
-        planBadge.style.display = 'inline-flex';  // sau 'block', cum vrei
-    } else {
-        planBadge.style.display = 'none';
-    }
-}
+        const planBadge = document.getElementById('nav-plan-badge');
+        if (planBadge) {
+            if (['active', 'canceling', 'past_due', 'unpaid'].includes(currentUserStatus) && currentUserPlan !== 'none') {
+            } else {
+                planBadge.style.display = 'none';
+            }
+        }
         // Hide sticky CTA when logged in
         document.getElementById('sticky-cta').classList.remove('visible');
         // Show referral section when logged in
