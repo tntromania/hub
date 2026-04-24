@@ -710,6 +710,7 @@ app.get('/api/stripe/subscriptions', authenticate, async (req, res) => {
         const stripeSubscriptions = await stripe.subscriptions.list({
             customer: customerId,
             limit: 10,
+            status: 'all',  // ← FIX: include past_due, unpaid, canceled — nu doar 'active'
             expand: ['data.items.data.price.product'],
         });
 
@@ -771,9 +772,21 @@ app.post('/api/stripe/cancel-subscription-id', authenticate, async (req, res) =>
         if (!subscriptionId) return res.status(400).json({ error: 'ID lipsă.' });
 
         const user = await User.findById(req.userId);
+
+        let customerId = user.stripeCustomerId;
+
+        // ── FIX: Dacă stripeCustomerId lipsește din DB, caută după email ──
+        if (!customerId) {
+            const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+            if (customers.data.length > 0) {
+                customerId = customers.data[0].id;
+                await User.findByIdAndUpdate(req.userId, { stripeCustomerId: customerId });
+            }
+        }
+
         const sub  = await stripe.subscriptions.retrieve(subscriptionId);
 
-        if (sub.customer !== user.stripeCustomerId) {
+        if (!customerId || sub.customer !== customerId) {
             return res.status(403).json({ error: 'Acces interzis.' });
         }
 
@@ -839,10 +852,36 @@ app.post('/api/stripe/topup', authenticate, async (req, res) => {
 app.post('/api/stripe/cancel-subscription', authenticate, async (req, res) => {
     try {
         const user = await User.findById(req.userId);
-        if (!user || !user.subscriptionId) return res.status(400).json({ error: 'Nu ai un abonament activ.' });
+        if (!user) return res.status(404).json({ error: 'User negăsit.' });
+
+        let subscriptionId = user.subscriptionId;
+
+        // ── FIX: Dacă DB nu are subscriptionId (e.g. expirat/desync),
+        //        căutăm în Stripe orice sub activă/past_due/unpaid ──
+        if (!subscriptionId && user.stripeCustomerId) {
+            const stripeSubs = await stripe.subscriptions.list({
+                customer: user.stripeCustomerId,
+                status: 'all',
+                limit: 5,
+            });
+            const found = stripeSubs.data.find(s =>
+                ['active', 'past_due', 'unpaid', 'trialing'].includes(s.status)
+            );
+            if (found) {
+                subscriptionId = found.id;
+                // Re-sincronizăm DB-ul
+                await User.findByIdAndUpdate(req.userId, {
+                    subscriptionId: found.id,
+                    subscriptionStatus: found.status === 'active' ? 'active' : found.status,
+                });
+                console.log('🔄 RESYNC subscriptionId din Stripe: ' + user.email + ' → ' + found.id + ' (' + found.status + ')');
+            }
+        }
+
+        if (!subscriptionId) return res.status(400).json({ error: 'Nu ai un abonament activ.' });
 
         // Cancel at period end (nu imediat)
-        const sub = await stripe.subscriptions.update(user.subscriptionId, {
+        const sub = await stripe.subscriptions.update(subscriptionId, {
             cancel_at_period_end: true
         });
 
