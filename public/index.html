@@ -996,16 +996,28 @@ ${cancelingChip}
                 <div class="subs-period-bar">
                     <div class="subs-period-bar-fill" style="width:${pct}%"></div>
                 </div>
-                <div class="subs-card-details">
-                    <div class="subs-detail">
-                        <div class="subs-detail-label">Perioadă curentă</div>
-                        <div class="subs-detail-value">${fmtDate(periodStart)}</div>
-                    </div>
-                    <div class="subs-detail">
-                        <div class="subs-detail-label">${isCanceling ? 'Expiră la' : 'Reînnoire'}</div>
-                        <div class="subs-detail-value">${fmtDate(periodEnd)}</div>
-                    </div>
-                </div>
+<div class="subs-card-details">
+    <div class="subs-detail">
+        <div class="subs-detail-label">Perioadă curentă</div>
+        <div class="subs-detail-value">${fmtDate(periodStart)}</div>
+    </div>
+    <div class="subs-detail">
+        <div class="subs-detail-label">${isCanceling ? 'Expiră la' : 'Reînnoire'}</div>
+        <div class="subs-detail-value">${fmtDate(periodEnd)}</div>
+    </div>
+    <div class="subs-detail">
+        <div class="subs-detail-label">Zile rămase</div>
+        <div class="subs-detail-value" style="color:${Math.max(0, Math.ceil((periodEnd - now) / 86400000)) <= 5 ? '#f87171' : Math.max(0, Math.ceil((periodEnd - now) / 86400000)) <= 10 ? '#fbbf24' : '#4ade80'}">
+            ${isCanceled ? '—' : Math.max(0, Math.ceil((periodEnd - now) / 86400000)) + ' zile'}
+        </div>
+    </div>
+    <div class="subs-detail">
+        <div class="subs-detail-label">Status</div>
+        <div class="subs-detail-value">
+            <span class="subs-badge ${statusCls}" style="font-size:0.6rem;">${statusLabel}</span>
+        </div>
+    </div>
+</div>
                 ${actionsHtml}
             `;
             list.appendChild(card);
@@ -1077,11 +1089,17 @@ ${cancelingChip}
         };
     };
 
-    window.closeSubsConfirm = function() {
-        const c = document.getElementById('subs-confirm');
-        if (c) c.style.display = 'none';
-        _pendingCancelSubId = null;
-    };
+window.closeSubsConfirm = function() {
+    document.getElementById('subs-confirm').style.display = 'none';
+    _pendingCancelSubId = null;
+    // ADAUGĂ ASTA:
+    const btn = document.getElementById('subs-confirm-yes');
+    if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-xmark text-xs"></i> Da, anulează';
+        btn.onclick = null;
+    }
+};
 
     window.openStripePortal = function() {
         const token = getToken ? getToken() : localStorage.getItem('viralio_token');
