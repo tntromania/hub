@@ -843,7 +843,8 @@
             document.getElementById('subs-loading').style.display = 'none';
 
             // Dacă Stripe nu returnează nimic dar DB zice că avem abonament — folosim datele din DB
-            if ((!subscriptions || subscriptions.length === 0) && ['active','canceling'].includes(currentUserStatus)) {
+            // FIX: include și 'past_due' și 'unpaid'
+            if ((!subscriptions || subscriptions.length === 0) && ['active','canceling','past_due','unpaid'].includes(currentUserStatus)) {
                 const fallback = buildFallbackFromDB();
                 if (fallback) {
                     subscriptions = fallback;
@@ -857,7 +858,8 @@
                 return;
             }
 
-            const activeCount = subscriptions.filter(s => s.status === 'active' || s.status === 'trialing' || s.cancelAtPeriodEnd).length;
+            // FIX: past_due și unpaid contează ca "active" pentru numărul afișat
+            const activeCount = subscriptions.filter(s => s.status === 'active' || s.status === 'trialing' || s.status === 'past_due' || s.status === 'unpaid' || s.cancelAtPeriodEnd).length;
             document.getElementById('subs-subtitle').textContent =
                 activeCount > 0
                     ? activeCount + ' abonament' + (activeCount > 1 ? 'e active' : ' activ')
@@ -916,8 +918,9 @@
                           : sub.planName.toLowerCase().includes('agency')  ? 'agency' : 'unknown';
             const iconCfg = PLAN_ICONS[planKey] || { icon: '💳', cls: 'subs-plan-icon--unknown' };
 
-            const isCanceling = sub.cancelAtPeriodEnd && (sub.status === 'active' || sub.status === 'trialing');
-            const isActive = sub.status === 'active' || sub.status === 'trialing';
+            const isCanceling = sub.cancelAtPeriodEnd && (sub.status === 'active' || sub.status === 'trialing' || sub.status === 'past_due');
+            // FIX: past_due și unpaid trebuie să aibă buton de cancel — Stripe încă încearcă să colecteze!
+            const isActive = sub.status === 'active' || sub.status === 'trialing' || sub.status === 'past_due' || sub.status === 'unpaid';
             const isCanceled = sub.status === 'canceled' || sub.status === 'incomplete_expired';
 
             const statusLabel = isCanceling ? 'Se anulează' : (STATUS_LABELS[sub.status] || sub.status);
@@ -932,12 +935,20 @@
 
             const cardCls = isCanceled ? 'subs-card--canceled'
                           : isCanceling ? 'subs-card--canceling'
+                          : (sub.status === 'past_due' || sub.status === 'unpaid') ? 'subs-card--past-due'
                           : sub.isPrimary ? 'subs-card--primary' : '';
 
             const cancelingChip = isCanceling ? `
                 <div class="subs-canceling-chip">
                     <i class="fa-solid fa-clock-rotate-left"></i>
                     <span>Se anulează la finalul perioadei — <strong style="color:#fbbf24">${fmtDate(periodEnd)}</strong>. Ai acces până atunci.</span>
+                </div>` : '';
+
+            // FIX: banner de avertizare pentru past_due / unpaid
+            const pastDueChip = (sub.status === 'past_due' || sub.status === 'unpaid') && !isCanceling ? `
+                <div class="subs-canceling-chip" style="background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.25);color:#f87171;">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>Plata a eșuat — Stripe reîncearcă automat. <strong style="color:#fca5a5">Poți anula oricând de mai jos.</strong> Pentru a actualiza cardul, folosește Portalul Stripe.</span>
                 </div>` : '';
 
             const actionsHtml = isActive ? `
@@ -967,6 +978,7 @@
                     <span class="subs-badge ${statusCls}">${statusLabel}</span>
                 </div>
                 ${cancelingChip}
+                ${pastDueChip}
                 <div class="subs-period-bar">
                     <div class="subs-period-bar-fill" style="width:${pct}%"></div>
                 </div>
