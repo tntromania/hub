@@ -1981,10 +1981,7 @@ function removeToken(){ document.cookie = "viralio_token=; domain=.viralio.ro; p
         // Show plan badge in nav
         const planBadge = document.getElementById('nav-plan-badge');
         if (planBadge) {
-            if (['active', 'canceling'].includes(currentUserStatus) && currentUserPlan !== 'none') {
-                const labels = { starter: 'Starter', creator: 'Creator PRO', agency: 'Agency' };
-                planBadge.textContent = labels[currentUserPlan] || '';
-                planBadge.style.display = 'inline-flex';
+            if (['active', 'canceling', 'past_due', 'unpaid'].includes(currentUserStatus) && currentUserPlan !== 'none') {
             } else {
                 planBadge.style.display = 'none';
             }
@@ -2002,7 +1999,7 @@ function removeToken(){ document.cookie = "viralio_token=; domain=.viralio.ro; p
         // Update dropdown plan badge
         const dpb = document.getElementById('dropdown-plan-badge');
         if (dpb) {
-            if (['active', 'canceling'].includes(currentUserStatus) && currentUserPlan !== 'none') {
+            if (['active', 'canceling', 'past_due', 'unpaid'].includes(currentUserStatus) && currentUserPlan !== 'none') {
                 const labels = { starter: 'Starter', creator: 'Creator PRO', agency: 'Agency' };
                 dpb.textContent = labels[currentUserPlan] || '';
                 dpb.classList.remove('hidden');
@@ -2091,7 +2088,7 @@ async function handleCredentialResponse(response) {
     async function buyPackage(plan, interval) {
         if (!getToken()) { openLoginModal(); return; }
         // Blochează cumpărarea aceluiași plan dacă ești deja abonat/canceling
-        if (['active', 'canceling'].includes(currentUserStatus) && currentUserPlan === plan) {
+        if (['active', 'canceling', 'past_due', 'unpaid'].includes(currentUserStatus) && currentUserPlan === plan) {
             showToast('Ești deja abonat la acest plan.', 'error');
             return;
         }
@@ -2809,7 +2806,7 @@ window.onload = async () => {
             showToast('Nu ai un abonament activ.', 'error');
             return;
         }
-        if (!['active', 'canceling'].includes(currentUserStatus)) {
+        if (!['active', 'canceling', 'past_due', 'unpaid'].includes(currentUserStatus)) {
             showToast('Nu ai un abonament activ.', 'error');
             return;
         }
