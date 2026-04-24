@@ -705,6 +705,16 @@
     display: flex; align-items: center; justify-content: center; gap: 6px;
 }
 .subs-btn-cancel-sub:hover { background: rgba(239,68,68,0.12); color: #f87171; border-color: rgba(239,68,68,0.25); }
+.subs-btn-reactivate {
+    flex: 1; padding: 9px 14px; border-radius: 11px; font-size: 0.75rem; font-weight: 700;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border: 1px solid rgba(16,185,129,0.4);
+    color: #fff; cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    box-shadow: 0 4px 14px rgba(16,185,129,0.25);
+}
+.subs-btn-reactivate:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(16,185,129,0.4); }
+.subs-btn-reactivate:disabled { opacity: 0.7; cursor: wait; transform: none; }
 .subs-btn-manage {
     flex: 1; padding: 9px 14px; border-radius: 11px; font-size: 0.75rem; font-weight: 700;
     background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.2);
@@ -966,6 +976,9 @@
 
             const actionsHtml = (isActive || isCanceled) ? `
                 <div class="subs-card-actions">
+                    ${isCanceling ? `<button class="subs-btn-reactivate" onclick="reactivateSubscription(this)">
+                        <i class="fa-solid fa-rotate-right text-xs"></i> Reactivează
+                    </button>` : ''}
                     ${isActive && !isCanceling ? `<button class="subs-btn-cancel-sub" onclick="closeSubsModal(); setTimeout(()=>openCancelModal(), 200);">
                         <i class="fa-solid fa-xmark text-xs"></i> Anulează
                     </button>` : ''}
@@ -3054,10 +3067,14 @@ window.openCancelModal = function() {
         }
     };
 
-    window.reactivateSubscription = async function() {
-        const btn = document.getElementById('cs0-reactivate-btn');
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Se procesează...';
+    window.reactivateSubscription = async function(btnEl) {
+        // Acceptă butonul ca parametru (din orice modal); fallback la cel din cancel modal
+        const btn = btnEl || document.getElementById('cs0-reactivate-btn');
+        const originalHtml = btn ? btn.innerHTML : '';
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Se procesează...';
+        }
         try {
             const token = getToken();
             const resp = await fetch('/api/stripe/reactivate-subscription', {
@@ -3078,15 +3095,18 @@ window.openCancelModal = function() {
                     const meData = await me.json();
                     if (meData.user) updateUI(meData.user);
                 } catch(e) {}
+                // Dacă subs modal e deschis, reîmprospătează-l ca să dispară banner-ul "se anulează"
+                const subsModal = document.getElementById('subs-modal');
+                if (subsModal && subsModal.classList.contains('subs-visible')) {
+                    openSubsModal();
+                }
             } else {
                 showToast(data.error || 'Eroare la reactivare.', 'error');
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-rotate-right text-xs"></i> Reactivează abonamentul';
+                if (btn) { btn.disabled = false; btn.innerHTML = originalHtml || '<i class="fa-solid fa-rotate-right text-xs"></i> Reactivează abonamentul'; }
             }
         } catch (e) {
             showToast('Eroare de rețea.', 'error');
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fa-solid fa-rotate-right text-xs"></i> Reactivează abonamentul';
+            if (btn) { btn.disabled = false; btn.innerHTML = originalHtml || '<i class="fa-solid fa-rotate-right text-xs"></i> Reactivează abonamentul'; }
         }
     };
 
