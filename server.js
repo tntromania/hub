@@ -686,6 +686,65 @@ app.post('/api/stripe/subscribe', authenticate, async (req, res) => {
 // ══════════════════════════════════════════════════════════════
 // ██ SUBSCRIPTIONS DASHBOARD — toate abonamentele unui user
 // ══════════════════════════════════════════════════════════════
+// ── cache simplu pentru prețurile planurilor (evităm lookup-uri repetate la Stripe) ──
+const _priceCache = new Map();
+async function getPriceInfo(priceId) {
+    if (!priceId) return null;
+    if (_priceCache.has(priceId)) return _priceCache.get(priceId);
+    try {
+        const p = await stripe.prices.retrieve(priceId);
+        const info = {
+            amount: p.unit_amount ? p.unit_amount / 100 : 0,
+            currency: (p.currency || 'ron').toUpperCase(),
+            interval: p.recurring?.interval || 'month',
+        };
+        _priceCache.set(priceId, info);
+        return info;
+    } catch (e) {
+        console.error('❌ getPriceInfo failed for', priceId, e.message);
+        return null;
+    }
+}
+
+// Construiește un abonament din datele DB când Stripe nu are nimic (sau stripeCustomerId e invalid)
+async function buildDbFallbackSubscription(user) {
+    if (!user.subscriptionPlan || user.subscriptionPlan === 'none') return null;
+    if (!['active', 'canceling', 'past_due', 'unpaid', 'canceled'].includes(user.subscriptionStatus)) return null;
+
+    const PLAN_LABELS = { starter: 'Starter', creator: 'Creator', agency: 'Agency' };
+    const isCanceling = user.subscriptionStatus === 'canceling';
+    const priceId = {
+        starter: process.env.STRIPE_PRICE_STARTER,
+        creator: process.env.STRIPE_PRICE_CREATOR,
+        agency:  process.env.STRIPE_PRICE_AGENCY,
+    }[user.subscriptionPlan];
+
+    const priceInfo = await getPriceInfo(priceId);
+    const periodEnd = user.currentPeriodEnd ? new Date(user.currentPeriodEnd) : null;
+    // Estimăm începutul perioadei ca periodEnd - 1 lună (sau 1 an) dacă știm intervalul
+    let periodStart = null;
+    if (periodEnd) {
+        periodStart = new Date(periodEnd);
+        if (priceInfo?.interval === 'year') periodStart.setFullYear(periodStart.getFullYear() - 1);
+        else periodStart.setMonth(periodStart.getMonth() - 1);
+    }
+
+    return {
+        id: user.subscriptionId || 'db-fallback',
+        planName: PLAN_LABELS[user.subscriptionPlan] || user.subscriptionPlan,
+        status: isCanceling ? 'active' : user.subscriptionStatus,
+        cancelAtPeriodEnd: isCanceling,
+        currentPeriodStart: periodStart,
+        currentPeriodEnd:   periodEnd,
+        cancelAt: isCanceling ? periodEnd : null,
+        amount:   priceInfo?.amount ?? 0,
+        currency: priceInfo?.currency ?? 'RON',
+        interval: priceInfo?.interval ?? 'month',
+        isPrimary: true,
+        fromDB: true,
+    };
+}
+
 app.get('/api/stripe/subscriptions', authenticate, async (req, res) => {
     try {
         const user = await User.findById(req.userId);
@@ -698,26 +757,9 @@ app.get('/api/stripe/subscriptions', authenticate, async (req, res) => {
             const customers = await stripe.customers.list({ email: user.email, limit: 1 });
             if (customers.data.length > 0) {
                 customerId = customers.data[0].id;
-                // Salvăm în DB ca să nu mai căutăm data viitoare
                 await User.findByIdAndUpdate(req.userId, { stripeCustomerId: customerId });
             }
         }
-
-        if (!customerId) {
-            return res.json({ subscriptions: [], invoices: [] });
-        }
-
-        const stripeSubscriptions = await stripe.subscriptions.list({
-            customer: customerId,
-            limit: 10,
-            status: 'all',  // ← FIX: include past_due, unpaid, canceled — nu doar 'active'
-            expand: ['data.items.data.price.product'],
-        });
-
-        const stripeInvoices = await stripe.invoices.list({
-            customer: customerId,
-            limit: 5,
-        });
 
         const PLAN_NAMES = {
             [process.env.STRIPE_PRICE_STARTER]:        'Starter',
@@ -728,35 +770,61 @@ app.get('/api/stripe/subscriptions', authenticate, async (req, res) => {
             [process.env.STRIPE_PRICE_AGENCY_YEARLY]:  'Agency Anual',
         };
 
-        const subscriptions = stripeSubscriptions.data.map(sub => {
-            const priceId = sub.items.data[0]?.price?.id;
-            const price   = sub.items.data[0]?.price;
-            const product = price?.product;
-            return {
-                id: sub.id,
-                planName: PLAN_NAMES[priceId] || product?.name || 'Plan necunoscut',
-                status: sub.status,
-                cancelAtPeriodEnd: sub.cancel_at_period_end,
-                currentPeriodStart: new Date(sub.current_period_start * 1000),
-                currentPeriodEnd:   new Date(sub.current_period_end * 1000),
-                cancelAt: sub.cancel_at ? new Date(sub.cancel_at * 1000) : null,
-                amount:   price?.unit_amount ? price.unit_amount / 100 : 0,
-                currency: price?.currency?.toUpperCase() || 'RON',
-                interval: price?.recurring?.interval || 'month',
-                isPrimary: sub.id === user.subscriptionId,
-            };
-        });
+        let subscriptions = [];
+        let invoices = [];
 
-        const invoices = stripeInvoices.data.map(inv => ({
-            id: inv.id,
-            number: inv.number,
-            amount: inv.amount_paid / 100,
-            currency: inv.currency?.toUpperCase() || 'RON',
-            status:  inv.status,
-            date:    new Date(inv.created * 1000),
-            pdfUrl:  inv.invoice_pdf,
-            hostedUrl: inv.hosted_invoice_url,
-        }));
+        if (customerId) {
+            try {
+                const [stripeSubscriptions, stripeInvoices] = await Promise.all([
+                    stripe.subscriptions.list({
+                        customer: customerId,
+                        limit: 10,
+                        status: 'all',
+                        expand: ['data.items.data.price.product'],
+                    }),
+                    stripe.invoices.list({ customer: customerId, limit: 5 }),
+                ]);
+
+                subscriptions = stripeSubscriptions.data.map(sub => {
+                    const priceId = sub.items.data[0]?.price?.id;
+                    const price   = sub.items.data[0]?.price;
+                    const product = price?.product;
+                    return {
+                        id: sub.id,
+                        planName: PLAN_NAMES[priceId] || product?.name || 'Plan necunoscut',
+                        status: sub.status,
+                        cancelAtPeriodEnd: sub.cancel_at_period_end,
+                        currentPeriodStart: new Date(sub.current_period_start * 1000),
+                        currentPeriodEnd:   new Date(sub.current_period_end * 1000),
+                        cancelAt: sub.cancel_at ? new Date(sub.cancel_at * 1000) : null,
+                        amount:   price?.unit_amount ? price.unit_amount / 100 : 0,
+                        currency: price?.currency?.toUpperCase() || 'RON',
+                        interval: price?.recurring?.interval || 'month',
+                        isPrimary: sub.id === user.subscriptionId,
+                    };
+                });
+
+                invoices = stripeInvoices.data.map(inv => ({
+                    id: inv.id,
+                    number: inv.number,
+                    amount: inv.amount_paid / 100,
+                    currency: inv.currency?.toUpperCase() || 'RON',
+                    status:  inv.status,
+                    date:    new Date(inv.created * 1000),
+                    pdfUrl:  inv.invoice_pdf,
+                    hostedUrl: inv.hosted_invoice_url,
+                }));
+            } catch (stripeErr) {
+                console.warn('⚠️ Stripe list failed, using DB fallback:', stripeErr.message);
+            }
+        }
+
+        // ── FIX: dacă Stripe n-a returnat nimic dar DB zice că user are abonament,
+        // construim răspunsul din DB (cu prețul real citit de la Stripe după priceId) ──
+        if (subscriptions.length === 0) {
+            const fallback = await buildDbFallbackSubscription(user);
+            if (fallback) subscriptions = [fallback];
+        }
 
         res.json({ subscriptions, invoices });
     } catch (err) {
