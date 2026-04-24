@@ -813,20 +813,23 @@
         document.getElementById('subs-subtitle').textContent = 'Se sincronizează cu Stripe...';
         closeSubsConfirm();
 
-        // Helper: construieste card din datele din DB (fallback când Stripe pică)
+        // Helper minimal: doar dacă serverul pică total (fetch throw). Serverul gestionează
+        // deja fallback-ul DB→Stripe corect, așa că aici nu mai reconstruim datele.
         function buildFallbackFromDB() {
             if (!currentUserPlan || currentUserPlan === 'none') return null;
             if (!['active', 'canceling', 'past_due', 'canceled'].includes(currentUserStatus)) return null;
             const PLAN_LABELS = { starter: 'Starter', creator: 'Creator', agency: 'Agency' };
             const isCanceling = currentUserStatus === 'canceling';
+            const endDate = window._cancelAtDate ? new Date(window._cancelAtDate) : null;
+            const startDate = endDate ? new Date(new Date(endDate).setMonth(endDate.getMonth() - 1)) : null;
             return [{
                 id: 'db-fallback',
                 planName: PLAN_LABELS[currentUserPlan] || currentUserPlan,
                 status: isCanceling ? 'active' : currentUserStatus,
                 cancelAtPeriodEnd: isCanceling,
-                currentPeriodStart: window._cancelAtDate ? new Date(new Date(window._cancelAtDate) - 30*24*60*60*1000) : new Date(),
-                currentPeriodEnd: window._cancelAtDate ? new Date(window._cancelAtDate) : new Date(),
-                cancelAt: isCanceling && window._cancelAtDate ? new Date(window._cancelAtDate) : null,
+                currentPeriodStart: startDate,
+                currentPeriodEnd: endDate,
+                cancelAt: isCanceling ? endDate : null,
                 amount: 0,
                 currency: 'RON',
                 interval: 'month',
