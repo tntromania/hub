@@ -357,12 +357,15 @@
                 </div>
             </div>
 
-            <div class="cancel-actions">
+<div class="cancel-actions">
                 <button onclick="reactivateSubscription()" id="cs0-reactivate-btn" class="cancel-btn-primary">
                     <i class="fa-solid fa-rotate-right text-xs"></i> Reactivează abonamentul
                 </button>
+                <button onclick="closeCancelModal(); document.getElementById('pricing').scrollIntoView({behavior:'smooth'});" id="cs0-renew-btn" class="cancel-btn-primary" style="display:none;">
+                    <i class="fa-solid fa-bolt text-xs"></i> Alege un plan nou
+                </button>
                 <button onclick="openStripePortal()" class="cancel-btn-secondary" style="background:rgba(99,102,241,0.12);border-color:rgba(99,102,241,0.25);color:#a5b4fc;">
-                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> Vezi facturi &amp; abonamente pe Stripe
+                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> Gestionează &amp; anulează plăți pe Stripe
                 </button>
                 <button onclick="closeCancelModal()" class="cancel-skip-btn">Închide</button>
             </div>
@@ -813,7 +816,7 @@
         // Helper: construieste card din datele din DB (fallback când Stripe pică)
         function buildFallbackFromDB() {
             if (!currentUserPlan || currentUserPlan === 'none') return null;
-            if (!['active', 'canceling', 'past_due'].includes(currentUserStatus)) return null;
+            if (!['active', 'canceling', 'past_due', 'canceled'].includes(currentUserStatus)) return null;
             const PLAN_LABELS = { starter: 'Starter', creator: 'Creator', agency: 'Agency' };
             const isCanceling = currentUserStatus === 'canceling';
             return [{
@@ -944,17 +947,27 @@
                     <span>Se anulează la finalul perioadei — <strong style="color:#fbbf24">${fmtDate(periodEnd)}</strong>. Ai acces până atunci.</span>
                 </div>` : '';
 
-            // FIX: banner de avertizare pentru past_due / unpaid
+// FIX: banner de avertizare pentru past_due / unpaid
             const pastDueChip = (sub.status === 'past_due' || sub.status === 'unpaid') && !isCanceling ? `
                 <div class="subs-canceling-chip" style="background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.25);color:#f87171;">
                     <i class="fa-solid fa-triangle-exclamation"></i>
                     <span>Plata a eșuat — Stripe reîncearcă automat. <strong style="color:#fca5a5">Poți anula oricând de mai jos.</strong> Pentru a actualiza cardul, folosește Portalul Stripe.</span>
                 </div>` : '';
 
-            const actionsHtml = isActive ? `
+            // Banner pentru abonament expirat
+            const expiredChip = isCanceled ? `
+                <div class="subs-canceling-chip" style="background:rgba(148,163,184,0.07);border-color:rgba(148,163,184,0.18);color:#94a3b8;">
+                    <i class="fa-solid fa-calendar-xmark"></i>
+                    <span>Abonament expirat. <strong style="color:#cbd5e1">Dacă Stripe încă încearcă să colecteze, poți anula din Portalul Stripe de mai jos.</strong></span>
+                </div>` : '';
+
+            const actionsHtml = (isActive || isCanceled) ? `
                 <div class="subs-card-actions">
-                    ${!isCanceling ? `<button class="subs-btn-cancel-sub" onclick="closeSubsModal(); setTimeout(()=>openCancelModal(), 200);">
+                    ${isActive && !isCanceling ? `<button class="subs-btn-cancel-sub" onclick="closeSubsModal(); setTimeout(()=>openCancelModal(), 200);">
                         <i class="fa-solid fa-xmark text-xs"></i> Anulează
+                    </button>` : ''}
+                    ${isCanceled ? `<button onclick="closeSubsModal(); document.getElementById('pricing').scrollIntoView({behavior:'smooth'});" style="background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.25);color:#a5b4fc;border-radius:8px;padding:7px 14px;font-size:0.78rem;font-weight:600;cursor:pointer;">
+                        <i class="fa-solid fa-bolt text-xs"></i> Reînnoiește
                     </button>` : ''}
                     <button class="subs-btn-manage" onclick="openStripePortal()">
                         <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i> Portal Stripe
@@ -977,8 +990,9 @@
                     </div>
                     <span class="subs-badge ${statusCls}">${statusLabel}</span>
                 </div>
-                ${cancelingChip}
+${cancelingChip}
                 ${pastDueChip}
+                ${expiredChip}
                 <div class="subs-period-bar">
                     <div class="subs-period-bar-fill" style="width:${pct}%"></div>
                 </div>
@@ -2801,12 +2815,10 @@ window.onload = async () => {
         return offers[reason] || offers.other;
     }
 
-    window.openCancelModal = function() {
-        if (!currentUserPlan || currentUserPlan === 'none') {
-            showToast('Nu ai un abonament activ.', 'error');
-            return;
-        }
-        if (!['active', 'canceling', 'past_due', 'unpaid'].includes(currentUserStatus)) {
+window.openCancelModal = function() {
+        const hasSubHistory = (currentUserPlan && currentUserPlan !== 'none') ||
+            ['active','canceling','past_due','unpaid','canceled'].includes(currentUserStatus);
+        if (!hasSubHistory) {
             showToast('Nu ai un abonament activ.', 'error');
             return;
         }
@@ -2821,25 +2833,36 @@ window.onload = async () => {
             s.classList.remove('cancel-step--exit');
         });
 
-        // If already canceling, show the reactivate dashboard (cs0) instead of reasons flow
+// If already canceling/canceled, show the reactivate dashboard (cs0) instead of reasons flow
         if (currentUserStatus === 'canceling' || currentUserStatus === 'canceled') {
+            const isFullyExpired = currentUserStatus === 'canceled';
             // Update cs0 content with plan details
             const cs0credits = document.getElementById('cs0-credits');
             const cs0voice = document.getElementById('cs0-voice');
             if (cs0credits) cs0credits.textContent = p.cr + ' credite / lună';
             if (cs0voice) cs0voice.textContent = p.vc + ' caractere voice / lună';
-            // Update subtitle with period end date
+            // Update title
+            const cs0title = document.querySelector('#cs0 .cancel-title');
+            if (cs0title) cs0title.textContent = isFullyExpired ? 'Abonament expirat' : 'Abonament anulat';
+            // Update subtitle
             const cs0sub = document.getElementById('cs0-sub');
-            if (cs0sub && window._cancelAtDate) {
-                const d = new Date(window._cancelAtDate);
-                const dateStr = d.toLocaleDateString('ro-RO', { day: 'numeric', month: 'long', year: 'numeric' });
-                cs0sub.textContent = 'Ai acces la beneficii până pe ' + dateStr + '.';
+            if (cs0sub) {
+                if (window._cancelAtDate) {
+                    const d = new Date(window._cancelAtDate);
+                    const dateStr = d.toLocaleDateString('ro-RO', { day: 'numeric', month: 'long', year: 'numeric' });
+                    cs0sub.textContent = isFullyExpired
+                        ? 'Abonamentul tău a expirat pe ' + dateStr + '. Poți alege un plan nou sau gestiona plățile prin Stripe.'
+                        : 'Ai acces la beneficii până pe ' + dateStr + '.';
+                } else if (isFullyExpired) {
+                    cs0sub.textContent = 'Abonamentul tău a expirat. Poți alege un plan nou sau gestiona plățile prin Stripe.';
+                }
             }
-            // Hide reactivate button for fully expired subscriptions
+            // Reactivate button — ascuns pentru expirat, vizibil pentru canceling
             const reactivateBtn = document.getElementById('cs0-reactivate-btn');
-            if (reactivateBtn) {
-                reactivateBtn.style.display = currentUserStatus === 'canceled' ? 'none' : '';
-            }
+            if (reactivateBtn) reactivateBtn.style.display = isFullyExpired ? 'none' : '';
+            // Renew button — vizibil doar pentru expirat
+            const renewBtn = document.getElementById('cs0-renew-btn');
+            if (renewBtn) renewBtn.style.display = isFullyExpired ? '' : 'none';
             document.getElementById('cs0').classList.add('cancel-step--active');
         } else {
             document.getElementById('cs1').classList.add('cancel-step--active');
