@@ -2227,7 +2227,7 @@ async function handleCredentialResponse(response) {
 
     // Gestionează abonament — dacă are abonament deschide popupul, altfel trimite la pricing
     function handleManageSubscription() {
-        if (['active', 'canceling'].includes(currentUserStatus) && currentUserPlan !== 'none') {
+        if (['active', 'canceling', 'past_due', 'unpaid'].includes(currentUserStatus) && currentUserPlan !== 'none') {
             openCancelModal();
         } else {
             document.getElementById('pricing').scrollIntoView({ behavior: 'smooth' });
