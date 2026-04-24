@@ -1993,13 +1993,16 @@ function removeToken(){ document.cookie = "viralio_token=; domain=.viralio.ro; p
         window._retentionOfferUsed = !!user.retentionOfferUsed;
         if (user.referralCode) currentReferralCode = user.referralCode;
         // Show plan badge in nav
-        const planBadge = document.getElementById('nav-plan-badge');
-        if (planBadge) {
-            if (['active', 'canceling', 'past_due', 'unpaid'].includes(currentUserStatus) && currentUserPlan !== 'none') {
-            } else {
-                planBadge.style.display = 'none';
-            }
-        }
+const planBadge = document.getElementById('nav-plan-badge');
+if (planBadge) {
+    if (['active', 'canceling', 'past_due', 'unpaid'].includes(currentUserStatus) && currentUserPlan !== 'none') {
+        const labels = { starter: 'Starter', creator: 'Creator PRO', agency: 'Agency' };
+        planBadge.textContent = labels[currentUserPlan] || currentUserPlan;
+        planBadge.style.display = 'inline-flex';  // sau 'block', cum vrei
+    } else {
+        planBadge.style.display = 'none';
+    }
+}
         // Hide sticky CTA when logged in
         document.getElementById('sticky-cta').classList.remove('visible');
         // Show referral section when logged in
